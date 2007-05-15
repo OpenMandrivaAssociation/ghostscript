@@ -1,7 +1,7 @@
 ##### VERSION NUMBERS
 
 %define gsversion 8.15
-%define gsextraversion .3
+%define gsextraversion .4
 %define gsreleaseno 48
 %define gsrelease %mkrel %gsreleaseno
 %define gssvnrevision -rev183
