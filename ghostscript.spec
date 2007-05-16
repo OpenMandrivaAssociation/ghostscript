@@ -2,7 +2,7 @@
 
 %define gsversion 8.15
 %define gsextraversion .4
-%define gsreleaseno 48
+%define gsreleaseno 1
 %define gsrelease %mkrel %gsreleaseno
 %define gssvnrevision -rev183
 %define ijsver 0.35
@@ -20,22 +20,13 @@
 %define withsvgalib 0
 %define withcupsfilters 1
 %define withstaticgs 0
-
 %define debug 0
-
-##### RPM PROBLEM WORKAROUNDS
-
-# Suppress automatically generated Requires for Perl libraries.
-#define _requires_exceptions perl\(.*\)
-
-#define _unpackaged_files_terminate_build       0 
-#define _missing_doc_files_terminate_build      0
 
 ##### GENERAL DEFINITIONS
 
 Summary:	PostScript/PDF interpreter and renderer (Main executable)
 Name:		ghostscript
-Version:	%{gsversion}
+Version:	%{gsversion}%{gsextraversion}
 Release:	%{gsrelease}
 License:	GPL
 Group:		Publishing
@@ -59,20 +50,24 @@ URL:		http://www.cups.org/espgs/index.php
 
 BuildRequires: autoconf2.5
 BuildRequires: bison
-BuildRequires: cups
 BuildRequires: flex
 BuildRequires: freetype-devel
-BuildRequires: freetype-devel
 BuildRequires: gettext-devel
+BuildRequires: glibc-devel
+BuildRequires: gtk+2-devel
 BuildRequires: libcups-devel >= 1.2.0-0.5361.0mdk
 BuildRequires: libfontconfig-devel
+BuildRequires: libice6-devel
 BuildRequires: libnetpbm-devel
 BuildRequires: libpng-devel
+BuildRequires: libsm6-devel
 BuildRequires: libtiff-devel
+BuildRequires: libx11-devel
+BuildRequires: libxext6-devel
 BuildRequires: libxml-devel
-BuildRequires: gtk+2-devel
+BuildRequires: libxt6-devel
 BuildRequires: unzip
-BuildRequires: X11-devel
+BuildRequires: zlib1-devel
 
 %ifarch %ix86
 %if %{withsvgalib}
@@ -150,7 +145,7 @@ Provides: 	ghostscript-Both
 %package module-SVGALIB
 Summary: PostScript/PDF interpreter and renderer (Additional support for SVGALIB)
 Group: 		Publishing
-PreReq: 	ghostscript, fileutils
+Requires: 	ghostscript, fileutils
 Obsoletes: 	ghostscript-SVGALIB, ghostscript-Both
 Provides: 	ghostscript-SVGALIB, ghostscript-Both
 %endif
@@ -281,17 +276,10 @@ to compile applications using the IJS library.
 This package contains documentation for GhostScript.
 
 %prep
-
-# remove old directory
-rm -rf $RPM_BUILD_DIR/espgs
-
 ##### GHOSTSCRIPT
-
-#%setup -q -n espgs
 %setup -q -n espgs-%{gsversion}%{gsextraversion}
-#
+
 # unpack jpeg
-#%setup -q -T -D -a 1 -n espgs
 %setup -q -T -D -a 1 -n espgs-%{gsversion}%{gsextraversion}
 # For GhostScript, rename jpeg subdirectory
 mv jpeg-6b jpeg
@@ -315,7 +303,6 @@ ghostscript-module-??? packages.
 
 There is no configuration needed, just can add (or remove) the package
 to add (or remove) the devices concerned in ghostscript.
-
 EOF
 
 %endif
@@ -335,8 +322,6 @@ export CFLAGS="`echo %optflags |sed -e 's/-O3/-g/' |sed -e 's/-O2/-g/'`"
 export CXXFLAGS="`echo %optflags |sed -e 's/-O3/-g/' |sed -e 's/-O2/-g/'`"
 export RPM_OPT_FLAGS="`echo %optflags |sed -e 's/-O3/-g/' |sed -e 's/-O2/-g/'`"
 %endif
-
-
 
 ##### IJS
 
@@ -394,7 +379,6 @@ make so
 make pcl3opts
 
 %install
-
 rm -rf %{buildroot}
 
 # Change compiler flags for debugging when in debug mode
@@ -404,7 +388,6 @@ export CFLAGS="`echo %optflags |sed -e 's/-O3/-g/' |sed -e 's/-O2/-g/'`"
 export CXXFLAGS="`echo %optflags |sed -e 's/-O3/-g/' |sed -e 's/-O2/-g/'`"
 export RPM_OPT_FLAGS="`echo %optflags |sed -e 's/-O3/-g/' |sed -e 's/-O2/-g/'`"
 %endif
-
 
 # Make directories
 install -d %{buildroot}%{_bindir}
@@ -417,7 +400,6 @@ install -d %{buildroot}%{_datadir}/cups/model
 install -d %{buildroot}%{_sysconfdir}/cups
 
 ##### IJS
-
 cd ijs*
 ./configure --enable-shared --prefix=%buildroot%{_prefix} --libdir=%buildroot%{_libdir}
 # Work around bug in "configure" script
@@ -430,21 +412,61 @@ perl -p -i -e "s:%buildroot::g" %buildroot%{_libdir}/pkgconfig/ijs.pc
 cd ..
 
 ##### GHOSTSCRIPT
-
 mkdir -p %{buildroot}%{_docdir}/ghostscript-doc-%{gsversion}
 
 %if %withstaticgs
-make prefix=%{buildroot}/usr install_prefix=%{buildroot} gssharedir=%{buildroot}%{_libdir}/ghostscript/%{gsversion} docdir=%{_docdir}/ghostscript-doc-%{gsversion} bindir=%{buildroot}%{_bindir} mandir=%{buildroot}%{_mandir} install
+make \
+	prefix=%{buildroot}/usr \
+	install_prefix=%{buildroot} \
+	gssharedir=%{buildroot}%{_libdir}/ghostscript/%{gsversion} \
+	docdir=%{_docdir}/ghostscript-doc-%{gsversion} \
+	bindir=%{buildroot}%{_bindir} \
+	mandir=%{buildroot}%{_mandir} \
+	install
 %else
-make prefix=%{_prefix} install_prefix=%{buildroot} gssharedir=%{_libdir}/ghostscript/%{gsversion} docdir=%{_docdir}/ghostscript-doc-%{gsversion} bindir=%{_bindir} mandir=%{_mandir} install-cups
+make \
+	prefix=%{_prefix} \
+	install_prefix=%{buildroot} \
+	gssharedir=%{_libdir}/ghostscript/%{gsversion} \
+	docdir=%{_docdir}/ghostscript-doc-%{gsversion} \
+	bindir=%{_bindir} \
+	mandir=%{_mandir} \
+	install-cups
+
 %if %GSx11SVGAmodule
-make prefix=%{_prefix} install_prefix=%{buildroot} gssharedir=%{_libdir}/ghostscript/%{gsversion} docdir=%{_docdir}/ghostscript-doc-%{gsversion} bindir=%{_bindir} mandir=%{_mandir} install-shared
+make \
+	prefix=%{_prefix} \
+	install_prefix=%{buildroot} \
+	gssharedir=%{_libdir}/ghostscript/%{gsversion} \
+	docdir=%{_docdir}/ghostscript-doc-%{gsversion} \
+	bindir=%{_bindir} \
+	mandir=%{_mandir} \
+	install-shared
 %endif
 %endif
-make prefix=%{_prefix} install_prefix=%{buildroot} gssharedir=%{_libdir}/ghostscript/%{gsversion} docdir=%{_docdir}/ghostscript-doc-%{gsversion} bindir=%{_bindir} mandir=%{_mandir} man1dir=%{_mandir}/man1 pcl3-install
-make prefix=%{_prefix} install_prefix=%{buildroot} gssharedir=%{_libdir}/ghostscript/%{gsversion} docdir=%{_docdir}/ghostscript-doc-%{gsversion} bindir=%{_bindir} libdir=%{_libdir} mandir=%{_mandir} soinstall
+
+make \
+	prefix=%{_prefix} \
+	install_prefix=%{buildroot} \
+	gssharedir=%{_libdir}/ghostscript/%{gsversion} \
+	docdir=%{_docdir}/ghostscript-doc-%{gsversion} \
+	bindir=%{_bindir} \
+	mandir=%{_mandir} \
+	man1dir=%{_mandir}/man1 \
+	pcl3-install
+
+make \
+	prefix=%{_prefix} \
+	install_prefix=%{buildroot} \
+	gssharedir=%{_libdir}/ghostscript/%{gsversion} \
+	docdir=%{_docdir}/ghostscript-doc-%{gsversion} \
+	bindir=%{_bindir} \
+	libdir=%{_libdir} \
+	mandir=%{_mandir} \
+	soinstall
 
 ln -sf gs.1.bz2 %{buildroot}%{_mandir}/man1/ghostscript.1.bz2
+
 %if %withstaticgs
 mv %{buildroot}%{_bindir}/gs %{buildroot}%{_bindir}/gs-static
 %endif
@@ -474,16 +496,12 @@ install -m 644 pstoraster/pstoraster.convs %{buildroot}%{_sysconfdir}/cups
 ln -s %{_bindir}/gsc %{buildroot}%{_bindir}/gs-common
 ln -s %{_bindir}/gsc %{buildroot}%{_bindir}/ghostscript
 
-
-
 ##### GENERAL STUFF
 
 # Correct permissions for all documentation files
 chmod -R a+rX %{buildroot}%{_docdir}
 chmod -R go-w %{buildroot}%{_docdir}
 chmod -R u+w %{buildroot}%{_docdir}
-
-
 
 
 ##### FILES
@@ -632,5 +650,3 @@ fi
 
 %clean
 rm -rf %{buildroot}
-
-
