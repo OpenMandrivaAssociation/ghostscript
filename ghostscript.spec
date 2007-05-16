@@ -63,7 +63,7 @@ BuildRequires: libpng-devel
 BuildRequires: libsm6-devel
 BuildRequires: libtiff-devel
 BuildRequires: libx11-devel
-BuildRequires: libxext6-devel
+BuildRequires: libxext-devel
 BuildRequires: libxml-devel
 BuildRequires: libxt6-devel
 BuildRequires: unzip
