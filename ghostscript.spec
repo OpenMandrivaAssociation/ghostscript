@@ -57,15 +57,15 @@ BuildRequires: glibc-devel
 BuildRequires: gtk+2-devel
 BuildRequires: libcups-devel >= 1.2.0-0.5361.0mdk
 BuildRequires: libfontconfig-devel
-BuildRequires: libice6-devel
+BuildRequires: libice-devel
 BuildRequires: libnetpbm-devel
 BuildRequires: libpng-devel
-BuildRequires: libsm6-devel
+BuildRequires: libsm-devel
 BuildRequires: libtiff-devel
 BuildRequires: libx11-devel
 BuildRequires: libxext-devel
 BuildRequires: libxml-devel
-BuildRequires: libxt6-devel
+BuildRequires: libxt-devel
 BuildRequires: unzip
 BuildRequires: zlib1-devel
 
