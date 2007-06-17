@@ -2,7 +2,7 @@
 
 %define gsversion 8.15
 %define gsextraversion .4
-%define gsreleaseno 49
+%define gsreleaseno 50
 %define gsrelease %mkrel %gsreleaseno
 %define gssvnrevision -rev183
 %define ijsver 0.35
@@ -159,6 +159,8 @@ Group: Publishing
 %package -n %libgs-devel
 Summary: Headers and links to compile against the "%{libgs}" library
 Group: Development/C
+Requires: %libgs = %version
+Provides: libgs-devel
 
 ##### IJS
 
