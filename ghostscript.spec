@@ -31,7 +31,7 @@ Release:	%{gsrelease}
 License:	GPL
 Group:		Publishing
 Requires: 	ghostscript-common
-Requires:	/usr/sbin/update-alternatives
+Requires:	update-alternatives
 Obsoletes:	ghostscript-PrintOnly
 Provides:	ghostscript-PrintOnly
 %if !%{GSx11SVGAmodule}
@@ -117,7 +117,7 @@ Conflicts:	cups < 1.2.0-0.5361.0mdk
 Summary: PostScript/PDF interpreter and renderer (Executable with GTK-based screen display)
 Group: 		Publishing
 Requires: 	ghostscript-common
-Requires:	/usr/sbin/update-alternatives
+Requires:	update-alternatives
 # This one is buggy, so do not let it get automatically installed by
 # the "Provides: ghostscript"
 #Provides:	ghostscript = %{version}-%{release}
@@ -127,7 +127,7 @@ Requires:	/usr/sbin/update-alternatives
 Summary: PostScript/PDF interpreter and renderer (Static executable)
 Group: 		Publishing
 Requires: 	ghostscript-common
-Requires:	/usr/sbin/update-alternatives
+Requires:	update-alternatives
 Provides:	ghostscript = %{version}-%{release}
 %endif
 
