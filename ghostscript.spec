@@ -101,7 +101,7 @@ BuildRoot:	%_tmppath/%name-%gsversion-%gsrelease-root
 %package dvipdf
 Summary: PostScript/PDF interpreter and renderer (DVI-to-PDF converter)
 Group: 		Publishing
-Requires: 	ghostscript, fileutils
+Requires: 	ghostscript, coreutils
 Requires:	tetex-dvips
 
 %package common
@@ -145,7 +145,7 @@ Provides: 	ghostscript-Both
 %package module-SVGALIB
 Summary: PostScript/PDF interpreter and renderer (Additional support for SVGALIB)
 Group: 		Publishing
-Requires: 	ghostscript, fileutils
+Requires: 	ghostscript, coreutils
 Obsoletes: 	ghostscript-SVGALIB, ghostscript-Both
 Provides: 	ghostscript-SVGALIB, ghostscript-Both
 %endif
