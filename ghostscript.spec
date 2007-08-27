@@ -2,7 +2,7 @@
 
 %define gsversion 8.15
 %define gsextraversion .4
-%define gsreleaseno 51
+%define gsreleaseno 52
 %define gsrelease %mkrel %gsreleaseno
 %define gssvnrevision -rev183
 %define ijsver 0.35
@@ -344,7 +344,7 @@ cd ..
 	--enable-fontconfig \
 	--with-cups \
 	--with-drivers=ALL,opvp \
-	--with-fontpath="/usr/share/fonts/default/ghostscript:/usr/share/fonts/default/Type1:/usr/share/ghostscript/fonts:/usr/share/ghostscript/%{gsversion}/Resource:/usr/share/ghostscript/Resource:/usr/share/ghostscript/CIDFont:/usr/share/fonts/ttf:/usr/share/fonts/type1" \
+	--with-fontpath="/usr/share/fonts/default/ghostscript:/usr/share/fonts/default/type1:/usr/share/ghostscript/fonts:/usr/share/ghostscript/%{gsversion}/Resource:/usr/share/ghostscript/Resource:/usr/share/ghostscript/CIDFont:/usr/share/fonts/ttf:/usr/share/fonts/type1" \
 	--with-ijs \
 	--with-omni \
 	--with-x
