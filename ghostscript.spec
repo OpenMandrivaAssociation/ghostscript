@@ -85,6 +85,7 @@ Source3:	http://www.linuxprinting.org/download/printing/sipixa6.upp.bz2
 ##### GHOSTSCRIPT PATCHES
 
 Patch2:	espgs-8.15-windev-pdf-compatibility.patch
+Patch3: ghostscript-8.60-x11_shared.patch
 
 ##### LIBIJS PATCHES
 
@@ -289,6 +290,8 @@ mv jpeg-6b jpeg
 cd lib
 #%patch2 -p0 -b .windev-pdf
 cd ..
+
+%patch3 -p1 -b .shared
 
 # Stuff for shared library support to ghostscript.
 %if %{GSx11SVGAmodule}
