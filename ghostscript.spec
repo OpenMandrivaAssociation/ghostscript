@@ -1,8 +1,8 @@
 ##### VERSION NUMBERS
 
-%define gsversion 8.15
-%define gsextraversion .4
-%define gsreleaseno 52
+%define gsversion 8.60
+%define gsextraversion %{nil}
+%define gsreleaseno 53
 %define gsrelease %mkrel %gsreleaseno
 %define gssvnrevision -rev183
 %define ijsver 0.35
@@ -44,7 +44,7 @@ Provides:	ghostscript-static
 %endif
 Conflicts:	omni < 0.4 cups <= 1.1.14
 Conflicts:	printer-filters <= 10.1
-URL:		http://www.cups.org/espgs/index.php
+URL:		http://www.ghostscript.com/awki/Index
 
 ##### BUILDREQUIRES
 
@@ -77,7 +77,7 @@ BuildRequires:	svgalib-devel
 
 ##### GHOSTSCRIPT SOURCES
 
-Source0:	ftp://ftp2.easysw.com/pub/ghostscript/espgs-%{gsversion}%{gsextraversion}-source.tar.bz2
+Source0:	ftp://mirror.cs.wisc.edu/pub/mirrors/ghost/GPL/gs860/ghostscript-%{gsversion}%{gsextraversion}.tar.bz2
 Source1:        ftp://ftp.uu.net/graphics/jpeg/jpegsrc.v6b.tar.bz2
 Source2:	ps2pdfpress.bz2
 Source3:	http://www.linuxprinting.org/download/printing/sipixa6.upp.bz2
@@ -279,15 +279,15 @@ This package contains documentation for GhostScript.
 
 %prep
 ##### GHOSTSCRIPT
-%setup -q -n espgs-%{gsversion}%{gsextraversion}
+%setup -q
 
 # unpack jpeg
-%setup -q -T -D -a 1 -n espgs-%{gsversion}%{gsextraversion}
+%setup -q -T -D -a 1
 # For GhostScript, rename jpeg subdirectory
 mv jpeg-6b jpeg
 
 cd lib
-%patch2 -p0 -b .windev-pdf
+#%patch2 -p0 -b .windev-pdf
 cd ..
 
 # Stuff for shared library support to ghostscript.
@@ -329,7 +329,8 @@ export RPM_OPT_FLAGS="`echo %optflags |sed -e 's/-O3/-g/' |sed -e 's/-O2/-g/'`"
 
 cd ijs*
 # Rebuild broken build infrastructure
-./autogen.sh
+# <mrl> 20070827 not anymore
+#./autogen.sh
 %configure --enable-shared
 %make
 cd ..
@@ -337,7 +338,8 @@ cd ..
 ##### GHOSTSCRIPT
 
 # We have a Subversion version, so we must re-generate "configure"
-./autogen.sh
+# <mrl> 20070827 not anymore
+#./autogen.sh
 
 %configure \
 	--enable-dynamic \
@@ -419,7 +421,7 @@ mkdir -p %{buildroot}%{_docdir}/ghostscript-doc-%{gsversion}
 %if %withstaticgs
 make \
 	prefix=%{buildroot}/usr \
-	install_prefix=%{buildroot} \
+	DESTDIR=%{buildroot} \
 	gssharedir=%{buildroot}%{_libdir}/ghostscript/%{gsversion} \
 	docdir=%{_docdir}/ghostscript-doc-%{gsversion} \
 	bindir=%{buildroot}%{_bindir} \
@@ -428,7 +430,7 @@ make \
 %else
 make \
 	prefix=%{_prefix} \
-	install_prefix=%{buildroot} \
+	DESTDIR=%{buildroot} \
 	gssharedir=%{_libdir}/ghostscript/%{gsversion} \
 	docdir=%{_docdir}/ghostscript-doc-%{gsversion} \
 	bindir=%{_bindir} \
@@ -438,7 +440,7 @@ make \
 %if %GSx11SVGAmodule
 make \
 	prefix=%{_prefix} \
-	install_prefix=%{buildroot} \
+	DESTDIR=%{buildroot} \
 	gssharedir=%{_libdir}/ghostscript/%{gsversion} \
 	docdir=%{_docdir}/ghostscript-doc-%{gsversion} \
 	bindir=%{_bindir} \
@@ -449,7 +451,7 @@ make \
 
 make \
 	prefix=%{_prefix} \
-	install_prefix=%{buildroot} \
+	DESTDIR=%{buildroot} \
 	gssharedir=%{_libdir}/ghostscript/%{gsversion} \
 	docdir=%{_docdir}/ghostscript-doc-%{gsversion} \
 	bindir=%{_bindir} \
@@ -459,7 +461,7 @@ make \
 
 make \
 	prefix=%{_prefix} \
-	install_prefix=%{buildroot} \
+	DESTDIR=%{buildroot} \
 	gssharedir=%{_libdir}/ghostscript/%{gsversion} \
 	docdir=%{_docdir}/ghostscript-doc-%{gsversion} \
 	bindir=%{_bindir} \
@@ -585,7 +587,7 @@ chmod -R u+w %{buildroot}%{_docdir}
 
 %files -n %{libijs}
 %defattr(-,root,root)
-%{_libdir}/libijs.so.*
+%{_libdir}/libijs*.so
 
 %files -n %{libijs}-devel
 %defattr(-,root,root)
