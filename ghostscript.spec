@@ -86,6 +86,7 @@ Source3:	http://www.linuxprinting.org/download/printing/sipixa6.upp.bz2
 
 Patch2:	espgs-8.15-windev-pdf-compatibility.patch
 Patch3: ghostscript-8.60-x11_shared.patch
+Patch4: ghostscript-8.60-lib64.patch
 
 ##### LIBIJS PATCHES
 
@@ -292,6 +293,7 @@ cd lib
 cd ..
 
 %patch3 -p1 -b .shared
+%patch4 -p1 -b .lib64
 
 # Stuff for shared library support to ghostscript.
 %if %{GSx11SVGAmodule}
@@ -332,8 +334,8 @@ export RPM_OPT_FLAGS="`echo %optflags |sed -e 's/-O3/-g/' |sed -e 's/-O2/-g/'`"
 
 cd ijs*
 # Rebuild broken build infrastructure
-# <mrl> 20070827 not anymore
-#./autogen.sh
+# Needed by patch4.
+./autogen.sh
 %configure --enable-shared
 %make
 cd ..
