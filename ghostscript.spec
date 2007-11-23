@@ -1,8 +1,8 @@
 ##### VERSION NUMBERS
 
-%define gsversion 8.60
+%define gsversion 8.61
 %define gsextraversion %{nil}
-%define gsreleaseno 56
+%define gsreleaseno 57
 %define gsrelease %mkrel %gsreleaseno
 %define gssvnrevision -rev183
 %define ijsver 0.35
@@ -86,8 +86,6 @@ Source3:	http://www.linuxprinting.org/download/printing/sipixa6.upp.bz2
 
 Patch2:	espgs-8.15-windev-pdf-compatibility.patch
 Patch3: ghostscript-8.60-x11_shared.patch
-Patch4: ghostscript-8.60-lib64.patch
-Patch5: jasper-CVE-2007-2721.patch
 
 ##### LIBIJS PATCHES
 
@@ -294,10 +292,6 @@ cd lib
 cd ..
 
 %patch3 -p1 -b .shared
-%patch4 -p1 -b .lib64
-cd jasper
-%patch5 -p0 -b .CVE-2007-2721
-cd ..
 
 # Stuff for shared library support to ghostscript.
 %if %{GSx11SVGAmodule}
@@ -389,7 +383,7 @@ make obj/X11.so
 %endif
 %endif
 make so
-make pcl3opts
+#make pcl3opts
 
 %install
 rm -rf %{buildroot}
@@ -458,6 +452,7 @@ make \
 %endif
 %endif
 
+%if 0
 make \
 	prefix=%{_prefix} \
 	DESTDIR=%{buildroot} \
@@ -467,6 +462,7 @@ make \
 	mandir=%{_mandir} \
 	man1dir=%{_mandir}/man1 \
 	pcl3-install
+%endif
 
 make \
 	prefix=%{_prefix} \
@@ -516,6 +512,8 @@ chmod -R a+rX %{buildroot}%{_docdir}
 chmod -R go-w %{buildroot}%{_docdir}
 chmod -R u+w %{buildroot}%{_docdir}
 
+# Not for now
+rm -rf %{buildroot}%{_includedir}/ghostscript
 
 ##### FILES
 
