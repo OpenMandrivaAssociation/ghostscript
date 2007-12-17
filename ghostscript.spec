@@ -93,7 +93,6 @@ Patch3: ghostscript-8.60-x11_shared.patch
 
 ##### BUILD ROOT
 
-BuildRoot:	%_tmppath/%name-%gsversion-%gsrelease-root
 
 ##### PACKAGE DESCRIPTIONS
 
