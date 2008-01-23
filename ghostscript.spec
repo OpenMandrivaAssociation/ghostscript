@@ -2,7 +2,7 @@
 
 %define gsversion 8.61
 %define gsextraversion %{nil}
-%define gsreleaseno 57
+%define gsreleaseno 58
 %define gsrelease %mkrel %gsreleaseno
 %define gssvnrevision -rev183
 %define ijsver 0.35
@@ -28,7 +28,7 @@ Summary:	PostScript/PDF interpreter and renderer (Main executable)
 Name:		ghostscript
 Version:	%{gsversion}%{gsextraversion}
 Release:	%{gsrelease}
-License:	GPL
+License:	GPLv2+
 Group:		Publishing
 Requires: 	ghostscript-common
 Requires:	update-alternatives
