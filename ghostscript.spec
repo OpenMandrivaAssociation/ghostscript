@@ -2,7 +2,7 @@
 
 %define gsversion 8.61
 %define gsextraversion %{nil}
-%define gsreleaseno 58
+%define gsreleaseno 59
 %define gsrelease %mkrel %gsreleaseno
 %define gssvnrevision -rev183
 %define ijsver 0.35
@@ -11,8 +11,10 @@
 %define ijsrel %mkrel %ijsrelno
 %define ijsmajor 1
 %define libijs %mklibname ijs %{ijsmajor}
+%define libijs_devel %mklibname -d ijs %{ijsmajor}
 %define gsmajor 8
 %define libgs %mklibname gs %{gsmajor}
+%define libgs_devel %mklibname -d gs %{gsmajor}
 
 ##### BUILD OPTIONS
 
@@ -157,7 +159,7 @@ Provides: 	ghostscript-SVGALIB, ghostscript-Both
 Summary: PostScript/PDF interpreter and renderer (GhostScript shared library)
 Group: Publishing
 
-%package -n %libgs-devel
+%package -n %libgs_devel
 Summary: Headers and links to compile against the "%{libgs}" library
 Group: Development/C
 Requires: %libgs = %version
@@ -173,7 +175,7 @@ Group:		Publishing
 URL:		http://www.linuxprinting.org/ijs/
 Provides:       libijs = %{ijsver}-%{ijsrel}
 
-%package -n %{libijs}-devel
+%package -n %{libijs_devel}
 Version:	%{ijsver}
 Release:	%{ijsrel}
 Summary:	Headers and links for compiling against the "%{libijs}" library
@@ -271,7 +273,7 @@ to GhostScript (6.53 or newer) without needing to rebuild
 GhostScript. Application programs providing an IJS interface can make
 use of IJS printer drivers directly, without needing GhostScript.
 
-%description -n %{libijs}-devel
+%description -n %{libijs_devel}
 This package contains the static library and the header files needed
 to compile applications using the IJS library.
 
@@ -512,9 +514,6 @@ chmod -R a+rX %{buildroot}%{_docdir}
 chmod -R go-w %{buildroot}%{_docdir}
 chmod -R u+w %{buildroot}%{_docdir}
 
-# Not for now
-rm -rf %{buildroot}%{_includedir}/ghostscript
-
 ##### FILES
 
 %files
@@ -588,15 +587,16 @@ rm -rf %{buildroot}%{_includedir}/ghostscript
 %defattr(-,root,root)
 %{_libdir}/libgs.so.*
 
-%files -n %{libgs}-devel
+%files -n %{libgs_devel}
 %defattr(-,root,root)
 %{_libdir}/libgs.so
+%{_includedir}/ghostscript
 
 %files -n %{libijs}
 %defattr(-,root,root)
 %{_libdir}/libijs*.so
 
-%files -n %{libijs}-devel
+%files -n %{libijs_devel}
 %defattr(-,root,root)
 %doc ijs/README
 %{_libdir}/libijs.a
