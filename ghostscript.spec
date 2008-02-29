@@ -2,7 +2,7 @@
 
 %define gsversion 8.61
 %define gsextraversion %{nil}
-%define gsreleaseno 59
+%define gsreleaseno 60
 %define gsrelease %mkrel %gsreleaseno
 %define gssvnrevision -rev183
 %define ijsver 0.35
@@ -88,6 +88,7 @@ Source3:	http://www.linuxprinting.org/download/printing/sipixa6.upp.bz2
 
 Patch2:	espgs-8.15-windev-pdf-compatibility.patch
 Patch3: ghostscript-8.60-x11_shared.patch
+Patch4: CVE-2008-0411.patch
 
 ##### LIBIJS PATCHES
 
@@ -294,6 +295,8 @@ cd lib
 cd ..
 
 %patch3 -p1 -b .shared
+
+%patch4 -p0 -b .CVE-2008-0411
 
 # Stuff for shared library support to ghostscript.
 %if %{GSx11SVGAmodule}
