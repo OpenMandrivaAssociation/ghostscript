@@ -542,7 +542,7 @@ chmod -R u+w %{buildroot}%{_docdir}
 #%{_datadir}/ghostscript/Resource
 #%{_datadir}/ghostscript/CIDFont
 %{_mandir}/man1/*
-%{_mandir}/de/man1/*
+%lang(de) %{_mandir}/de/man1/*
 %{_bindir}/[a-c]*
 %{_bindir}/dumphint
 %{_bindir}/[e-f]*
