@@ -634,9 +634,13 @@ if test -f /usr/share/fonts/ttf/japanese/cidinst; then
     sh /usr/share/fonts/ttf/japanese/cidinst
 fi
 
+%if %mdkversion < 200900
 %post -n %{libijs} -p /sbin/ldconfig
+%endif
 
+%if %mdkversion < 200900
 %post -n %{libgs} -p /sbin/ldconfig
+%endif
 
 %preun
 if [ "$1" = 0 ]; then
@@ -658,9 +662,13 @@ if [ "$1" = 0 ]; then
 fi
 %endif
 
+%if %mdkversion < 200900
 %postun -n %{libijs} -p /sbin/ldconfig
+%endif
 
+%if %mdkversion < 200900
 %postun -n %{libgs} -p /sbin/ldconfig
+%endif
 
 %clean
 rm -rf %{buildroot}
