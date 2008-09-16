@@ -2,7 +2,7 @@
 
 %define gsversion 8.63
 %define gsextraversion %{nil}
-%define gsreleaseno 61
+%define gsreleaseno 62
 %define gsrelease %mkrel %gsreleaseno
 %define gssvnrevision -rev183
 %define ijsver 0.35
@@ -291,7 +291,7 @@ This package contains documentation for GhostScript.
 mv jpeg-6b jpeg
 
 cd lib
-#%patch2 -p0 -b .windev-pdf
+%patch2 -p0 -b .windev-pdf
 cd ..
 
 %patch3 -p1 -b .shared
