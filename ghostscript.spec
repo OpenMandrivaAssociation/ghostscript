@@ -1,8 +1,8 @@
 ##### VERSION NUMBERS
 
-%define gsversion 8.63
+%define gsversion 8.64
 %define gsextraversion %{nil}
-%define gsreleaseno 62
+%define gsreleaseno 63
 %define gsrelease %mkrel %gsreleaseno
 %define gssvnrevision -rev183
 %define ijsver 0.35
@@ -60,6 +60,8 @@ BuildRequires: gtk+2-devel
 BuildRequires: libcups-devel >= 1.2.0-0.5361.0mdk
 BuildRequires: libfontconfig-devel
 BuildRequires: libice-devel
+BuildRequires: libjasper-devel
+BuildRequires: libjpeg-devel
 BuildRequires: libnetpbm-devel
 BuildRequires: libpng-devel
 BuildRequires: libsm-devel
@@ -69,7 +71,7 @@ BuildRequires: libxext-devel
 BuildRequires: libxml-devel
 BuildRequires: libxt-devel
 BuildRequires: unzip
-BuildRequires: zlib1-devel
+BuildRequires: zlib-devel
 
 %ifarch %ix86
 %if %{withsvgalib}
@@ -80,15 +82,21 @@ BuildRequires:	svgalib-devel
 ##### GHOSTSCRIPT SOURCES
 
 Source0:	ftp://mirror.cs.wisc.edu/pub/mirrors/ghost/GPL/gs860/ghostscript-%{gsversion}%{gsextraversion}.tar.bz2
-Source1:        ftp://ftp.uu.net/graphics/jpeg/jpegsrc.v6b.tar.bz2
+Source1:	ftp://ftp.uu.net/graphics/jpeg/jpegsrc.v6b.tar.bz2
 Source2:	ps2pdfpress.bz2
 Source3:	http://www.linuxprinting.org/download/printing/sipixa6.upp.bz2
 
 ##### GHOSTSCRIPT PATCHES
 
-Patch2:	espgs-8.15-windev-pdf-compatibility.patch
-Patch3: ghostscript-8.60-x11_shared.patch
-Patch4: CVE-2008-0411.patch
+Patch1:	ghostscript-8.64-format-string.patch
+Patch2:	ghostscript-8.64-windev-pdf-compatibility.patch
+Patch3: ghostscript-8.64-x11_shared.patch
+
+# Fedora patches
+Patch102: ghostscript-scripts.patch
+Patch105: ghostscript-runlibfileifexists.patch
+Patch106: ghostscript-system-jasper.patch
+Patch107: ghostscript-pksmraw.patch
 
 ##### LIBIJS PATCHES
 
@@ -284,19 +292,35 @@ This package contains documentation for GhostScript.
 %prep
 ##### GHOSTSCRIPT
 %setup -q
-
 # unpack jpeg
 %setup -q -T -D -a 1
 # For GhostScript, rename jpeg subdirectory
 mv jpeg-6b jpeg
 
-cd lib
-%patch2 -p0 -b .windev-pdf
-cd ..
 
+%patch1 -p1 -b .strfmt
+%patch2 -p1 -b .windev-pdf
 %patch3 -p1 -b .shared
 
-%patch4 -p0 -b .CVE-2008-0411
+# Fedora patches
+# Fix some shell scripts
+%patch102 -p1 -b .scripts
+
+# Define .runlibfileifexists.
+%patch105 -p1
+
+%patch106 -p1 -b .system-jasper
+
+# Fix pksmraw output (RH bug #308211).  Still needed in 8.63.
+%patch107 -p1 -b .pksmraw
+
+# Convert manual pages to UTF-8
+from8859_1() {
+	iconv -f iso-8859-1 -t utf-8 < "$1" > "${1}_"
+	mv "${1}_" "$1"
+}
+for i in man/de/*.1; do from8859_1 "$i"; done
+
 
 # Stuff for shared library support to ghostscript.
 %if %{GSx11SVGAmodule}
@@ -557,6 +581,7 @@ chmod -R u+w %{buildroot}%{_docdir}
 %attr(0755,root,root) %{_prefix}/lib*/cups/filter/*
 %{_datadir}/cups/model/*
 %config(noreplace) %{_sysconfdir}/cups/pstoraster.convs
+%config(noreplace) %{_sysconfdir}/cups/pdftoraster.convs
 %endif
 
 %files doc
