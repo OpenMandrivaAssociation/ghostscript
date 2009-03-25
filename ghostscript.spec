@@ -2,7 +2,7 @@
 
 %define gsversion 8.64
 %define gsextraversion %{nil}
-%define gsreleaseno 63
+%define gsreleaseno 64
 %define gsrelease %mkrel %gsreleaseno
 %define gssvnrevision -rev183
 %define ijsver 0.35
@@ -97,6 +97,8 @@ Patch102: ghostscript-scripts.patch
 Patch105: ghostscript-runlibfileifexists.patch
 Patch106: ghostscript-system-jasper.patch
 Patch107: ghostscript-pksmraw.patch
+Patch108: ghostscript-bitcmyk.patch
+Patch109: ghostscript-CVE-2009-0583,0584.patch
 
 ##### LIBIJS PATCHES
 
@@ -313,6 +315,13 @@ mv jpeg-6b jpeg
 
 # Fix pksmraw output (RH bug #308211).  Still needed in 8.63.
 %patch107 -p1 -b .pksmraw
+
+# Fix bitcmyk driver (RH bug #486644).
+%patch108 -p1 -b .bitcmyk
+
+# Applied patch to fix CVE-2009-0583 (RH bug #487742) and CVE-2009-0584
+# (RH bug #487744).
+%patch109 -p1 -b .CVE-2009-0583,0584
 
 # Convert manual pages to UTF-8
 from8859_1() {
