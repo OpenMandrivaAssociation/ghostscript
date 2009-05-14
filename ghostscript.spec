@@ -298,6 +298,10 @@ This package contains documentation for GhostScript.
 %setup -q
 # unpack jpeg
 %setup -q -T -D -a 1
+
+# prevent building and using bundled libs
+rm -rf libpng zlib jasper
+
 # For GhostScript, rename jpeg subdirectory
 mv jpeg-6b jpeg
 
