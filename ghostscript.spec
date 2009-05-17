@@ -2,7 +2,7 @@
 
 %define gsversion 8.64
 %define gsextraversion %{nil}
-%define gsreleaseno 66
+%define gsreleaseno 67
 %define gsrelease %mkrel %gsreleaseno
 %define gssvnrevision -rev183
 %define ijsver 0.35
@@ -91,6 +91,7 @@ Source3:	http://www.linuxprinting.org/download/printing/sipixa6.upp.bz2
 Patch1:	ghostscript-8.64-format-string.patch
 Patch2:	ghostscript-8.64-windev-pdf-compatibility.patch
 Patch3: ghostscript-8.64-x11_shared.patch
+Patch4: ghostscript-linkage.patch
 
 # Fedora patches
 Patch102: ghostscript-scripts.patch
@@ -309,6 +310,7 @@ mv jpeg-6b jpeg
 %patch1 -p1 -b .strfmt
 %patch2 -p1 -b .windev-pdf
 %patch3 -p1 -b .shared
+%patch4 -p0 -b .linkage
 
 # Fedora patches
 # Fix some shell scripts
@@ -384,7 +386,7 @@ cd ijs*
 # Rebuild broken build infrastructure
 # Needed by patch4.
 ./autogen.sh
-%configure --enable-shared
+%configure2_5x --enable-shared
 %make
 cd ..
 
@@ -394,7 +396,7 @@ cd ..
 # <mrl> 20070827 not anymore
 #./autogen.sh
 
-%configure \
+%configure2_5x \
 	--enable-dynamic \
 	--enable-fontconfig \
 	--with-cups \
@@ -458,7 +460,7 @@ install -d %{buildroot}%{_sysconfdir}/cups
 
 ##### IJS
 cd ijs*
-./configure --enable-shared --prefix=%buildroot%{_prefix} --libdir=%buildroot%{_libdir}
+%configure2_5x --enable-shared --prefix=%buildroot%{_prefix} --libdir=%buildroot%{_libdir}
 # Work around bug in "configure" script
 perl -p -i -e 's/\@OBJEXT\@/o/g' Makefile
 perl -p -i -e 's/\@EXEEXT\@//g' Makefile
