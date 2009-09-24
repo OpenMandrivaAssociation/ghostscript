@@ -2,7 +2,7 @@
 
 %define gsversion 8.64
 %define gsextraversion %{nil}
-%define gsreleaseno 67
+%define gsreleaseno 68
 %define gsrelease %mkrel %gsreleaseno
 %define gssvnrevision -rev183
 %define ijsver 0.35
@@ -23,6 +23,14 @@
 %define withcupsfilters 1
 %define withstaticgs 0
 %define debug 0
+
+%define bootstrap 0
+%{?_without_bootstrap: %global bootstrap 0}
+%{?_with_bootstrap: %global bootstrap 1}
+ 
+%if %{bootstrap}
+%global withcupsfilters 0
+%endif
 
 ##### GENERAL DEFINITIONS
 
@@ -56,9 +64,11 @@ BuildRequires: flex
 BuildRequires: freetype-devel
 BuildRequires: gettext-devel
 BuildRequires: glibc-devel
+%if !%{bootstrap}
 BuildRequires: gtk+2-devel
 BuildRequires: libcups-devel >= 1.2.0-0.5361.0mdk
 BuildRequires: libfontconfig-devel
+%endif
 BuildRequires: libice-devel
 BuildRequires: libjasper-devel
 BuildRequires: libjpeg-devel
@@ -398,8 +408,10 @@ cd ..
 
 %configure2_5x \
 	--enable-dynamic \
+%if !%{bootstrap}
 	--enable-fontconfig \
 	--with-cups \
+%endif
 	--with-drivers=ALL,opvp \
 	--with-fontpath="/usr/share/fonts/default/ghostscript:/usr/share/fonts/default/type1:/usr/share/ghostscript/fonts:/usr/share/ghostscript/%{gsversion}/Resource:/usr/share/ghostscript/Resource:/usr/share/ghostscript/CIDFont:/usr/share/fonts/ttf:/usr/share/fonts/type1:/usr/share/fonts/default/Type1" \
 	--with-ijs \
@@ -454,9 +466,11 @@ install -d %{buildroot}%{_libdir}
 install -d %{buildroot}%{_includedir}
 install -d %{buildroot}%{_sysconfdir}
 install -d %{buildroot}%{_mandir}/man1
+%if !%{bootstrap}
 install -d %{buildroot}%{_prefix}/lib/cups
 install -d %{buildroot}%{_datadir}/cups/model
 install -d %{buildroot}%{_sysconfdir}/cups
+%endif
 
 ##### IJS
 cd ijs*
@@ -483,6 +497,7 @@ make \
 	mandir=%{buildroot}%{_mandir} \
 	install
 %else
+%if !%{bootstrap}
 make \
 	prefix=%{_prefix} \
 	DESTDIR=%{buildroot} \
@@ -491,6 +506,7 @@ make \
 	bindir=%{_bindir} \
 	mandir=%{_mandir} \
 	install-cups
+%endif
 
 %if %GSx11SVGAmodule
 make \
