@@ -2,7 +2,7 @@
 
 %define gsversion 8.64
 %define gsextraversion %{nil}
-%define gsreleaseno 68
+%define gsreleaseno 69
 %define gsrelease %mkrel %gsreleaseno
 %define gssvnrevision -rev183
 %define ijsver 0.35
@@ -69,6 +69,7 @@ BuildRequires: gtk+2-devel
 BuildRequires: libcups-devel >= 1.2.0-0.5361.0mdk
 BuildRequires: libfontconfig-devel
 %endif
+BuildRequires: jbig2dec-devel
 BuildRequires: libice-devel
 BuildRequires: libjasper-devel
 BuildRequires: libjpeg-devel
@@ -111,7 +112,6 @@ Patch107: ghostscript-pksmraw.patch
 Patch108: ghostscript-bitcmyk.patch
 Patch109: ghostscript-CVE-2009-0583,0584.patch
 Patch110: ghostscript-CVE-2009-0792.patch
-Patch111: ghostscript-CVE-2009-0196.patch
 
 ##### LIBIJS PATCHES
 
@@ -311,7 +311,7 @@ This package contains documentation for GhostScript.
 %setup -q -T -D -a 1
 
 # prevent building and using bundled libs
-rm -rf jasper
+rm -rf jasper jbig2dec
 
 # For GhostScript, rename jpeg subdirectory
 mv jpeg-6b jpeg
@@ -343,9 +343,6 @@ mv jpeg-6b jpeg
 
 # Applied patch to fix CVE-2009-0792 (RH bug #491853).
 %patch110 -p1 -b .CVE-2009-0792
-
-# Applied patch to fix CVE-2009-0196 (RH bug #493379).
-%patch111 -p1 -b .CVE-2009-0196
 
 # Convert manual pages to UTF-8
 from8859_1() {
