@@ -2,7 +2,7 @@
 
 %define gsversion 8.71
 %define gsextraversion %{nil}
-%define gsreleaseno 69
+%define gsreleaseno 70
 %define gsrelease %mkrel %gsreleaseno
 %define gssvnrevision -rev183
 %define ijsver 0.35
