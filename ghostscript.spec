@@ -1,6 +1,6 @@
 ##### VERSION NUMBERS
 
-%define gsversion 8.64
+%define gsversion 8.71
 %define gsextraversion %{nil}
 %define gsreleaseno 69
 %define gsrelease %mkrel %gsreleaseno
@@ -15,6 +15,8 @@
 %define gsmajor 8
 %define libgs %mklibname gs %{gsmajor}
 %define libgs_devel %mklibname -d gs %{gsmajor}
+
+%define _disable_ld_no_undefined 1
 
 ##### BUILD OPTIONS
 
@@ -92,14 +94,13 @@ BuildRequires:	svgalib-devel
 
 ##### GHOSTSCRIPT SOURCES
 
-Source0:	ftp://mirror.cs.wisc.edu/pub/mirrors/ghost/GPL/gs860/ghostscript-%{gsversion}%{gsextraversion}.tar.bz2
+Source0:	ftp://mirror.cs.wisc.edu/pub/mirrors/ghost/GPL/gs860/ghostscript-%{gsversion}%{gsextraversion}.tar.xz
 Source1:	ftp://ftp.uu.net/graphics/jpeg/jpegsrc.v6b.tar.bz2
 Source2:	ps2pdfpress.bz2
 Source3:	http://www.linuxprinting.org/download/printing/sipixa6.upp.bz2
 
 ##### GHOSTSCRIPT PATCHES
 
-Patch1:	ghostscript-8.64-format-string.patch
 Patch2:	ghostscript-8.64-windev-pdf-compatibility.patch
 Patch3: ghostscript-8.64-x11_shared.patch
 Patch4: ghostscript-linkage.patch
@@ -109,9 +110,6 @@ Patch102: ghostscript-scripts.patch
 Patch105: ghostscript-runlibfileifexists.patch
 Patch106: ghostscript-system-jasper.patch
 Patch107: ghostscript-pksmraw.patch
-Patch108: ghostscript-bitcmyk.patch
-Patch109: ghostscript-CVE-2009-0583,0584.patch
-Patch110: ghostscript-CVE-2009-0792.patch
 
 ##### LIBIJS PATCHES
 
@@ -316,9 +314,8 @@ rm -rf jasper jbig2dec
 # For GhostScript, rename jpeg subdirectory
 mv jpeg-6b jpeg
 
-
-%patch1 -p1 -b .strfmt
-%patch2 -p1 -b .windev-pdf
+# not applying anymore
+#%patch2 -p1 -b .windev-pdf
 %patch3 -p1 -b .shared
 %patch4 -p0 -b .linkage
 
@@ -333,16 +330,6 @@ mv jpeg-6b jpeg
 
 # Fix pksmraw output (RH bug #308211).  Still needed in 8.63.
 %patch107 -p1 -b .pksmraw
-
-# Fix bitcmyk driver (RH bug #486644).
-%patch108 -p1 -b .bitcmyk
-
-# Applied patch to fix CVE-2009-0583 (RH bug #487742) and CVE-2009-0584
-# (RH bug #487744).
-%patch109 -p1 -b .CVE-2009-0583,0584
-
-# Applied patch to fix CVE-2009-0792 (RH bug #491853).
-%patch110 -p1 -b .CVE-2009-0792
 
 # Convert manual pages to UTF-8
 from8859_1() {
@@ -424,11 +411,11 @@ cd ..
 perl -p -i -e 's|^(docdir=).*$|$1\$\(datadir\)/doc/%{name}-doc-%{gsversion}|' Makefile
 
 # Fix references to X11 libraries
-perl -p -i -e "s|(/usr/X11R6)/lib\b|\1/%{_lib}|g" Makefile src/*.mak
+perl -p -i -e "s|(/usr/X11R6)/lib\b|\1/%{_lib}|g" Makefile base/*.mak
 
 # Correct paths for CJK fonts
-perl -p -i -e "s:/usr/share/ghostscript/:/usr/share/ghostscript/Resource/:g" lib/gs_res.ps
-perl -p -i -e "s:ghostscript/Resource/fonts:ghostscript/Resource/Font:g" lib/gs_res.ps
+perl -p -i -e "s:/usr/share/ghostscript/:/usr/share/ghostscript/Resource/:g" Resource/Init/gs_res.ps
+perl -p -i -e "s:ghostscript/Resource/fonts:ghostscript/Resource/Font:g" Resource/Init/gs_res.ps
 
 # Do not use "-ansi" in gcc calls
 perl -p -i -e "s:-ansi::g" Makefile
