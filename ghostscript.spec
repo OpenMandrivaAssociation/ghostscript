@@ -2,7 +2,7 @@
 
 %define gsversion 8.71
 %define gsextraversion %{nil}
-%define gsreleaseno 70
+%define gsreleaseno 71
 %define gsrelease %mkrel %gsreleaseno
 %define gssvnrevision -rev183
 %define ijsver 0.35
@@ -104,6 +104,7 @@ Source3:	http://www.linuxprinting.org/download/printing/sipixa6.upp.bz2
 Patch2:	ghostscript-8.64-windev-pdf-compatibility.patch
 Patch3: ghostscript-8.64-x11_shared.patch
 Patch4: ghostscript-linkage.patch
+Patch5: ghostscript-ldflags.patch
 
 # Fedora patches
 Patch102: ghostscript-scripts.patch
@@ -318,6 +319,7 @@ mv jpeg-6b jpeg
 #%patch2 -p1 -b .windev-pdf
 %patch3 -p1 -b .shared
 %patch4 -p0 -b .linkage
+%patch5 -p1 -b .ldflags
 
 # Fedora patches
 # Fix some shell scripts
@@ -394,7 +396,6 @@ cd ..
 	--enable-dynamic \
 %if !%{bootstrap}
 	--enable-fontconfig \
-	--with-cups \
 %endif
 	--with-drivers=ALL,opvp \
 	--with-fontpath="/usr/share/fonts/default/ghostscript:/usr/share/fonts/default/type1:/usr/share/ghostscript/fonts:/usr/share/ghostscript/%{gsversion}/Resource:/usr/share/ghostscript/Resource:/usr/share/ghostscript/CIDFont:/usr/share/fonts/ttf:/usr/share/fonts/type1:/usr/share/fonts/default/Type1" \
