@@ -2,7 +2,7 @@
 
 %define gsversion 8.71
 %define gsextraversion %{nil}
-%define gsreleaseno 71
+%define gsreleaseno 72
 %define gsrelease %mkrel %gsreleaseno
 %define gssvnrevision -rev183
 %define ijsver 0.35
@@ -111,6 +111,7 @@ Patch102: ghostscript-scripts.patch
 Patch105: ghostscript-runlibfileifexists.patch
 Patch106: ghostscript-system-jasper.patch
 Patch107: ghostscript-pksmraw.patch
+Patch108: ghostscript-8.64-CVE-2010-1628.diff
 
 ##### LIBIJS PATCHES
 
@@ -310,7 +311,7 @@ This package contains documentation for GhostScript.
 %setup -q -T -D -a 1
 
 # prevent building and using bundled libs
-rm -rf jasper jbig2dec
+rm -rf jasper jbig2dec libpng jpeg
 
 # For GhostScript, rename jpeg subdirectory
 mv jpeg-6b jpeg
@@ -332,6 +333,7 @@ mv jpeg-6b jpeg
 
 # Fix pksmraw output (RH bug #308211).  Still needed in 8.63.
 %patch107 -p1 -b .pksmraw
+%patch108 -p1 -b .CVE-2010-1628
 
 # Convert manual pages to UTF-8
 from8859_1() {
