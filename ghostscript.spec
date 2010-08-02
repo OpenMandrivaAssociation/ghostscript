@@ -2,7 +2,7 @@
 
 %define gsversion 8.71
 %define gsextraversion %{nil}
-%define gsreleaseno 72
+%define gsreleaseno 73
 %define gsrelease %mkrel %gsreleaseno
 %define gssvnrevision -rev183
 %define ijsver 0.35
@@ -105,6 +105,7 @@ Patch2:	ghostscript-8.64-windev-pdf-compatibility.patch
 Patch3: ghostscript-8.64-x11_shared.patch
 Patch4: ghostscript-linkage.patch
 Patch5: ghostscript-ldflags.patch
+Patch6: ghostscript-8.71-libpng14.patch
 
 # Fedora patches
 Patch102: ghostscript-scripts.patch
@@ -321,6 +322,7 @@ mv jpeg-6b jpeg
 %patch3 -p1 -b .shared
 %patch4 -p0 -b .linkage
 %patch5 -p1 -b .ldflags
+%patch6 -p1 -b .png14
 
 # Fedora patches
 # Fix some shell scripts
@@ -391,8 +393,7 @@ cd ..
 ##### GHOSTSCRIPT
 
 # We have a Subversion version, so we must re-generate "configure"
-# <mrl> 20070827 not anymore
-#./autogen.sh
+./autogen.sh
 
 %configure2_5x \
 	--enable-dynamic \
