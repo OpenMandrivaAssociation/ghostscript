@@ -1,18 +1,18 @@
 ##### VERSION NUMBERS
 
-%define gsversion 8.71
+%define gsversion 9.00
 %define gsextraversion %{nil}
-%define gsreleaseno 73
+%define gsreleaseno 1
 %define gsrelease %mkrel %gsreleaseno
 %define gssvnrevision -rev183
 %define ijsver 0.35
-%define ijsreloffset 0
+%define ijsreloffset 73
 %define ijsrelno %(echo $((%{gsreleaseno} + %{ijsreloffset})))
 %define ijsrel %mkrel %ijsrelno
 %define ijsmajor 1
 %define libijs %mklibname ijs %{ijsmajor}
 %define libijs_devel %mklibname -d ijs %{ijsmajor}
-%define gsmajor 8
+%define gsmajor 9
 %define libgs %mklibname gs %{gsmajor}
 %define libgs_devel %mklibname -d gs %{gsmajor}
 
@@ -63,7 +63,7 @@ URL:		http://www.ghostscript.com/awki/Index
 BuildRequires: autoconf2.5
 BuildRequires: bison
 BuildRequires: flex
-BuildRequires: freetype-devel
+BuildRequires: freetype2-devel
 BuildRequires: gettext-devel
 BuildRequires: glibc-devel
 %if !%{bootstrap}
@@ -71,11 +71,14 @@ BuildRequires: gtk+2-devel
 BuildRequires: libcups-devel >= 1.2.0-0.5361.0mdk
 BuildRequires: libfontconfig-devel
 %endif
+BuildRequires: fontconfig-devel
 BuildRequires: jbig2dec-devel
 BuildRequires: libice-devel
+BuildRequires: libidn-devel
 BuildRequires: libjasper-devel
 BuildRequires: libjpeg-devel
 BuildRequires: libnetpbm-devel
+BuildRequires: libpaper-devel
 BuildRequires: libpng-devel
 BuildRequires: libsm-devel
 BuildRequires: libtiff-devel
@@ -83,6 +86,7 @@ BuildRequires: libx11-devel
 BuildRequires: libxext-devel
 BuildRequires: libxml-devel
 BuildRequires: libxt-devel
+BuildRequires: pkgconfig
 BuildRequires: unzip
 BuildRequires: zlib-devel
 
@@ -94,25 +98,19 @@ BuildRequires:	svgalib-devel
 
 ##### GHOSTSCRIPT SOURCES
 
-Source0:	ftp://mirror.cs.wisc.edu/pub/mirrors/ghost/GPL/gs860/ghostscript-%{gsversion}%{gsextraversion}.tar.xz
-Source1:	ftp://ftp.uu.net/graphics/jpeg/jpegsrc.v6b.tar.bz2
+Source0:	http://ghostscript.com/releases/ghostscript-%{gsversion}%{gsextraversion}.tar.xz
 Source2:	ps2pdfpress.bz2
 Source3:	http://www.linuxprinting.org/download/printing/sipixa6.upp.bz2
 
 ##### GHOSTSCRIPT PATCHES
-
-Patch2:	ghostscript-8.64-windev-pdf-compatibility.patch
 Patch3: ghostscript-8.64-x11_shared.patch
 Patch4: ghostscript-linkage.patch
-Patch5: ghostscript-ldflags.patch
-Patch6: ghostscript-8.71-libpng14.patch
 
 # Fedora patches
 Patch102: ghostscript-scripts.patch
 Patch105: ghostscript-runlibfileifexists.patch
 Patch106: ghostscript-system-jasper.patch
 Patch107: ghostscript-pksmraw.patch
-Patch108: ghostscript-8.64-CVE-2010-1628.diff
 
 ##### LIBIJS PATCHES
 
@@ -308,21 +306,15 @@ This package contains documentation for GhostScript.
 %prep
 ##### GHOSTSCRIPT
 %setup -q
-# unpack jpeg
-%setup -q -T -D -a 1
 
 # prevent building and using bundled libs
-rm -rf jasper jbig2dec libpng jpeg
+rm -rf jasper jbig2dec libpng jpeg tiff
+# rm -rf lcms <- don't work due to internal changes in the bundled lcms code
+# rm -rf freetype <- don't work for unknown reasons
+# rm -rf zlib <- don't work for unknown reasons
 
-# For GhostScript, rename jpeg subdirectory
-mv jpeg-6b jpeg
-
-# not applying anymore
-#%patch2 -p1 -b .windev-pdf
-%patch3 -p1 -b .shared
+%patch3 -p0 -b .shared
 %patch4 -p0 -b .linkage
-%patch5 -p1 -b .ldflags
-%patch6 -p1 -b .png14
 
 # Fedora patches
 # Fix some shell scripts
@@ -330,12 +322,10 @@ mv jpeg-6b jpeg
 
 # Define .runlibfileifexists.
 %patch105 -p1
-
-%patch106 -p1 -b .system-jasper
+%patch106 -p0 -b .system-jasper
 
 # Fix pksmraw output (RH bug #308211).  Still needed in 8.63.
 %patch107 -p1 -b .pksmraw
-%patch108 -p1 -b .CVE-2010-1628
 
 # Convert manual pages to UTF-8
 from8859_1() {
@@ -640,7 +630,7 @@ chmod -R u+w %{buildroot}%{_docdir}
 
 %files -n %{libgs}
 %defattr(-,root,root)
-%{_libdir}/libgs.so.*
+%{_libdir}/libgs.so.*%{gsmajor}*
 
 %files -n %{libgs_devel}
 %defattr(-,root,root)
