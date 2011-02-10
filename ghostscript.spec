@@ -1,20 +1,20 @@
 ##### VERSION NUMBERS
 
-%define gsversion 9.00
+%define gsversion 9.01
 %define gsextraversion %{nil}
 %define gsreleaseno 1
 %define gsrelease %mkrel %gsreleaseno
 %define gssvnrevision -rev183
 %define ijsver 0.35
-%define ijsreloffset 73
+%define ijsreloffset 74
 %define ijsrelno %(echo $((%{gsreleaseno} + %{ijsreloffset})))
 %define ijsrel %mkrel %ijsrelno
 %define ijsmajor 1
 %define libijs %mklibname ijs %{ijsmajor}
-%define libijs_devel %mklibname -d ijs %{ijsmajor}
+%define libijs_devel %mklibname -d ijs
 %define gsmajor 9
 %define libgs %mklibname gs %{gsmajor}
-%define libgs_devel %mklibname -d gs %{gsmajor}
+%define libgs_devel %mklibname -d gs
 
 %define _disable_ld_no_undefined 1
 
@@ -98,7 +98,7 @@ BuildRequires:	svgalib-devel
 
 ##### GHOSTSCRIPT SOURCES
 
-Source0:	http://ghostscript.com/releases/ghostscript-%{gsversion}%{gsextraversion}.tar.xz
+Source0:	http://ghostscript.com/releases/ghostscript-%{gsversion}%{gsextraversion}.tar.bz2
 Source2:	ps2pdfpress.bz2
 Source3:	http://www.linuxprinting.org/download/printing/sipixa6.upp.bz2
 
@@ -109,7 +109,6 @@ Patch4: ghostscript-linkage.patch
 # Fedora patches
 Patch102: ghostscript-scripts.patch
 Patch105: ghostscript-runlibfileifexists.patch
-Patch106: ghostscript-system-jasper.patch
 Patch107: ghostscript-pksmraw.patch
 
 ##### LIBIJS PATCHES
@@ -186,7 +185,10 @@ Group: Publishing
 Summary: Headers and links to compile against the "%{libgs}" library
 Group: Development/C
 Requires: %libgs = %version
-Provides: libgs-devel
+Provides: %{name}-devel = %version
+Provides: libgs-devel = %version
+Obsoletes: %{_lib}gs9-devel < %version
+Obsoletes: %{_lib}gs8-devel < %version
 
 ##### IJS
 
@@ -207,6 +209,7 @@ URL:		http://www.linuxprinting.org/ijs/
 Requires:       %{libijs} = %{ijsver} multiarch-utils
 Provides:       libijs-devel = %{ijsver}-%{ijsrel}
 Provides:       ijs-devel = %{ijsver}-%{ijsrel}
+Obsoletes:	%{_lib}ijs1-devel < %{ijsver}-%{ijsrel}
 
 %package doc
 Summary:	Documentation for GhostScript
@@ -285,7 +288,7 @@ This package enhances Ghostscript with console output using SVGALIB.
 This is the API library for programs which use the PostScript and/or
 PDF interpreters of GhostScript.
 
-%description -n %libgs-devel
+%description -n %libgs_devel
 This package contains the static library and the header files needed
 to compile applications using the GhostScript shared library.
 
@@ -322,7 +325,6 @@ rm -rf jasper jbig2dec libpng jpeg tiff
 
 # Define .runlibfileifexists.
 %patch105 -p1
-%patch106 -p0 -b .system-jasper
 
 # Fix pksmraw output (RH bug #308211).  Still needed in 8.63.
 %patch107 -p1 -b .pksmraw
