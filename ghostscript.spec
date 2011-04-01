@@ -539,20 +539,6 @@ install -m 755 ps2pdfpress %{buildroot}%{_bindir}
 # UPP file for SiPix Pocket Printer A6
 install -m 644 sipixa6.upp %{buildroot}%{_datadir}/ghostscript/%{gsversion}/lib/
 
-%if %{withcupsfilters}
-%if 0
-# "pstoraster" wrapper script to make GhostScript being used as the
-# cups-internal RIP
-install -d %{buildroot}%{_libdir}/cups/filter
-install -m 755 pstoraster/pstoraster %{buildroot}%{_libdir}/cups/filter
-install -m 755 pstoraster/pstopxl %{buildroot}%{_libdir}/cups/filter
-install -d %{buildroot}%{_datadir}/cups/model
-install -m 755 pstoraster/*.ppd %{buildroot}%{_datadir}/cups/model
-install -d %{buildroot}%{_sysconfdir}/cups
-install -m 644 pstoraster/pstoraster.convs %{buildroot}%{_sysconfdir}/cups
-%endif
-%endif
-
 # Add backward compatibility link to not break printerdrake in Mandriva
 # 2006 and older
 ln -s %{_bindir}/gsc %{buildroot}%{_bindir}/gs-common
@@ -604,8 +590,6 @@ chmod -R u+w %{buildroot}%{_docdir}
 # cups-internal RIP
 %attr(0755,root,root) %{_prefix}/lib*/cups/filter/*
 %{_datadir}/cups/model/*
-%config(noreplace) %{_sysconfdir}/cups/pstoraster.convs
-%config(noreplace) %{_sysconfdir}/cups/pdftoraster.convs
 %endif
 
 %files doc
