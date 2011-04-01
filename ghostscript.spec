@@ -38,8 +38,8 @@
 
 Summary:	PostScript/PDF interpreter and renderer (Main executable)
 Name:		ghostscript
-Version:	%{gsversion}%{gsextraversion}
-Release:	%{gsrelease}
+Version:	9.02
+Release:	1
 License:	GPLv2+
 Group:		Publishing
 Requires: 	ghostscript-common
