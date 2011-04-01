@@ -590,6 +590,7 @@ chmod -R u+w %{buildroot}%{_docdir}
 # cups-internal RIP
 %attr(0755,root,root) %{_prefix}/lib*/cups/filter/*
 %{_datadir}/cups/model/*
+%config(noreplace) %{_sysconfdir}/cups/gstoraster.convs
 %endif
 
 %files doc
@@ -630,7 +631,7 @@ chmod -R u+w %{buildroot}%{_docdir}
 
 %files -n %{libijs}
 %defattr(-,root,root)
-%{_libdir}/libijs*.so
+%{_libdir}/libijs-%{ijsver}.so
 
 %files -n %{libijs_devel}
 %defattr(-,root,root)
