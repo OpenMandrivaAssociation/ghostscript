@@ -1,12 +1,12 @@
 ##### VERSION NUMBERS
 
-%define gsversion 9.01
+%define gsversion 9.02
 %define gsextraversion %{nil}
 %define gsreleaseno 1
 %define gsrelease %mkrel %gsreleaseno
 %define gssvnrevision -rev183
 %define ijsver 0.35
-%define ijsreloffset 74
+%define ijsreloffset 75
 %define ijsrelno %(echo $((%{gsreleaseno} + %{ijsreloffset})))
 %define ijsrel %mkrel %ijsrelno
 %define ijsmajor 1
@@ -38,8 +38,8 @@
 
 Summary:	PostScript/PDF interpreter and renderer (Main executable)
 Name:		ghostscript
-Version:	9.02
-Release:	1
+Version:	%{gsversion}
+Release:	%{gsrelease}
 License:	GPLv2+
 Group:		Publishing
 Requires: 	ghostscript-common
@@ -104,7 +104,6 @@ Source3:	http://www.linuxprinting.org/download/printing/sipixa6.upp.bz2
 
 ##### GHOSTSCRIPT PATCHES
 Patch3: ghostscript-8.64-x11_shared.patch
-Patch4: ghostscript-linkage.patch
 
 # Fedora patches
 Patch102: ghostscript-scripts.patch
@@ -317,7 +316,6 @@ rm -rf jasper jbig2dec libpng jpeg tiff
 # rm -rf zlib <- don't work for unknown reasons
 
 %patch3 -p0 -b .shared
-%patch4 -p0 -b .linkage
 
 # Fedora patches
 # Fix some shell scripts
@@ -378,7 +376,11 @@ cd ijs*
 # Rebuild broken build infrastructure
 # Needed by patch4.
 ./autogen.sh
-%configure2_5x --enable-shared
+%configure2_5x \
+%ifarch %{ix86}
+        --disable-sse2 \
+%endif
+	--enable-shared
 %make
 cd ..
 
@@ -391,6 +393,9 @@ cd ..
 	--enable-dynamic \
 %if !%{bootstrap}
 	--enable-fontconfig \
+%endif
+%ifarch %{ix86}
+	--disable-sse2 \
 %endif
 	--with-drivers=ALL,opvp \
 	--with-fontpath="/usr/share/fonts/default/ghostscript:/usr/share/fonts/default/type1:/usr/share/ghostscript/fonts:/usr/share/ghostscript/%{gsversion}/Resource:/usr/share/ghostscript/Resource:/usr/share/ghostscript/CIDFont:/usr/share/fonts/ttf:/usr/share/fonts/type1:/usr/share/fonts/default/Type1" \
