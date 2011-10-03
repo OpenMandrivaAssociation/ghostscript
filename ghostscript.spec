@@ -1,8 +1,8 @@
 ##### VERSION NUMBERS
 
-%define gsversion 9.02
+%define gsversion 9.04
 %define gsextraversion %{nil}
-%define gsreleaseno 2
+%define gsreleaseno 1
 %define gsrelease %mkrel %gsreleaseno
 %define gssvnrevision -rev183
 %define ijsver 0.35
@@ -59,20 +59,22 @@ Conflicts:	printer-filters <= 10.1
 URL:		http://www.ghostscript.com/awki/Index
 
 ##### BUILDREQUIRES
-
 BuildRequires: autoconf2.5
-BuildRequires: bison
-BuildRequires: flex
-BuildRequires: freetype2-devel
-BuildRequires: gettext-devel
-BuildRequires: glibc-devel
+BuildRequires: automake
+BuildRequires: libtool
 %if !%{bootstrap}
 BuildRequires: gtk+2-devel
 BuildRequires: libcups-devel >= 1.2.0-0.5361.0mdk
 BuildRequires: libfontconfig-devel
 %endif
+BuildRequires: bison
+BuildRequires: flex
 BuildRequires: fontconfig-devel
+BuildRequires: freetype2-devel
+BuildRequires: gettext-devel
+BuildRequires: glibc-devel
 BuildRequires: jbig2dec-devel
+BuildRequires: lcms-devel
 BuildRequires: libice-devel
 BuildRequires: libidn-devel
 BuildRequires: libjasper-devel
@@ -103,12 +105,21 @@ Source2:	ps2pdfpress.bz2
 Source3:	http://www.linuxprinting.org/download/printing/sipixa6.upp.bz2
 
 ##### GHOSTSCRIPT PATCHES
-Patch3: ghostscript-8.64-x11_shared.patch
+Patch300: ghostscript-9.04-x11_shared.diff
 
 # Fedora patches
-Patch102: ghostscript-scripts.patch
-Patch105: ghostscript-runlibfileifexists.patch
-Patch107: ghostscript-pksmraw.patch
+Patch1: ghostscript-multilib.patch
+Patch2: ghostscript-scripts.patch
+Patch3: ghostscript-noopt.patch
+Patch4: ghostscript-ijs-automake-ver.patch
+Patch5: ghostscript-runlibfileifexists.patch
+Patch6: ghostscript-cups-rgbw.patch
+Patch8: ghostscript-jbig2dec-nullderef.patch
+Patch10: ghostscript-cups-filters.patch
+Patch27: ghostscript-Fontmap.local.patch
+Patch28: ghostscript-iccprofiles-initdir.patch
+Patch29: ghostscript-gdevcups-debug-uninit.patch
+Patch30: ghostscript-pxl-landscape.patch
 
 ##### LIBIJS PATCHES
 
@@ -183,7 +194,7 @@ Group: Publishing
 %package -n %libgs_devel
 Summary: Headers and links to compile against the "%{libgs}" library
 Group: Development/C
-Requires: %libgs = %version
+Requires: %libgs >= %version
 Provides: %{name}-devel = %version
 Provides: libgs-devel = %version
 Obsoletes: %{_lib}gs9-devel < %version
@@ -205,7 +216,7 @@ Release:	%{ijsrel}
 Summary:	Headers and links for compiling against the "%{libijs}" library
 Group:		Development/C
 URL:		http://www.linuxprinting.org/ijs/
-Requires:       %{libijs} = %{ijsver} multiarch-utils
+Requires:       %{libijs} >= %{ijsver} multiarch-utils
 Provides:       libijs-devel = %{ijsver}-%{ijsrel}
 Provides:       ijs-devel = %{ijsver}-%{ijsrel}
 Obsoletes:	%{_lib}ijs1-devel < %{ijsver}-%{ijsrel}
@@ -309,31 +320,59 @@ This package contains documentation for GhostScript.
 ##### GHOSTSCRIPT
 %setup -q
 
-# prevent building and using bundled libs
-rm -rf jasper jbig2dec libpng jpeg tiff
-# rm -rf lcms <- don't work due to internal changes in the bundled lcms code
-# rm -rf freetype <- don't work for unknown reasons
-# rm -rf zlib <- don't work for unknown reasons
 
-%patch3 -p0 -b .shared
+%patch300 -p1 -b .shared
 
-# Fedora patches
+# Fix ijs-config not to have multilib conflicts (bug #192672)
+%patch1 -p1 -b .multilib
+
 # Fix some shell scripts
-%patch102 -p1 -b .scripts
+%patch2 -p1 -b .scripts
+
+# Build igcref.c with -O0 to work around bug #150771.
+%patch3 -p1 -b .noopt
+
+# Fix ./autgen.sh in ijs sub-project
+# See http://bugs.ghostscript.com/show_bug.cgi?id=692040 for details.
+%patch4 -p1 -b .ijs-automake-ver
 
 # Define .runlibfileifexists.
-%patch105 -p1
+%patch5 -p1
 
-# Fix pksmraw output (RH bug #308211).  Still needed in 8.63.
-%patch107 -p1 -b .pksmraw
+# Applied upstream fix for gdevcups handling of RGBW (Ghostscript
+# bug #691922).
+%patch6 -p1 -b .cups-rgbw
+
+# Applied patch to fix NULL dereference in JBIG2 decoder (bug #501710).
+%patch8 -p1 -b .jbig2dec-nullderef
+
+# Install CUPS filter convs files in the correct place.
+%patch10 -p1 -b .cups-filters
+
+# Restored Fontmap.local patch, incorrectly dropped after
+# ghostscript-8.15.4-3 (bug #610301).
+# Note: don't use -b here to avoid the backup file ending up in the
+# package manifest.
+%patch27 -p1
+
+# Don't assume %%rom%% device is available for initial ICC profile dir.
+%patch28 -p1 -b .iccprofiles-initdir
+
+# gdevcups: don't use uninitialized variables in debugging output.
+%patch29 -p1 -b .gdevcups-debug-uninit
+
+# pxl: match landscape page sizes (bug #692165).
+%patch30 -p1 -b .pxl-landscape
+
+# prevent building and using bundled libs
+rm -rf jasper jbig2dec libpng jpeg tiff expat zlib lcms freetype
 
 # Convert manual pages to UTF-8
 from8859_1() {
-	iconv -f iso-8859-1 -t utf-8 < "$1" > "${1}_"
-	mv "${1}_" "$1"
+        iconv -f iso-8859-1 -t utf-8 < "$1" > "${1}_"
+        mv "${1}_" "$1"
 }
 for i in man/de/*.1; do from8859_1 "$i"; done
-
 
 # Stuff for shared library support to ghostscript.
 %if %{GSx11SVGAmodule}
@@ -380,7 +419,8 @@ cd ijs*
 %ifarch %{ix86}
         --disable-sse2 \
 %endif
-	--enable-shared
+    --enable-shared \
+    --disable-static
 %make
 cd ..
 
@@ -390,20 +430,23 @@ cd ..
 ./autogen.sh
 
 %configure2_5x \
-	--enable-dynamic \
+    --enable-dynamic \
 %if !%{bootstrap}
-	--enable-fontconfig \
+    --enable-fontconfig \
 %endif
 %ifarch %{ix86}
-	--disable-sse2 \
+    --disable-sse2 \
 %endif
-	--with-drivers=ALL,opvp \
-	--with-fontpath="/usr/share/fonts/default/ghostscript:/usr/share/fonts/default/type1:/usr/share/ghostscript/fonts:/usr/share/ghostscript/%{gsversion}/Resource:/usr/share/ghostscript/Resource:/usr/share/ghostscript/CIDFont:/usr/share/fonts/ttf:/usr/share/fonts/type1:/usr/share/fonts/default/Type1" \
-	--with-ijs \
-	--with-omni \
-	--with-x
+    --with-drivers=ALL,opvp \
+    --with-fontpath="/usr/share/fonts/default/ghostscript:/usr/share/fonts/default/type1:/usr/share/ghostscript/fonts:/usr/share/ghostscript/%{gsversion}/Resource:/usr/share/ghostscript/Resource:/usr/share/ghostscript/CIDFont:/usr/share/fonts/ttf:/usr/share/fonts/type1:/usr/share/fonts/default/Type1" \
+    --with-ijs \
+    --with-omni \
+    --with-x \
+    --disable-compile-inits \
+    --with-system-libtiff \
+    --with-install-cups
 
-# Drivers which do not compile: 
+# Drivers which do not compile:
 # Needs newsiop/lbp.h: nwp533
 # Needs sys/ioccom.h: sparc
 # Needs unbdev/lpviio.h: sparc
@@ -421,18 +464,22 @@ perl -p -i -e "s:ghostscript/Resource/fonts:ghostscript/Resource/Font:g" Resourc
 # Do not use "-ansi" in gcc calls
 perl -p -i -e "s:-ansi::g" Makefile
 
+# bork
+perl -p -i -e "s|^EXTRALIBS=|EXTRALIBS=-L/%{_lib} -lz |g" Makefile
+
 # The RPM macro for make is not used here, as parallelization of the build 
 # process does not work.
 %if %withstaticgs
-make
+%make
 %else
 %if %GSx11SVGAmodule
-make STDDIRS
+#make STDDIRS
 make obj/X11.so
 %endif
 %endif
 make so
 #make pcl3opts
+make cups
 
 %install
 rm -rf %{buildroot}
@@ -527,7 +574,7 @@ make \
 	mandir=%{_mandir} \
 	soinstall
 
-ln -sf gs.1.bz2 %{buildroot}%{_mandir}/man1/ghostscript.1.bz2
+ln -sf gs.1%{_extension} %{buildroot}%{_mandir}/man1/ghostscript.1%{_extension}
 
 %if %withstaticgs
 mv %{buildroot}%{_bindir}/gs %{buildroot}%{_bindir}/gs-static
@@ -545,6 +592,9 @@ ln -s %{_bindir}/gsc %{buildroot}%{_bindir}/gs-common
 ln -s %{_bindir}/gsc %{buildroot}%{_bindir}/ghostscript
 
 ##### GENERAL STUFF
+
+# why?
+mv %{buildroot}%{_datadir}/cups/mime/gstoraster.convs %{buildroot}%{_sysconfdir}/cups/gstoraster.convs
 
 # Correct permissions for all documentation files
 chmod -R a+rX %{buildroot}%{_docdir}
@@ -577,7 +627,7 @@ chmod -R u+w %{buildroot}%{_docdir}
 #%{_datadir}/ghostscript/CIDFont
 %{_mandir}/man1/*
 %lang(de) %{_mandir}/de/man1/*
-%{_bindir}/[a-c]*
+#%{_bindir}/[a-c]*
 %{_bindir}/dumphint
 %{_bindir}/[e-f]*
 #{_bindir}/gs-common
@@ -636,7 +686,6 @@ chmod -R u+w %{buildroot}%{_docdir}
 %files -n %{libijs_devel}
 %defattr(-,root,root)
 %doc ijs/README
-%{_libdir}/libijs.a
 %{_libdir}/libijs.la
 %{_libdir}/libijs.so
 %{_libdir}/pkgconfig/ijs.pc
