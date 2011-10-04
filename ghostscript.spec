@@ -2,11 +2,11 @@
 
 %define gsversion 9.04
 %define gsextraversion %{nil}
-%define gsreleaseno 1
+%define gsreleaseno 2
 %define gsrelease %mkrel %gsreleaseno
 %define gssvnrevision -rev183
 %define ijsver 0.35
-%define ijsreloffset 75
+%define ijsreloffset 76
 %define ijsrelno %(echo $((%{gsreleaseno} + %{ijsreloffset})))
 %define ijsrel %mkrel %ijsrelno
 %define ijsmajor 1
