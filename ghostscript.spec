@@ -2,7 +2,7 @@
 
 %define gsversion 9.04
 %define gsextraversion %{nil}
-%define gsreleaseno 2
+%define gsreleaseno 3
 %define gsrelease %mkrel %gsreleaseno
 %define gssvnrevision -rev183
 %define ijsver 0.35
@@ -539,17 +539,6 @@ make \
 	mandir=%{_mandir} \
 	install-cups
 %endif
-
-%if %GSx11SVGAmodule
-make \
-	prefix=%{_prefix} \
-	DESTDIR=%{buildroot} \
-	gssharedir=%{_libdir}/ghostscript/%{gsversion} \
-	docdir=%{_docdir}/ghostscript-doc-%{gsversion} \
-	bindir=%{_bindir} \
-	mandir=%{_mandir} \
-	install-shared
-%endif
 %endif
 
 %if 0
@@ -573,6 +562,20 @@ make \
 	libdir=%{_libdir} \
 	mandir=%{_mandir} \
 	soinstall
+
+%if !%{withstaticgs}
+%if %{GSx11SVGAmodule}
+make \
+	prefix=%{_prefix} \
+	DESTDIR=%{buildroot} \
+	gssharedir=%{_libdir}/ghostscript/%{gsversion} \
+	docdir=%{_docdir}/ghostscript-doc-%{gsversion} \
+	bindir=%{_bindir} \
+	libdir=%{_libdir} \
+	mandir=%{_mandir} \
+	install-shared
+%endif
+%endif
 
 ln -sf gs.1%{_extension} %{buildroot}%{_mandir}/man1/ghostscript.1%{_extension}
 
