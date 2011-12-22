@@ -1,5 +1,5 @@
 %define _disable_ld_no_undefined 1
-%define rel	3
+%define rel	4
 
 %define gsver 9.04
 %define ijsver 0.35
