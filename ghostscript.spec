@@ -1,231 +1,105 @@
-##### VERSION NUMBERS
+%define _disable_ld_no_undefined 1
+%define rel	3
 
-%define gsversion 9.04
-%define gsextraversion %{nil}
-%define gsreleaseno 3
-%define gsrelease %mkrel %gsreleaseno
-%define gssvnrevision -rev183
+%define gsver 9.04
 %define ijsver 0.35
 %define ijsreloffset 76
-%define ijsrelno %(echo $((%{gsreleaseno} + %{ijsreloffset})))
-%define ijsrel %mkrel %ijsrelno
+%define ijsrel %(echo $((%{rel} + %{ijsreloffset})))
+
 %define ijsmajor 1
 %define libijs %mklibname ijs %{ijsmajor}
 %define libijs_devel %mklibname -d ijs
+
 %define gsmajor 9
 %define libgs %mklibname gs %{gsmajor}
 %define libgs_devel %mklibname -d gs
 
-%define _disable_ld_no_undefined 1
-
-##### BUILD OPTIONS
+%define bootstrap 0
 
 %define GSx11SVGAmodule 1
-%define withsvgalib 0
 %define withcupsfilters 1
-%define withstaticgs 0
 %define debug 0
-
-%define bootstrap 0
-%{?_without_bootstrap: %global bootstrap 0}
-%{?_with_bootstrap: %global bootstrap 1}
- 
 %if %{bootstrap}
 %global withcupsfilters 0
 %endif
 
-##### GENERAL DEFINITIONS
-
 Summary:	PostScript/PDF interpreter and renderer (Main executable)
 Name:		ghostscript
-Version:	%{gsversion}
-Release:	%{gsrelease}
+Version:	%{gsver}
+Release:	%{rel}
 License:	GPLv2+
 Group:		Publishing
-Requires: 	ghostscript-common
-Requires:	update-alternatives
-Obsoletes:	ghostscript-PrintOnly
-Provides:	ghostscript-PrintOnly
-%if !%{GSx11SVGAmodule}
-Obsoletes:	ghostscript-module-X ghostscript-module-SVGALIB
-Provides:	ghostscript-module-X ghostscript-module-SVGALIB
-%endif
-%if !%{withstaticgs}
-Obsoletes:	ghostscript-static
-Provides:	ghostscript-static
-%endif
-Conflicts:	omni < 0.4 cups <= 1.1.14
-Conflicts:	printer-filters <= 10.1
 URL:		http://www.ghostscript.com/awki/Index
-
-##### BUILDREQUIRES
-BuildRequires: autoconf2.5
-BuildRequires: automake
-BuildRequires: libtool
-%if !%{bootstrap}
-BuildRequires: gtk+2-devel
-BuildRequires: libcups-devel >= 1.2.0-0.5361.0mdk
-BuildRequires: libfontconfig-devel
-%endif
-BuildRequires: bison
-BuildRequires: flex
-BuildRequires: fontconfig-devel
-BuildRequires: freetype2-devel
-BuildRequires: gettext-devel
-BuildRequires: glibc-devel
-BuildRequires: jbig2dec-devel
-BuildRequires: lcms-devel
-BuildRequires: libice-devel
-BuildRequires: libidn-devel
-BuildRequires: libjasper-devel
-BuildRequires: libjpeg-devel
-BuildRequires: libnetpbm-devel
-BuildRequires: libpaper-devel
-BuildRequires: libpng-devel
-BuildRequires: libsm-devel
-BuildRequires: libtiff-devel
-BuildRequires: libx11-devel
-BuildRequires: libxext-devel
-BuildRequires: libxml-devel
-BuildRequires: libxt-devel
-BuildRequires: pkgconfig
-BuildRequires: unzip
-BuildRequires: zlib-devel
-
-%ifarch %ix86
-%if %{withsvgalib}
-BuildRequires:	svgalib-devel
-%endif
-%endif
-
-##### GHOSTSCRIPT SOURCES
-
-Source0:	http://ghostscript.com/releases/ghostscript-%{gsversion}%{gsextraversion}.tar.bz2
+Source0:	http://ghostscript.com/releases/%{name}-%{gsver}.tar.bz2
 Source2:	ps2pdfpress.bz2
 Source3:	http://www.linuxprinting.org/download/printing/sipixa6.upp.bz2
 
-##### GHOSTSCRIPT PATCHES
 Patch300: ghostscript-9.04-x11_shared.diff
-
 # Fedora patches
+# Fix ijs-config not to have multilib conflicts (bug #192672)
 Patch1: ghostscript-multilib.patch
+# Fix some shell scripts
 Patch2: ghostscript-scripts.patch
+# Build igcref.c with -O0 to work around bug #150771.
 Patch3: ghostscript-noopt.patch
+# Fix ./autgen.sh in ijs sub-project
+# See http://bugs.ghostscript.com/show_bug.cgi?id=692040 for details.
 Patch4: ghostscript-ijs-automake-ver.patch
+# Define .runlibfileifexists.
 Patch5: ghostscript-runlibfileifexists.patch
+# Applied upstream fix for gdevcups handling of RGBW (Ghostscript
+# bug #691922).
 Patch6: ghostscript-cups-rgbw.patch
+# Applied patch to fix NULL dereference in JBIG2 decoder (bug #501710).
 Patch8: ghostscript-jbig2dec-nullderef.patch
+# Install CUPS filter convs files in the correct place.
 Patch10: ghostscript-cups-filters.patch
+# Restored Fontmap.local patch, incorrectly dropped after
+# ghostscript-8.15.4-3 (bug #610301).
+# Note: don't use -b here to avoid the backup file ending up in the
+# package manifest.
 Patch27: ghostscript-Fontmap.local.patch
+# Don't assume %%rom%% device is available for initial ICC profile dir.
 Patch28: ghostscript-iccprofiles-initdir.patch
+# gdevcups: don't use uninitialized variables in debugging output.
 Patch29: ghostscript-gdevcups-debug-uninit.patch
+# pxl: match landscape page sizes (bug #692165).
 Patch30: ghostscript-pxl-landscape.patch
 
-##### LIBIJS PATCHES
-
-# Fortunately none currently
-
-##### BUILD ROOT
-
-BuildRoot:	%_tmppath/%name-%gsversion-%gsrelease-root
-
-##### PACKAGE DESCRIPTIONS
-
-##### GHOSTSCRIPT
-
-%package dvipdf
-Summary: PostScript/PDF interpreter and renderer (DVI-to-PDF converter)
-Group: 		Publishing
-Requires: 	ghostscript, coreutils
-Requires:	tetex-dvips
-
-%package common
-Summary: PostScript/PDF interpreter and renderer (Common files)
-Group: 		Publishing
-Requires:	urw-fonts >= 1.1, ghostscript-fonts, perl
-Conflicts:	ghostscript < 8.15-27mdk
-%ifarch x86_64
-Conflicts:	cups < 1.2.0-0.5361.0mdk
+%if !%{bootstrap}
+BuildRequires: gtk+2-devel
+BuildRequires: cups-devel
+BuildRequires: fontconfig-devel
 %endif
+BuildRequires: bison
+BuildRequires: flex
+BuildRequires: libtool
+BuildRequires: unzip
+BuildRequires: gettext-devel
+BuildRequires: glibc-devel
+BuildRequires: jbig2dec-devel
+BuildRequires: jpeg-devel
+BuildRequires: libpaper-devel
+BuildRequires: netpbm-devel
+BuildRequires: tiff-devel
+BuildRequires: pkgconfig(freetype2)
+BuildRequires: pkgconfig(ice)
+BuildRequires: pkgconfig(jasper)
+BuildRequires: pkgconfig(lcms)
+BuildRequires: pkgconfig(libidn)
+BuildRequires: pkgconfig(libpng15)
+BuildRequires: pkgconfig(libxml)
+BuildRequires: pkgconfig(sm)
+BuildRequires: pkgconfig(x11)
+BuildRequires: pkgconfig(xext)
+BuildRequires: pkgconfig(xt)
+BuildRequires: pkgconfig(zlib)
 
-%package X
-Summary: PostScript/PDF interpreter and renderer (Executable with GTK-based screen display)
-Group: 		Publishing
 Requires: 	ghostscript-common
 Requires:	update-alternatives
-# This one is buggy, so do not let it get automatically installed by
-# the "Provides: ghostscript"
-#Provides:	ghostscript = %{version}-%{release}
-
-%if %withstaticgs
-%package static
-Summary: PostScript/PDF interpreter and renderer (Static executable)
-Group: 		Publishing
-Requires: 	ghostscript-common
-Requires:	update-alternatives
-Provides:	ghostscript = %{version}-%{release}
+%if !%{GSx11SVGAmodule}
+%rename	ghostscript-module-X ghostscript-module-SVGALIB
 %endif
-
-%if %{GSx11SVGAmodule}
-%package module-X
-Summary: PostScript/PDF interpreter and renderer (Additional support for X)
-Group: 		Publishing
-Requires: 	ghostscript-common
-Conflicts: 	ghostscript-X < 8.15
-Obsoletes:	ghostscript-Both
-Provides: 	ghostscript-Both
-
-%ifarch %ix86
-%if %{withsvgalib}
-%package module-SVGALIB
-Summary: PostScript/PDF interpreter and renderer (Additional support for SVGALIB)
-Group: 		Publishing
-Requires: 	ghostscript, coreutils
-Obsoletes: 	ghostscript-SVGALIB, ghostscript-Both
-Provides: 	ghostscript-SVGALIB, ghostscript-Both
-%endif
-%endif
-%endif
-
-%package -n %libgs
-Summary: PostScript/PDF interpreter and renderer (GhostScript shared library)
-Group: Publishing
-
-%package -n %libgs_devel
-Summary: Headers and links to compile against the "%{libgs}" library
-Group: Development/C
-Requires: %libgs >= %version
-Provides: %{name}-devel = %version
-Provides: libgs-devel = %version
-Obsoletes: %{_lib}gs9-devel < %version
-Obsoletes: %{_lib}gs8-devel < %version
-
-##### IJS
-
-%package -n %{libijs}
-Version:	%{ijsver}
-Release:	%{ijsrel}
-Summary:	Dynamic library for the IJS printer driver plug-in interface
-Group:		Publishing
-URL:		http://www.linuxprinting.org/ijs/
-Provides:       libijs = %{ijsver}-%{ijsrel}
-
-%package -n %{libijs_devel}
-Version:	%{ijsver}
-Release:	%{ijsrel}
-Summary:	Headers and links for compiling against the "%{libijs}" library
-Group:		Development/C
-URL:		http://www.linuxprinting.org/ijs/
-Requires:       %{libijs} >= %{ijsver} multiarch-utils
-Provides:       libijs-devel = %{ijsver}-%{ijsrel}
-Provides:       ijs-devel = %{ijsver}-%{ijsrel}
-Obsoletes:	%{_lib}ijs1-devel < %{ijsver}-%{ijsrel}
-
-%package doc
-Summary:	Documentation for GhostScript
-Group:		Publishing
-
-##### DESCRIPTION TEXTS
 
 %description
 Ghostscript is a set of software tools that provide a PostScript(TM)
@@ -240,11 +114,25 @@ files to non-PostScript printers.
 You should install ghostscript if you need to display PostScript or
 PDF files, or if you have a non-PostScript printer.
 
+%package dvipdf
+Summary: PostScript/PDF interpreter and renderer (DVI-to-PDF converter)
+Group: 		Publishing
+Requires: 	ghostscript
+Requires:	coreutils
+Requires:	tetex-dvips
+
 %description dvipdf
 Tool to convert the DVI format of TeX into the PDF format. There are
 more such tools (for different quality levels) in the tetex-dvipdfm
 package. All these tools use dvips of TeX to convert the DVI file to
 PostScript, then they use GhostScript to generate the PDF file.
+
+%package common
+Summary: PostScript/PDF interpreter and renderer (Common files)
+Group: 		Publishing
+Requires:	urw-fonts >= 1.1
+Requires:	ghostscript-fonts
+Requires:	perl
 
 %description common
 Ghostscript is a PostScript/PDF interpreter. It can render both
@@ -252,6 +140,12 @@ PostScript and PDF files to devices which include X window, many
 printer formats, and popular graphics file formats.
 
 This package contains the common data files needed by GhostScript.
+
+%package X
+Summary: PostScript/PDF interpreter and renderer (Executable with GTK-based screen display)
+Group: 		Publishing
+Requires: 	ghostscript-common
+Requires:	update-alternatives
 
 %description X
 Ghostscript is a PostScript/PDF interpreter. It can render both
@@ -263,44 +157,48 @@ display support ("display" device, default, so it displays files by
 simply entering "gs <file>" on the command line). It makes use of the
 GhostScript shared library.
 
-%if %withstaticgs
-%description static
-Ghostscript is a PostScript/PDF interpreter. It can render both
-PostScript and PDF files to devices which include X window, many
-printer formats, and popular graphics file formats.
-
-This package contains a GhostScript executable which does not need the
-GhostScript shared library. To get simple X display support, the
-ghostscript-module-X package must be installed in addition.
-%endif
-
 %if %{GSx11SVGAmodule}
+%package module-X
+Summary: PostScript/PDF interpreter and renderer (Additional support for X)
+Group: 		Publishing
+Requires: 	ghostscript-common
+
 %description module-X
 Ghostscript is a PostScript/PDF interpreter. It can render both
 PostScript and PDF files to devices which include X window, many
 printer formats, and popular graphics file formats.
 
 This package enhances Ghostscript with X window support
+%endif
 
-%ifarch %ix86
-%if %{withsvgalib}
-%description module-SVGALIB
-Ghostscript is a PostScript/PDF interpreter. It can render both
-PostScript and PDF files to devices which include X window, many
-printer formats, and popular graphics file formats.
-
-This package enhances Ghostscript with console output using SVGALIB.
-%endif
-%endif
-%endif
+%package -n %libgs
+Summary: PostScript/PDF interpreter and renderer (GhostScript shared library)
+Group: Publishing
 
 %description -n %libgs
 This is the API library for programs which use the PostScript and/or
 PDF interpreters of GhostScript.
 
+%package -n %libgs_devel
+Summary: Headers and links to compile against the "%{libgs}" library
+Group: Development/C
+Requires: %libgs >= %{gsver}
+Provides: %{name}-devel = %{gsver}
+Provides: libgs-devel = %{gsver}
+Obsoletes: %{_lib}gs9-devel < %{gsver}
+Obsoletes: %{_lib}gs8-devel < %{gsver}
+
 %description -n %libgs_devel
 This package contains the static library and the header files needed
 to compile applications using the GhostScript shared library.
+
+%package -n %{libijs}
+Version:	%{ijsver}
+Release:	%{ijsrel}
+Summary:	Dynamic library for the IJS printer driver plug-in interface
+Group:		Publishing
+URL:		http://www.linuxprinting.org/ijs/
+Provides:	libijs = %{ijsver}-%{ijsrel}
 
 %description -n %{libijs}
 This is the API library for programs using the IJS printer driver
@@ -309,60 +207,32 @@ to GhostScript (6.53 or newer) without needing to rebuild
 GhostScript. Application programs providing an IJS interface can make
 use of IJS printer drivers directly, without needing GhostScript.
 
+%package -n %{libijs_devel}
+Version:	%{ijsver}
+Release:	%{ijsrel}
+Summary:	Headers and links for compiling against the "%{libijs}" library
+Group:		Development/C
+URL:		http://www.linuxprinting.org/ijs/
+Requires:	%{libijs} >= %{ijsver}
+Requires:	multiarch-utils
+Provides:	libijs-devel = %{ijsver}-%{ijsrel}
+Provides:	ijs-devel = %{ijsver}-%{ijsrel}
+Obsoletes:	%{_lib}ijs1-devel < %{ijsver}-%{ijsrel}
+
 %description -n %{libijs_devel}
 This package contains the static library and the header files needed
 to compile applications using the IJS library.
+
+%package doc
+Summary:	Documentation for GhostScript
+Group:		Publishing
 
 %description doc
 This package contains documentation for GhostScript.
 
 %prep
-##### GHOSTSCRIPT
 %setup -q
-
-
-%patch300 -p1 -b .shared
-
-# Fix ijs-config not to have multilib conflicts (bug #192672)
-%patch1 -p1 -b .multilib
-
-# Fix some shell scripts
-%patch2 -p1 -b .scripts
-
-# Build igcref.c with -O0 to work around bug #150771.
-%patch3 -p1 -b .noopt
-
-# Fix ./autgen.sh in ijs sub-project
-# See http://bugs.ghostscript.com/show_bug.cgi?id=692040 for details.
-%patch4 -p1 -b .ijs-automake-ver
-
-# Define .runlibfileifexists.
-%patch5 -p1
-
-# Applied upstream fix for gdevcups handling of RGBW (Ghostscript
-# bug #691922).
-%patch6 -p1 -b .cups-rgbw
-
-# Applied patch to fix NULL dereference in JBIG2 decoder (bug #501710).
-%patch8 -p1 -b .jbig2dec-nullderef
-
-# Install CUPS filter convs files in the correct place.
-%patch10 -p1 -b .cups-filters
-
-# Restored Fontmap.local patch, incorrectly dropped after
-# ghostscript-8.15.4-3 (bug #610301).
-# Note: don't use -b here to avoid the backup file ending up in the
-# package manifest.
-%patch27 -p1
-
-# Don't assume %%rom%% device is available for initial ICC profile dir.
-%patch28 -p1 -b .iccprofiles-initdir
-
-# gdevcups: don't use uninitialized variables in debugging output.
-%patch29 -p1 -b .gdevcups-debug-uninit
-
-# pxl: match landscape page sizes (bug #692165).
-%patch30 -p1 -b .pxl-landscape
+%apply_patches
 
 # prevent building and using bundled libs
 rm -rf jasper jbig2dec libpng jpeg tiff expat zlib lcms freetype
@@ -376,7 +246,6 @@ for i in man/de/*.1; do from8859_1 "$i"; done
 
 # Stuff for shared library support to ghostscript.
 %if %{GSx11SVGAmodule}
-
 # build a small README describing the features available.
 cat <<EOF >README.shared.mandrivalinux
 This version of ghostscript support shared modules dynamically loaded
@@ -390,7 +259,6 @@ ghostscript-module-??? packages.
 There is no configuration needed, just can add (or remove) the package
 to add (or remove) the devices concerned in ghostscript.
 EOF
-
 %endif
 
 # ps2pdfpress
@@ -409,28 +277,25 @@ export CXXFLAGS="`echo %optflags |sed -e 's/-O3/-g/' |sed -e 's/-O2/-g/'`"
 export RPM_OPT_FLAGS="`echo %optflags |sed -e 's/-O3/-g/' |sed -e 's/-O2/-g/'`"
 %endif
 
-##### IJS
-
-cd ijs*
+pushd ijs*
 # Rebuild broken build infrastructure
 # Needed by patch4.
 ./autogen.sh
 %configure2_5x \
 %ifarch %{ix86}
-        --disable-sse2 \
+	--disable-sse2 \
 %endif
     --enable-shared \
     --disable-static
-%make
-cd ..
 
-##### GHOSTSCRIPT
+%make
+popd
 
 # We have a Subversion version, so we must re-generate "configure"
 ./autogen.sh
 
 %configure2_5x \
-    --enable-dynamic \
+	--enable-dynamic \
 %if !%{bootstrap}
     --enable-fontconfig \
 %endif
@@ -438,7 +303,7 @@ cd ..
     --disable-sse2 \
 %endif
     --with-drivers=ALL,opvp \
-    --with-fontpath="/usr/share/fonts/default/ghostscript:/usr/share/fonts/default/type1:/usr/share/ghostscript/fonts:/usr/share/ghostscript/%{gsversion}/Resource:/usr/share/ghostscript/Resource:/usr/share/ghostscript/CIDFont:/usr/share/fonts/ttf:/usr/share/fonts/type1:/usr/share/fonts/default/Type1" \
+    --with-fontpath="/usr/share/fonts/default/ghostscript:/usr/share/fonts/default/type1:/usr/share/ghostscript/fonts:/usr/share/ghostscript/%{gsver}/Resource:/usr/share/ghostscript/Resource:/usr/share/ghostscript/CIDFont:/usr/share/fonts/ttf:/usr/share/fonts/type1:/usr/share/fonts/default/Type1" \
     --with-ijs \
     --with-omni \
     --with-x \
@@ -452,7 +317,7 @@ cd ..
 # Needs unbdev/lpviio.h: sparc
 
 # Set documentation dir
-perl -p -i -e 's|^(docdir=).*$|$1\$\(datadir\)/doc/%{name}-doc-%{gsversion}|' Makefile
+perl -p -i -e 's|^(docdir=).*$|$1\$\(datadir\)/doc/%{name}-doc-%{gsver}|' Makefile
 
 # Fix references to X11 libraries
 perl -p -i -e "s|(/usr/X11R6)/lib\b|\1/%{_lib}|g" Makefile base/*.mak
@@ -469,13 +334,9 @@ perl -p -i -e "s|^EXTRALIBS=|EXTRALIBS=-L/%{_lib} -lz |g" Makefile
 
 # The RPM macro for make is not used here, as parallelization of the build 
 # process does not work.
-%if %withstaticgs
-%make
-%else
-%if %GSx11SVGAmodule
+%if %{GSx11SVGAmodule}
 #make STDDIRS
 make obj/X11.so
-%endif
 %endif
 make so
 #make pcl3opts
@@ -504,97 +365,70 @@ install -d %{buildroot}%{_datadir}/cups/model
 install -d %{buildroot}%{_sysconfdir}/cups
 %endif
 
-##### IJS
-cd ijs*
-%configure2_5x --enable-shared --prefix=%buildroot%{_prefix} --libdir=%buildroot%{_libdir}
+pushd ijs*
+%configure2_5x \
+	--enable-shared \
+	--prefix=%{buildroot}%{_prefix} \
+	--libdir=%{buildroot}%{_libdir}
+
 # Work around bug in "configure" script
 perl -p -i -e 's/\@OBJEXT\@/o/g' Makefile
 perl -p -i -e 's/\@EXEEXT\@//g' Makefile
 %makeinstall
 # Fix prefixes in scripts
-perl -p -i -e "s:%buildroot::g" %buildroot%{_bindir}/ijs-config
-perl -p -i -e "s:%buildroot::g" %buildroot%{_libdir}/pkgconfig/ijs.pc
-cd ..
+perl -p -i -e "s:%{buildroot}::g" %{buildroot}%{_bindir}/ijs-config
+perl -p -i -e "s:%{buildroot}::g" %{buildroot}%{_libdir}/pkgconfig/ijs.pc
+popd
 
 ##### GHOSTSCRIPT
-mkdir -p %{buildroot}%{_docdir}/ghostscript-doc-%{gsversion}
+mkdir -p %{buildroot}%{_docdir}/ghostscript-doc-%{gsver}
 
-%if %withstaticgs
-make \
-	prefix=%{buildroot}/usr \
-	DESTDIR=%{buildroot} \
-	gssharedir=%{buildroot}%{_libdir}/ghostscript/%{gsversion} \
-	docdir=%{_docdir}/ghostscript-doc-%{gsversion} \
-	bindir=%{buildroot}%{_bindir} \
-	mandir=%{buildroot}%{_mandir} \
-	install
-%else
 %if !%{bootstrap}
 make \
 	prefix=%{_prefix} \
 	DESTDIR=%{buildroot} \
-	gssharedir=%{_libdir}/ghostscript/%{gsversion} \
-	docdir=%{_docdir}/ghostscript-doc-%{gsversion} \
+	gssharedir=%{_libdir}/ghostscript/%{gsver} \
+	docdir=%{_docdir}/ghostscript-doc-%{gsver} \
 	bindir=%{_bindir} \
 	mandir=%{_mandir} \
 	install-cups
 %endif
-%endif
-
-%if 0
-make \
-	prefix=%{_prefix} \
-	DESTDIR=%{buildroot} \
-	gssharedir=%{_libdir}/ghostscript/%{gsversion} \
-	docdir=%{_docdir}/ghostscript-doc-%{gsversion} \
-	bindir=%{_bindir} \
-	mandir=%{_mandir} \
-	man1dir=%{_mandir}/man1 \
-	pcl3-install
-%endif
 
 make \
 	prefix=%{_prefix} \
 	DESTDIR=%{buildroot} \
-	gssharedir=%{_libdir}/ghostscript/%{gsversion} \
-	docdir=%{_docdir}/ghostscript-doc-%{gsversion} \
+	gssharedir=%{_libdir}/ghostscript/%{gsver} \
+	docdir=%{_docdir}/ghostscript-doc-%{gsver} \
 	bindir=%{_bindir} \
 	libdir=%{_libdir} \
 	mandir=%{_mandir} \
 	soinstall
 
-%if !%{withstaticgs}
 %if %{GSx11SVGAmodule}
 make \
 	prefix=%{_prefix} \
 	DESTDIR=%{buildroot} \
-	gssharedir=%{_libdir}/ghostscript/%{gsversion} \
-	docdir=%{_docdir}/ghostscript-doc-%{gsversion} \
+	gssharedir=%{_libdir}/ghostscript/%{gsver} \
+	docdir=%{_docdir}/ghostscript-doc-%{gsver} \
 	bindir=%{_bindir} \
 	libdir=%{_libdir} \
 	mandir=%{_mandir} \
 	install-shared
 %endif
-%endif
 
 ln -sf gs.1%{_extension} %{buildroot}%{_mandir}/man1/ghostscript.1%{_extension}
-
-%if %withstaticgs
-mv %{buildroot}%{_bindir}/gs %{buildroot}%{_bindir}/gs-static
-%endif
 
 # ps2pdfpress
 install -m 755 ps2pdfpress %{buildroot}%{_bindir}
 
 # UPP file for SiPix Pocket Printer A6
-install -m 644 sipixa6.upp %{buildroot}%{_datadir}/ghostscript/%{gsversion}/lib/
+#mkdir -p %{buildroot}%{_datadir}/ghostscript/%{gsver}/lib
+install -m 644 sipixa6.upp %{buildroot}%{_datadir}/ghostscript/%{gsver}/lib/
 
 # Add backward compatibility link to not break printerdrake in Mandriva
 # 2006 and older
 ln -s %{_bindir}/gsc %{buildroot}%{_bindir}/gs-common
 ln -s %{_bindir}/gsc %{buildroot}%{_bindir}/ghostscript
-
-##### GENERAL STUFF
 
 # why?
 mv %{buildroot}%{_datadir}/cups/mime/gstoraster.convs %{buildroot}%{_sysconfdir}/cups/gstoraster.convs
@@ -604,30 +438,43 @@ chmod -R a+rX %{buildroot}%{_docdir}
 chmod -R go-w %{buildroot}%{_docdir}
 chmod -R u+w %{buildroot}%{_docdir}
 
-##### FILES
+%post
+# Set up update-alternatives entries
+%{_sbindir}/update-alternatives --install %{_bindir}/gs gs %{_bindir}/gsc 200
+
+%post X
+# Set up update-alternatives entries
+%{_sbindir}/update-alternatives --install %{_bindir}/gs gs %{_bindir}/gsx 100
+
+%post common
+# Initialize japanese fonts
+if test -f /usr/share/fonts/ttf/japanese/cidinst; then
+    sh /usr/share/fonts/ttf/japanese/cidinst
+fi
+
+%preun
+if [ "$1" = 0 ]; then
+  # Remove update-alternatives entry
+  %{_sbindir}/update-alternatives --remove gs %{_bindir}/gsc
+fi
+
+%preun X
+if [ "$1" = 0 ]; then
+  # Remove update-alternatives entry
+  %{_sbindir}/update-alternatives --remove gs %{_bindir}/gsx
+fi
 
 %files
-%defattr(-,root,root)
 %{_bindir}/gsc
 %{_bindir}/gs-common
 %{_bindir}/ghostscript
 
 %files X
-%defattr(-,root,root)
 %{_bindir}/gsx
 
-%if %withstaticgs
-%files static
-%defattr(-,root,root)
-%{_bindir}/gs-static
-%endif
-
 %files common
-%defattr(-,root,root)
 %dir %{_datadir}/ghostscript
-%{_datadir}/ghostscript/%{gsversion}
-#%{_datadir}/ghostscript/Resource
-#%{_datadir}/ghostscript/CIDFont
+%{_datadir}/ghostscript/%{gsver}
 %{_mandir}/man1/*
 %lang(de) %{_mandir}/de/man1/*
 #%{_bindir}/[a-c]*
@@ -647,49 +494,30 @@ chmod -R u+w %{buildroot}%{_docdir}
 %endif
 
 %files doc
-%defattr(-,root,root)
-%doc %{_docdir}/ghostscript-doc-%{gsversion}
+%doc %{_docdir}/ghostscript-doc-%{gsver}
 
 %files dvipdf
-%defattr(-,root,root)
 %{_bindir}/dvipdf
 
 %if %{GSx11SVGAmodule}
 %files module-X
-%defattr(-,root,root)
 %doc README.shared.mandrivalinux
-%dir %{_libdir}/ghostscript/%{gsversion}
-%{_libdir}/ghostscript/%{gsversion}/X11.so
-
-%ifarch %ix86
-%if %{withsvgalib}
-%files module-SVGALIB
-%defattr(-,root,root)
-%doc README.shared.mandrivalinux
-%dir %{_libdir}/ghostscript/%{gsversion}
-%{_libdir}/ghostscript/%{gsversion}/lvga256.so
-%{_libdir}/ghostscript/%{gsversion}/vgalib.so
-%endif
-%endif
+%dir %{_libdir}/ghostscript/%{gsver}
+%{_libdir}/ghostscript/%{gsver}/X11.so
 %endif
 
 %files -n %{libgs}
-%defattr(-,root,root)
 %{_libdir}/libgs.so.*%{gsmajor}*
 
 %files -n %{libgs_devel}
-%defattr(-,root,root)
 %{_libdir}/libgs.so
 %{_includedir}/ghostscript
 
 %files -n %{libijs}
-%defattr(-,root,root)
 %{_libdir}/libijs-%{ijsver}.so
 
 %files -n %{libijs_devel}
-%defattr(-,root,root)
 %doc ijs/README
-%{_libdir}/libijs.la
 %{_libdir}/libijs.so
 %{_libdir}/pkgconfig/ijs.pc
 %{_includedir}/ijs
@@ -697,64 +525,3 @@ chmod -R u+w %{buildroot}%{_docdir}
 %{_bindir}/ijs_server_example
 %{_bindir}/ijs-config
 
-
-##### PRE/POSTINSTALL SCRIPTS
-
-%post
-# Set up update-alternatives entries
-%{_sbindir}/update-alternatives --install %{_bindir}/gs gs %{_bindir}/gsc 200
-
-%post X
-# Set up update-alternatives entries
-%{_sbindir}/update-alternatives --install %{_bindir}/gs gs %{_bindir}/gsx 100
-
-%if %withstaticgs
-%post static
-# Set up update-alternatives entries
-%{_sbindir}/update-alternatives --install %{_bindir}/gs gs %{_bindir}/gs-static 10
-%endif
-
-%post common
-# Initialize japanese fonts
-if test -f /usr/share/fonts/ttf/japanese/cidinst; then
-    sh /usr/share/fonts/ttf/japanese/cidinst
-fi
-
-%if %mdkversion < 200900
-%post -n %{libijs} -p /sbin/ldconfig
-%endif
-
-%if %mdkversion < 200900
-%post -n %{libgs} -p /sbin/ldconfig
-%endif
-
-%preun
-if [ "$1" = 0 ]; then
-  # Remove update-alternatives entry
-  %{_sbindir}/update-alternatives --remove gs %{_bindir}/gsc
-fi
-
-%preun X
-if [ "$1" = 0 ]; then
-  # Remove update-alternatives entry
-  %{_sbindir}/update-alternatives --remove gs %{_bindir}/gsx
-fi
-
-%if %withstaticgs
-%preun static
-if [ "$1" = 0 ]; then
-  # Remove update-alternatives entry
-  %{_sbindir}/update-alternatives --remove gs %{_bindir}/gs-static
-fi
-%endif
-
-%if %mdkversion < 200900
-%postun -n %{libijs} -p /sbin/ldconfig
-%endif
-
-%if %mdkversion < 200900
-%postun -n %{libgs} -p /sbin/ldconfig
-%endif
-
-%clean
-rm -rf %{buildroot}
