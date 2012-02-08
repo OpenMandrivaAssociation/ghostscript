@@ -1,7 +1,7 @@
 %define _disable_ld_no_undefined 1
-%define rel	4
+%define rel	1
 
-%define gsver 9.04
+%define gsver 9.05
 %define ijsver 0.35
 %define ijsreloffset 76
 %define ijsrel %(echo $((%{rel} + %{ijsreloffset})))
@@ -30,11 +30,11 @@ Release:	%{rel}
 License:	GPLv2+
 Group:		Publishing
 URL:		http://www.ghostscript.com/awki/Index
-Source0:	http://ghostscript.com/releases/%{name}-%{gsver}.tar.bz2
+Source0:	http://downloads.ghostscript.com/public/ghostscript-%{gsver}.tar.bz2
 Source2:	ps2pdfpress.bz2
 Source3:	http://www.linuxprinting.org/download/printing/sipixa6.upp.bz2
 
-Patch300: ghostscript-9.04-x11_shared.diff
+Patch300: ghostscript-9.05-x11_shared.diff
 # Fedora patches
 # Fix ijs-config not to have multilib conflicts (bug #192672)
 Patch1: ghostscript-multilib.patch
@@ -47,11 +47,6 @@ Patch3: ghostscript-noopt.patch
 Patch4: ghostscript-ijs-automake-ver.patch
 # Define .runlibfileifexists.
 Patch5: ghostscript-runlibfileifexists.patch
-# Applied upstream fix for gdevcups handling of RGBW (Ghostscript
-# bug #691922).
-Patch6: ghostscript-cups-rgbw.patch
-# Applied patch to fix NULL dereference in JBIG2 decoder (bug #501710).
-Patch8: ghostscript-jbig2dec-nullderef.patch
 # Install CUPS filter convs files in the correct place.
 Patch10: ghostscript-cups-filters.patch
 # Restored Fontmap.local patch, incorrectly dropped after
@@ -63,8 +58,6 @@ Patch27: ghostscript-Fontmap.local.patch
 Patch28: ghostscript-iccprofiles-initdir.patch
 # gdevcups: don't use uninitialized variables in debugging output.
 Patch29: ghostscript-gdevcups-debug-uninit.patch
-# pxl: match landscape page sizes (bug #692165).
-Patch30: ghostscript-pxl-landscape.patch
 
 %if !%{bootstrap}
 BuildRequires: gtk+2-devel
@@ -142,7 +135,7 @@ printer formats, and popular graphics file formats.
 This package contains the common data files needed by GhostScript.
 
 %package X
-Summary: PostScript/PDF interpreter and renderer (Executable with GTK-based screen display)
+Summary: PostScript/PDF interpreter and renderer (with X11 screen display)
 Group: 		Publishing
 Requires: 	ghostscript-common
 Requires:	update-alternatives
