@@ -1,7 +1,7 @@
 %define _disable_ld_no_undefined 1
 %define rel	1
 
-%define gsver 9.05
+%define gsver 9.06
 %define ijsver 0.35
 %define ijsreloffset 76
 %define ijsrel %(echo $((%{rel} + %{ijsreloffset})))
@@ -471,7 +471,6 @@ fi
 %{_mandir}/man1/*
 %lang(de) %{_mandir}/de/man1/*
 #%{_bindir}/[a-c]*
-%{_bindir}/dumphint
 %{_bindir}/[e-f]*
 #{_bindir}/gs-common
 %{_bindir}/gs[a-b]*
