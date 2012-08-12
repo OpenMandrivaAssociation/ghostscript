@@ -226,6 +226,8 @@ This package contains documentation for GhostScript.
 %prep
 %setup -q
 %apply_patches
+# Don't ship backup files
+find . -name "*.*~" |xargs rm -f
 
 # prevent building and using bundled libs
 rm -rf jasper jbig2dec libpng jpeg tiff expat zlib lcms freetype
