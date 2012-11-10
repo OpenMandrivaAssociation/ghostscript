@@ -1,0 +1,36 @@
+--- ghostscript-9.05/base/lib.mak.0300~	2012-02-08 09:48:48.000000000 +0100
++++ ghostscript-9.05/base/lib.mak	2012-02-08 20:46:13.758836233 +0100
+@@ -986,7 +986,7 @@ $(GLOBJ)gsparam.$(OBJ) : $(GLSRC)gsparam
+ $(GLOBJ)gsparamx.$(OBJ) : $(AK) $(GLSRC)gsparamx.c $(string__h)\
+  $(gserrors_h) $(gsmemory_h) $(gsparam_h) $(gsparamx_h)\
+  $(gstypes_h) $(MAKEDIRS)
+-	$(GLCC) $(GLO_)gsparamx.$(OBJ) $(C_) $(GLSRC)gsparamx.c
++	$(GLCCSHARED) $(GLO_)gsparamx.$(OBJ) $(C_) $(GLSRC)gsparamx.c
+ 
+ # Future replacement for gsparams.c
+ $(GLOBJ)gsparam2.$(OBJ) : $(GLSRC)gsparam2.c $(AK) $(gx_h)\
+@@ -1197,7 +1197,7 @@ $(GLOBJ)gdevnfwd.$(OBJ) : $(GLSRC)gdevnf
+ 
+ # Provide a mapping between StandardEncoding and ISOLatin1Encoding.
+ $(GLOBJ)gdevemap.$(OBJ) : $(GLSRC)gdevemap.c $(AK) $(std_h) $(MAKEDIRS)
+-	$(GLCC) $(GLO_)gdevemap.$(OBJ) $(C_) $(GLSRC)gdevemap.c
++	$(GLCCSHARED) $(GLO_)gdevemap.$(OBJ) $(C_) $(GLSRC)gdevemap.c
+ 
+ # ----------- Downsampling routines ------------ #
+ gxdownscale_h=$(GLSRC)gxdownscale.h $(gsmemory_h) $(gxdevcli_h) $(ctype__h) \
+--- ghostscript-9.05/base/unix-dll.mak.0300~	2012-02-08 09:48:48.000000000 +0100
++++ ghostscript-9.05/base/unix-dll.mak	2012-02-08 20:40:26.423842387 +0100
+@@ -84,11 +84,11 @@ $(GS_SO_MAJOR): $(GS_SO_MAJOR_MINOR)
+ 
+ # Build the small Ghostscript loaders, with Gtk+ and without
+ $(GSSOC_XE): $(GS_SO) $(PSSRC)$(SOC_LOADER)
+-	$(GLCC) -g -o $(GSSOC_XE) $(PSSRC)dxmainc.c \
++	$(GLCC) -g $(LDFLAGS) -o $(GSSOC_XE) $(PSSRC)dxmainc.c \
+ 	-L$(BINDIR) -l$(GS)
+ 
+ $(GSSOX_XE): $(GS_SO) $(PSSRC)$(SOC_LOADER)
+-	$(GLCC) -g $(SOC_CFLAGS) -o $(GSSOX_XE) $(PSSRC)$(SOC_LOADER) \
++	$(GLCC) -g $(SOC_CFLAGS) $(LDFLAGS) -o $(GSSOX_XE) $(PSSRC)$(SOC_LOADER) \
+ 	-L$(BINDIR) -l$(GS) $(SOC_LIBS)
+ 
+ # ------------------------- Recursive make targets ------------------------- #
