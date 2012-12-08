@@ -1,6 +1,7 @@
---- ghostscript-9.05/base/lib.mak.0300~	2012-02-08 09:48:48.000000000 +0100
-+++ ghostscript-9.05/base/lib.mak	2012-02-08 20:46:13.758836233 +0100
-@@ -986,7 +986,7 @@ $(GLOBJ)gsparam.$(OBJ) : $(GLSRC)gsparam
+diff -urN ghostscript-9.05/base/lib.mak ghostscript-9.05-patched/base/lib.mak
+--- ghostscript-9.05/base/lib.mak	2012-02-08 19:48:48.000000000 +1100
++++ ghostscript-9.05-patched/base/lib.mak	2012-07-31 22:18:27.281610997 +1100
+@@ -986,7 +986,7 @@
  $(GLOBJ)gsparamx.$(OBJ) : $(AK) $(GLSRC)gsparamx.c $(string__h)\
   $(gserrors_h) $(gsmemory_h) $(gsparam_h) $(gsparamx_h)\
   $(gstypes_h) $(MAKEDIRS)
@@ -9,7 +10,7 @@
  
  # Future replacement for gsparams.c
  $(GLOBJ)gsparam2.$(OBJ) : $(GLSRC)gsparam2.c $(AK) $(gx_h)\
-@@ -1197,7 +1197,7 @@ $(GLOBJ)gdevnfwd.$(OBJ) : $(GLSRC)gdevnf
+@@ -1197,7 +1197,7 @@
  
  # Provide a mapping between StandardEncoding and ISOLatin1Encoding.
  $(GLOBJ)gdevemap.$(OBJ) : $(GLSRC)gdevemap.c $(AK) $(std_h) $(MAKEDIRS)
@@ -18,9 +19,10 @@
  
  # ----------- Downsampling routines ------------ #
  gxdownscale_h=$(GLSRC)gxdownscale.h $(gsmemory_h) $(gxdevcli_h) $(ctype__h) \
---- ghostscript-9.05/base/unix-dll.mak.0300~	2012-02-08 09:48:48.000000000 +0100
-+++ ghostscript-9.05/base/unix-dll.mak	2012-02-08 20:40:26.423842387 +0100
-@@ -84,11 +84,11 @@ $(GS_SO_MAJOR): $(GS_SO_MAJOR_MINOR)
+diff -urN ghostscript-9.05/base/unix-dll.mak ghostscript-9.05-patched/base/unix-dll.mak
+--- ghostscript-9.05/base/unix-dll.mak	2012-02-08 19:48:48.000000000 +1100
++++ ghostscript-9.05-patched/base/unix-dll.mak	2012-07-31 22:14:56.638611003 +1100
+@@ -84,11 +84,11 @@
  
  # Build the small Ghostscript loaders, with Gtk+ and without
  $(GSSOC_XE): $(GS_SO) $(PSSRC)$(SOC_LOADER)
