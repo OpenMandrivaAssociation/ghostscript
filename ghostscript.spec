@@ -1,7 +1,7 @@
 %define _disable_ld_no_undefined 1
-%define rel	4
+%define rel	1
 
-%define gsver 9.05
+%define gsver 9.06
 %define ijsver 0.35
 %define ijsreloffset 76
 %define ijsrel %(echo $((%{rel} + %{ijsreloffset})))
@@ -30,7 +30,7 @@ Release:	%{rel}
 License:	GPLv2+
 Group:		Publishing
 URL:		http://www.ghostscript.com/awki/Index
-Source0:	http://ghostscript.com/releases/%{name}-%{gsver}.tar.gz
+Source0:	http://downloads.ghostscript.com/public/%{name}-%{gsver}.tar.gz
 Source2:	ps2pdfpress.bz2
 Source3:	http://www.linuxprinting.org/download/printing/sipixa6.upp.bz2
 
@@ -55,7 +55,7 @@ Patch10: ghostscript-cups-filters.patch
 # package manifest.
 Patch27: ghostscript-Fontmap.local.patch
 # Don't assume %%rom%% device is available for initial ICC profile dir.
-Patch28: ghostscript-iccprofiles-initdir.patch
+#Patch28: ghostscript-iccprofiles-initdir.patch
 # gdevcups: don't use uninitialized variables in debugging output.
 Patch29: ghostscript-gdevcups-debug-uninit.patch
 
@@ -473,7 +473,7 @@ fi
 %{_mandir}/man1/*
 %lang(de) %{_mandir}/de/man1/*
 #%{_bindir}/[a-c]*
-%{_bindir}/dumphint
+#{_bindir}/dumphint
 %{_bindir}/[e-f]*
 #{_bindir}/gs-common
 %{_bindir}/gs[a-b]*
