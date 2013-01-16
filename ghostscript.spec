@@ -14,7 +14,7 @@
 %define libgs %mklibname gs %{gsmajor}
 %define libgs_devel %mklibname -d gs
 
-%define bootstrap 0
+%define bootstrap 1
 
 %define GSx11SVGAmodule 1
 %define withcupsfilters 1
@@ -58,6 +58,7 @@ Patch27: ghostscript-Fontmap.local.patch
 #Patch28: ghostscript-iccprofiles-initdir.patch
 # gdevcups: don't use uninitialized variables in debugging output.
 Patch29: ghostscript-gdevcups-debug-uninit.patch
+Patch30: ghostscript-9.06-automake-1.13.patch
 
 %if !%{bootstrap}
 BuildRequires: gtk+2-devel
@@ -227,6 +228,8 @@ This package contains documentation for GhostScript.
 %setup -q
 %apply_patches
 
+#backup files not needed
+find . -name "*.*~" |xargs rm -f
 # prevent building and using bundled libs
 rm -rf jasper jbig2dec libpng jpeg tiff expat zlib lcms freetype
 
