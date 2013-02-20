@@ -1,7 +1,7 @@
 %define _disable_ld_no_undefined 1
 %define rel	1
 
-%define gsver 9.06
+%define gsver 9.07
 %define ijsver 0.35
 %define ijsreloffset 76
 %define ijsrel %(echo $((%{rel} + %{ijsreloffset})))
@@ -34,62 +34,62 @@ Source0:	http://downloads.ghostscript.com/public/%{name}-%{gsver}.tar.gz
 Source2:	ps2pdfpress.bz2
 Source3:	http://www.linuxprinting.org/download/printing/sipixa6.upp.bz2
 
-Patch300: ghostscript-9.05-x11_shared.diff
+Patch300:	ghostscript-9.05-x11_shared.diff
 # Fedora patches
 # Fix ijs-config not to have multilib conflicts (bug #192672)
-Patch1: ghostscript-multilib.patch
+Patch1:		ghostscript-multilib.patch
 # Fix some shell scripts
-Patch2: ghostscript-scripts.patch
+Patch2:		ghostscript-scripts.patch
 # Build igcref.c with -O0 to work around bug #150771.
-Patch3: ghostscript-noopt.patch
+Patch3:		ghostscript-noopt.patch
 # Fix ./autgen.sh in ijs sub-project
 # See http://bugs.ghostscript.com/show_bug.cgi?id=692040 for details.
-Patch4: ghostscript-ijs-automake-ver.patch
+Patch4:		ghostscript-ijs-automake-ver.patch
 # Define .runlibfileifexists.
-Patch5: ghostscript-runlibfileifexists.patch
+Patch5:		ghostscript-runlibfileifexists.patch
 # Install CUPS filter convs files in the correct place.
-Patch10: ghostscript-cups-filters.patch
+Patch10:	ghostscript-cups-filters.patch
 # Restored Fontmap.local patch, incorrectly dropped after
 # ghostscript-8.15.4-3 (bug #610301).
 # Note: don't use -b here to avoid the backup file ending up in the
 # package manifest.
-Patch27: ghostscript-Fontmap.local.patch
+Patch27:	ghostscript-Fontmap.local.patch
 # Don't assume %%rom%% device is available for initial ICC profile dir.
 #Patch28: ghostscript-iccprofiles-initdir.patch
 # gdevcups: don't use uninitialized variables in debugging output.
-Patch29: ghostscript-gdevcups-debug-uninit.patch
-Patch30: ghostscript-9.06-automake-1.13.patch
+Patch29:	ghostscript-gdevcups-debug-uninit.patch
+Patch30:	ghostscript-9.06-automake-1.13.patch
 
 %if !%{bootstrap}
-BuildRequires: gtk+2-devel
-BuildRequires: cups-devel
-BuildRequires: fontconfig-devel
+BuildRequires:	gtk+2-devel
+BuildRequires:	cups-devel
+BuildRequires:	fontconfig-devel
 %endif
-BuildRequires: bison
-BuildRequires: flex
-BuildRequires: libtool
-BuildRequires: unzip
-BuildRequires: gettext-devel
-BuildRequires: glibc-devel
-BuildRequires: jbig2dec-devel
-BuildRequires: jpeg-devel
-BuildRequires: libpaper-devel
-BuildRequires: netpbm-devel
-BuildRequires: tiff-devel
-BuildRequires: pkgconfig(freetype2)
-BuildRequires: pkgconfig(ice)
-BuildRequires: pkgconfig(jasper)
-BuildRequires: pkgconfig(lcms)
-BuildRequires: pkgconfig(libidn)
-BuildRequires: pkgconfig(libpng15)
-BuildRequires: pkgconfig(libxml)
-BuildRequires: pkgconfig(sm)
-BuildRequires: pkgconfig(x11)
-BuildRequires: pkgconfig(xext)
-BuildRequires: pkgconfig(xt)
-BuildRequires: pkgconfig(zlib)
+BuildRequires:	bison
+BuildRequires:	flex
+BuildRequires:	libtool
+BuildRequires:	unzip
+BuildRequires:	gettext-devel
+BuildRequires:	glibc-devel
+BuildRequires:	jbig2dec-devel
+BuildRequires:	jpeg-devel
+BuildRequires:	libpaper-devel
+BuildRequires:	netpbm-devel
+BuildRequires:	tiff-devel
+BuildRequires:	pkgconfig(freetype2)
+BuildRequires:	pkgconfig(ice)
+BuildRequires:	pkgconfig(jasper)
+BuildRequires:	pkgconfig(lcms)
+BuildRequires:	pkgconfig(libidn)
+BuildRequires:	pkgconfig(libpng15)
+BuildRequires:	pkgconfig(libxml)
+BuildRequires:	pkgconfig(sm)
+BuildRequires:	pkgconfig(x11)
+BuildRequires:	pkgconfig(xext)
+BuildRequires:	pkgconfig(xt)
+BuildRequires:	pkgconfig(zlib)
 
-Requires: 	ghostscript-common
+Requires:	ghostscript-common
 Requires:	update-alternatives
 %if !%{GSx11SVGAmodule}
 %rename	ghostscript-module-X ghostscript-module-SVGALIB
@@ -110,8 +110,8 @@ PDF files, or if you have a non-PostScript printer.
 
 %package dvipdf
 Summary:	PostScript/PDF interpreter and renderer (DVI-to-PDF converter)
-Group: 		Publishing
-Requires: 	ghostscript
+Group:		Publishing
+Requires:	ghostscript
 Requires:	coreutils
 Requires:	tetex-dvips
 
@@ -123,7 +123,7 @@ PostScript, then they use GhostScript to generate the PDF file.
 
 %package common
 Summary:	PostScript/PDF interpreter and renderer (Common files)
-Group: 		Publishing
+Group:		Publishing
 Requires:	urw-fonts >= 1.1
 Requires:	ghostscript-fonts
 Requires:	perl
@@ -137,8 +137,8 @@ This package contains the common data files needed by GhostScript.
 
 %package X
 Summary:	PostScript/PDF interpreter and renderer (GTK-based executable)
-Group: 		Publishing
-Requires: 	ghostscript-common
+Group:		Publishing
+Requires:	ghostscript-common
 Requires:	update-alternatives
 
 %description X
@@ -154,8 +154,8 @@ GhostScript shared library.
 %if %{GSx11SVGAmodule}
 %package module-X
 Summary:	PostScript/PDF interpreter and renderer (Additional support for X)
-Group: 		Publishing
-Requires: 	ghostscript-common
+Group:		Publishing
+Requires:	ghostscript-common
 
 %description module-X
 Ghostscript is a PostScript/PDF interpreter. It can render both
@@ -165,15 +165,15 @@ printer formats, and popular graphics file formats.
 This package enhances Ghostscript with X window support
 %endif
 
-%package -n %libgs
-Summary: PostScript/PDF interpreter and renderer (GhostScript shared library)
-Group: Publishing
+%package -n %{libgs}
+Summary:	PostScript/PDF interpreter and renderer (GhostScript shared library)
+Group:		Publishing
 
-%description -n %libgs
+%description -n %{libgs}
 This is the API library for programs which use the PostScript and/or
 PDF interpreters of GhostScript.
 
-%package -n %libgs_devel
+%package -n %{libgs_devel}
 Summary:	Headers and links to compile against the "%{libgs}" library
 Group:		Development/C
 Requires:	%{libgs} >= %{gsver}
@@ -182,7 +182,7 @@ Provides:	libgs-devel = %{gsver}
 Obsoletes:	%{_lib}gs9-devel < %{gsver}
 Obsoletes:	%{_lib}gs8-devel < %{gsver}
 
-%description -n %libgs_devel
+%description -n %{libgs_devel}
 This package contains the static library and the header files needed
 to compile applications using the GhostScript shared library.
 
