@@ -79,7 +79,7 @@ BuildRequires:	tiff-devel
 BuildRequires:	pkgconfig(freetype2)
 BuildRequires:	pkgconfig(ice)
 BuildRequires:	pkgconfig(jasper)
-BuildRequires:	pkgconfig(lcms)
+BuildRequires:	pkgconfig(lcms2)
 BuildRequires:	pkgconfig(libidn)
 BuildRequires:	pkgconfig(libpng15)
 BuildRequires:	pkgconfig(libxml)
@@ -231,7 +231,7 @@ This package contains documentation for GhostScript.
 #backup files not needed
 find . -name "*.*~" |xargs rm -f
 # prevent building and using bundled libs
-rm -rf jasper jbig2dec libpng jpeg tiff expat zlib lcms freetype
+rm -rf jasper jbig2dec libpng jpeg tiff expat zlib lcms* freetype
 
 # Convert manual pages to UTF-8
 from8859_1() {
