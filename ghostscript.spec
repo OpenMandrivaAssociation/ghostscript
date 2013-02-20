@@ -44,7 +44,7 @@ Patch2:		ghostscript-scripts.patch
 Patch3:		ghostscript-noopt.patch
 # Fix ./autgen.sh in ijs sub-project
 # See http://bugs.ghostscript.com/show_bug.cgi?id=692040 for details.
-Patch4:		ghostscript-ijs-automake-ver.patch
+#Patch4:		ghostscript-ijs-automake-ver.patch
 # Define .runlibfileifexists.
 Patch5:		ghostscript-runlibfileifexists.patch
 # Install CUPS filter convs files in the correct place.
@@ -88,6 +88,7 @@ BuildRequires:	pkgconfig(x11)
 BuildRequires:	pkgconfig(xext)
 BuildRequires:	pkgconfig(xt)
 BuildRequires:	pkgconfig(zlib)
+BuildRequires:	pkgconfig(dbus-1)
 
 Requires:	ghostscript-common
 Requires:	update-alternatives
@@ -305,6 +306,9 @@ popd
     --with-x \
     --disable-compile-inits \
     --with-system-libtiff \
+    --with-libidn \
+    --enable-dbus \
+    --enable-dynamic \
     --with-install-cups
 
 # Drivers which do not compile:
