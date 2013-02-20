@@ -57,7 +57,7 @@ Patch27:	ghostscript-Fontmap.local.patch
 # Don't assume %%rom%% device is available for initial ICC profile dir.
 #Patch28: ghostscript-iccprofiles-initdir.patch
 # gdevcups: don't use uninitialized variables in debugging output.
-Patch29:	ghostscript-gdevcups-debug-uninit.patch
+#Patch29:	ghostscript-gdevcups-debug-uninit.patch
 Patch30:	ghostscript-9.06-automake-1.13.patch
 
 %if !%{bootstrap}
