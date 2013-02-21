@@ -89,7 +89,7 @@ BuildRequires:	pkgconfig(xext)
 BuildRequires:	pkgconfig(xt)
 BuildRequires:	pkgconfig(zlib)
 BuildRequires:	pkgconfig(dbus-1)
-BuildRequires:	pkgconfig(libopenjpeg)
+BuildRequires:	pkgconfig(libopenjpeg1)
 
 Requires:	ghostscript-common
 Requires:	update-alternatives
