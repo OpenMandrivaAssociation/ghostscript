@@ -33,6 +33,7 @@ URL:		http://www.ghostscript.com/awki/Index
 Source0:	http://downloads.ghostscript.com/public/%{name}-%{gsver}.tar.gz
 Source2:	ps2pdfpress.bz2
 Source3:	http://www.linuxprinting.org/download/printing/sipixa6.upp.bz2
+Source4:	ghostscript.rpmlintrc
 
 Patch300:	ghostscript-9.05-x11_shared.diff
 # Fedora patches
