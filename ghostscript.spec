@@ -3,7 +3,7 @@
 
 %define gsver 9.07
 %define ijsver 0.35
-%define ijsreloffset 76
+%define ijsreloffset 77
 %define ijsrel %(echo $((%{rel} + %{ijsreloffset})))
 
 %define ijsmajor 1
@@ -222,6 +222,7 @@ to compile applications using the IJS library.
 %package doc
 Summary:	Documentation for GhostScript
 Group:		Publishing
+Requires:	ghostscript
 
 %description doc
 This package contains documentation for GhostScript.
