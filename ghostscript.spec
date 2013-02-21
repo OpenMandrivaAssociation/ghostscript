@@ -303,7 +303,7 @@ popd
     --with-drivers=ALL,opvp \
     --with-fontpath="/usr/share/fonts/default/ghostscript:/usr/share/fonts/default/type1:/usr/share/ghostscript/fonts:/usr/share/ghostscript/%{gsver}/Resource:/usr/share/ghostscript/Resource:/usr/share/ghostscript/CIDFont:/usr/share/fonts/ttf:/usr/share/fonts/type1:/usr/share/fonts/default/Type1" \
     --with-ijs \
-    --with-omni \
+    --without-omni \
     --with-x \
     --disable-compile-inits \
     --with-system-libtiff \
