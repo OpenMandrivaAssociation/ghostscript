@@ -89,6 +89,7 @@ BuildRequires:	pkgconfig(xext)
 BuildRequires:	pkgconfig(xt)
 BuildRequires:	pkgconfig(zlib)
 BuildRequires:	pkgconfig(dbus-1)
+BuildRequires:	pkgconfig(libopenjpeg)
 
 Requires:	ghostscript-common
 Requires:	update-alternatives
@@ -232,7 +233,7 @@ This package contains documentation for GhostScript.
 #backup files not needed
 find . -name "*.*~" |xargs rm -f
 # prevent building and using bundled libs
-rm -rf jasper jbig2dec libpng jpeg tiff expat zlib lcms* freetype
+rm -rf jasper jbig2dec libpng jpeg tiff expat zlib lcms* freetype openjpeg
 
 # Convert manual pages to UTF-8
 from8859_1() {
