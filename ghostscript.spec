@@ -3,7 +3,8 @@
 
 %define gsver 9.07
 %define ijsver 0.35
-%define ijsreloffset 77
+# (tpg) BUMP THIS EVERY UPDATE
+%define ijsreloffset 81
 %define ijsrel %(echo $((%{rel} + %{ijsreloffset})))
 
 %define ijsmajor 1
