@@ -81,7 +81,7 @@ BuildRequires:	tiff-devel
 BuildRequires:	pkgconfig(freetype2)
 BuildRequires:	pkgconfig(ice)
 BuildRequires:	pkgconfig(jasper)
-BuildRequires:	pkgconfig(lcms2)
+BuildRequires:	pkgconfig(lcms)
 BuildRequires:	pkgconfig(libidn)
 BuildRequires:	pkgconfig(libpng15)
 BuildRequires:	pkgconfig(libxml)
