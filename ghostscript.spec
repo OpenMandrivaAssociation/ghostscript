@@ -1,10 +1,10 @@
 %define _disable_ld_no_undefined 1
-%define rel	2
+%define rel	3
 
 %define gsver 9.07
 %define ijsver 0.35
 # (tpg) BUMP THIS EVERY UPDATE
-%define ijsreloffset 82
+%define ijsreloffset 83
 %define ijsrel %(echo $((%{rel} + %{ijsreloffset})))
 
 %define ijsmajor 1
