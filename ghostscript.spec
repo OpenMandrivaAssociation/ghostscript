@@ -1,3 +1,5 @@
+%bcond_without ijs
+%bcond_with crosscompile
 %define _disable_ld_no_undefined 1
 %define rel	3
 
@@ -61,6 +63,8 @@ Patch27:	ghostscript-Fontmap.local.patch
 # gdevcups: don't use uninitialized variables in debugging output.
 #Patch29:	ghostscript-gdevcups-debug-uninit.patch
 Patch30:	ghostscript-9.06-automake-1.13.patch
+Patch31:	objarch-aarch64.patch
+Patch32:	ghostscript-9.05-configure-endian.patch
 
 %if !%{bootstrap}
 BuildRequires:	gtk+2-devel
@@ -269,7 +273,9 @@ bzcat %{SOURCE2} > ps2pdfpress
 bzcat %{SOURCE3} > sipixa6.upp
 
 %build
-
+%if %{with crosscompile}
+export ac_cv_c_bigendian=yes
+%endif
 # Change compiler flags for debugging when in debug mode
 %if %debug
 export DONT_STRIP=1
@@ -278,6 +284,7 @@ export CXXFLAGS="`echo %optflags |sed -e 's/-O3/-g/' |sed -e 's/-O2/-g/'`"
 export RPM_OPT_FLAGS="`echo %optflags |sed -e 's/-O3/-g/' |sed -e 's/-O2/-g/'`"
 %endif
 
+%if %{with ijs}
 pushd ijs*
 # Rebuild broken build infrastructure
 # Needed by patch4.
@@ -291,10 +298,10 @@ pushd ijs*
 
 %make
 popd
+%endif
 
 # We have a Subversion version, so we must re-generate "configure"
-./autogen.sh
-
+#./autogen.sh
 %configure2_5x \
 	--enable-dynamic \
 %if !%{bootstrap}
@@ -305,7 +312,9 @@ popd
 %endif
     --with-drivers=ALL,opvp \
     --with-fontpath="/usr/share/fonts/default/ghostscript:/usr/share/fonts/default/type1:/usr/share/ghostscript/fonts:/usr/share/ghostscript/%{gsver}/Resource:/usr/share/ghostscript/Resource:/usr/share/ghostscript/CIDFont:/usr/share/fonts/ttf:/usr/share/fonts/type1:/usr/share/fonts/default/Type1" \
+%if %{with ijs}
     --with-ijs \
+%endif
     --without-omni \
     --with-x \
     --disable-compile-inits \
