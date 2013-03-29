@@ -1,12 +1,12 @@
 %bcond_without ijs
 %bcond_with crosscompile
 %define _disable_ld_no_undefined 1
-%define rel	3
+%define rel	4
 
 %define gsver 9.07
 %define ijsver 0.35
 # (tpg) BUMP THIS EVERY UPDATE
-%define ijsreloffset 83
+%define ijsreloffset 84
 %define ijsrel %(echo $((%{rel} + %{ijsreloffset})))
 
 %define ijsmajor 1
@@ -85,7 +85,7 @@ BuildRequires:	tiff-devel
 BuildRequires:	pkgconfig(freetype2)
 BuildRequires:	pkgconfig(ice)
 BuildRequires:	pkgconfig(jasper)
-BuildRequires:	pkgconfig(lcms2)
+BuildRequires:	pkgconfig(lcms2) >= 2.4-3
 BuildRequires:	pkgconfig(libidn)
 BuildRequires:	pkgconfig(libpng15)
 BuildRequires:	pkgconfig(libxml)
