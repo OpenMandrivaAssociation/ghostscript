@@ -1,12 +1,14 @@
 %bcond_without ijs
 %bcond_with crosscompile
+%bcond_with bootstrap
+
 %define _disable_ld_no_undefined 1
-%define rel	4
+%define rel	5
 
 %define gsver 9.07
 %define ijsver 0.35
 # (tpg) BUMP THIS EVERY UPDATE
-%define ijsreloffset 84
+%define ijsreloffset 85
 %define ijsrel %(echo $((%{rel} + %{ijsreloffset})))
 
 %define ijsmajor 1
@@ -17,13 +19,12 @@
 %define libgs %mklibname gs %{gsmajor}
 %define libgs_devel %mklibname -d gs
 
-%define bootstrap 1
-
 %define GSx11SVGAmodule 1
-%define withcupsfilters 1
 %define debug 0
-%if %{bootstrap}
-%global withcupsfilters 0
+%if %{with bootstrap}
+%define withcupsfilters 0
+%else
+%define withcupsfilters 1
 %endif
 
 Summary:	PostScript/PDF interpreter and renderer (Main executable)
@@ -66,10 +67,10 @@ Patch30:	ghostscript-9.06-automake-1.13.patch
 Patch31:	objarch-aarch64.patch
 Patch32:	ghostscript-9.05-configure-endian.patch
 
-%if !%{bootstrap}
-BuildRequires:	gtk+2-devel
+%if !%{with bootstrap}
+BuildRequires:	pkgconfig(gtk+-2.0)
 BuildRequires:	cups-devel
-BuildRequires:	fontconfig-devel
+BuildRequires:	pkgconfig(fontconfig)
 %endif
 BuildRequires:	bison
 BuildRequires:	flex
@@ -81,7 +82,7 @@ BuildRequires:	jbig2dec-devel
 BuildRequires:	jpeg-devel
 BuildRequires:	libpaper-devel
 BuildRequires:	netpbm-devel
-BuildRequires:	tiff-devel
+BuildRequires:	pkgconfig(libtiff-4)
 BuildRequires:	pkgconfig(freetype2)
 BuildRequires:	pkgconfig(ice)
 BuildRequires:	pkgconfig(jasper)
@@ -304,7 +305,7 @@ popd
 #./autogen.sh
 %configure2_5x \
 	--enable-dynamic \
-%if !%{bootstrap}
+%if !%{with bootstrap}
     --enable-fontconfig \
 %endif
 %ifarch %{ix86}
@@ -349,11 +350,11 @@ perl -p -i -e "s|^EXTRALIBS=|EXTRALIBS=-L/%{_lib} -lz |g" Makefile
 # process does not work.
 %if %{GSx11SVGAmodule}
 #make STDDIRS
-make obj/X11.so
+%make obj/X11.so
 %endif
-make so
+%make so
 #make pcl3opts
-make cups
+%make cups
 
 %install
 rm -rf %{buildroot}
@@ -372,7 +373,7 @@ install -d %{buildroot}%{_libdir}
 install -d %{buildroot}%{_includedir}
 install -d %{buildroot}%{_sysconfdir}
 install -d %{buildroot}%{_mandir}/man1
-%if !%{bootstrap}
+%if !%{with bootstrap}
 install -d %{buildroot}%{_prefix}/lib/cups
 install -d %{buildroot}%{_datadir}/cups/model
 install -d %{buildroot}%{_sysconfdir}/cups
@@ -396,7 +397,7 @@ popd
 ##### GHOSTSCRIPT
 mkdir -p %{buildroot}%{_docdir}/ghostscript-doc-%{gsver}
 
-%if !%{bootstrap}
+%if !%{with bootstrap}
 make \
 	prefix=%{_prefix} \
 	DESTDIR=%{buildroot} \
@@ -443,7 +444,7 @@ install -m 644 sipixa6.upp %{buildroot}%{_datadir}/ghostscript/%{gsver}/lib/
 ln -s %{_bindir}/gsc %{buildroot}%{_bindir}/gs-common
 ln -s %{_bindir}/gsc %{buildroot}%{_bindir}/ghostscript
 
-%if !%{bootstrap}
+%if !%{with bootstrap}
 # why?
 mv %{buildroot}%{_datadir}/cups/mime/gstoraster.convs %{buildroot}%{_sysconfdir}/cups/gstoraster.convs
 %endif
