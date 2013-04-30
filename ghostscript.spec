@@ -3,12 +3,12 @@
 %bcond_with bootstrap
 
 %define _disable_ld_no_undefined 1
-%define rel	5
+%define rel	6
 
 %define gsver 9.07
 %define ijsver 0.35
 # (tpg) BUMP THIS EVERY UPDATE
-%define ijsreloffset 85
+%define ijsreloffset 86
 %define ijsrel %(echo $((%{rel} + %{ijsreloffset})))
 
 %define ijsmajor 1
@@ -86,7 +86,10 @@ BuildRequires:	pkgconfig(libtiff-4)
 BuildRequires:	pkgconfig(freetype2)
 BuildRequires:	pkgconfig(ice)
 BuildRequires:	pkgconfig(jasper)
-BuildRequires:	pkgconfig(lcms2)
+# Using external lcms2 results in
+# http://bugs.ghostscript.com/show_bug.cgi?id=693942
+# FIXME enable external lcms2 once this is fixed.
+BuildConflicts:	pkgconfig(lcms2)
 BuildRequires:	pkgconfig(libidn)
 BuildRequires:	pkgconfig(libpng15)
 BuildRequires:	pkgconfig(libxml)
@@ -241,7 +244,7 @@ This package contains documentation for GhostScript.
 #backup files not needed
 find . -name "*.*~" |xargs rm -f
 # prevent building and using bundled libs
-rm -rf jasper jbig2dec libpng jpeg tiff expat zlib lcms* freetype openjpeg
+rm -rf jasper jbig2dec libpng jpeg tiff expat zlib lcms freetype openjpeg
 
 # Convert manual pages to UTF-8
 from8859_1() {
