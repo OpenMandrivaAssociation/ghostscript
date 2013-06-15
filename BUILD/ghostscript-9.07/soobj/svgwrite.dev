@@ -1,2 +1,0 @@
--dev2 svgwrite -obj ./soobj/gdevsvg.o
--include ./soobj/vector

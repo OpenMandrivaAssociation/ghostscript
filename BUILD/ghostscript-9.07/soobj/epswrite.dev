@@ -1,2 +1,0 @@
--dev2 epswrite -obj ./soobj/gdevps.o ./soobj/gdevpsu.o ./soobj/scantab.o ./soobj/sfilter2.o
--include ./soobj/psdf

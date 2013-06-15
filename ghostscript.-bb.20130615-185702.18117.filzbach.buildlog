@@ -1,2 +1,0 @@
-error: Failed build dependencies:
-	pkgconfig(lcms2) conflicts with ghostscript-9.07-6.src

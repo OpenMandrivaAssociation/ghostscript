@@ -1,1 +1,0 @@
--dev2 psmono -include ./soobj/page -obj ./soobj/gdevpsim.o ./soobj/gdevpsu.o
