@@ -1,0 +1,11 @@
+#!/bin/sh
+# $Id: ps2pdfpress,v 1.0 2002/09/01 20:48:00 ghibo Exp $
+# Convert PostScript to PDF 1.4 (Acrobat 5-and-later compatible)
+# without image DCT downsampling.
+
+exec ps2pdfwr -dCompatibilityLevel=1.4 \
+	-dPDFSETTINGS=/prepress \
+	-dAutoFilterColorImages=false \
+	-sColorImageFilter=FlateEncode \
+	-dAutoFilterGrayImages=false \
+	-sGrayImageFilter=FlateEncode	"$@"

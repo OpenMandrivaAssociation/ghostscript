@@ -1,0 +1,45 @@
+%dir /usr/lib/debug
+%dir /usr/lib/debug/.build-id
+%dir /usr/lib/debug/.build-id/1c
+%dir /usr/lib/debug/.build-id/44
+%dir /usr/lib/debug/.build-id/46
+%dir /usr/lib/debug/.build-id/4f
+%dir /usr/lib/debug/.build-id/76
+%dir /usr/lib/debug/.build-id/8e
+%dir /usr/lib/debug/.build-id/9f
+%dir /usr/lib/debug/usr
+%dir /usr/lib/debug/usr/bin
+%dir /usr/lib/debug/usr/lib
+%dir /usr/lib/debug/usr/lib/cups
+%dir /usr/lib/debug/usr/lib/cups/filter
+%dir /usr/lib/debug/usr/lib64
+%dir /usr/lib/debug/usr/lib64/ghostscript
+%dir /usr/lib/debug/usr/lib64/ghostscript/9.07
+/usr/lib/debug/.build-id/1c/9ddd9edd3484b0123d697093d8aa41f4a2c33b
+/usr/lib/debug/.build-id/1c/9ddd9edd3484b0123d697093d8aa41f4a2c33b.debug
+/usr/lib/debug/.build-id/44/ef3cc5e31a928baac3b3ec583c457a3cbee9c3
+/usr/lib/debug/.build-id/44/ef3cc5e31a928baac3b3ec583c457a3cbee9c3.debug
+/usr/lib/debug/.build-id/46/de8b152cf8d8da7dfc9d8a4e43414c13ce134e
+/usr/lib/debug/.build-id/46/de8b152cf8d8da7dfc9d8a4e43414c13ce134e.debug
+/usr/lib/debug/.build-id/4f/57744214be5f255e5cdb5ae2e63b048c5ca1bc
+/usr/lib/debug/.build-id/4f/57744214be5f255e5cdb5ae2e63b048c5ca1bc.debug
+/usr/lib/debug/.build-id/76/efb510aedd03c957139cf2f8f8755a0043a2b3
+/usr/lib/debug/.build-id/76/efb510aedd03c957139cf2f8f8755a0043a2b3.debug
+/usr/lib/debug/.build-id/8e/2e765a31314ef9f52c903abbeebb562a819d34
+/usr/lib/debug/.build-id/8e/2e765a31314ef9f52c903abbeebb562a819d34.debug
+/usr/lib/debug/.build-id/9f/1139e5435edb8606a37fdc0129057d1f8bf607
+/usr/lib/debug/.build-id/9f/1139e5435edb8606a37fdc0129057d1f8bf607.debug
+/usr/lib/debug/usr/bin/ghostscript.debug
+/usr/lib/debug/usr/bin/gs-common.debug
+/usr/lib/debug/usr/bin/gsc.debug
+/usr/lib/debug/usr/bin/gsx.debug
+/usr/lib/debug/usr/bin/ijs_client_example.debug
+/usr/lib/debug/usr/bin/ijs_server_example.debug
+/usr/lib/debug/usr/lib/cups/filter/gstoraster.debug
+/usr/lib/debug/usr/lib64/ghostscript/9.07/X11.so.debug
+/usr/lib/debug/usr/lib64/libgs.so.9.07.debug
+/usr/lib/debug/usr/lib64/libgs.so.9.debug
+/usr/lib/debug/usr/lib64/libgs.so.debug
+/usr/lib/debug/usr/lib64/libijs-0.35.so.debug
+/usr/lib/debug/usr/lib64/libijs.so.debug
+/usr/src/debug/ghostscript-9.07

@@ -1,0 +1,2 @@
+-obj ./soobj/gdevprn.o ./soobj/gxdownscale.o
+-include ./soobj/clist

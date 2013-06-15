@@ -1,0 +1,10 @@
+This version of ghostscript support shared modules dynamically loaded
+at run time.
+
+There are currently two modules compiled with the Mandriva Linux version of
+ghostscript, one to support all X11 devices (typically used by gv) and
+another to support the svgalib devices. Look at the
+ghostscript-module-??? packages.
+
+There is no configuration needed, just can add (or remove) the package
+to add (or remove) the devices concerned in ghostscript.

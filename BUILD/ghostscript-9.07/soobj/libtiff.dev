@@ -1,0 +1,3 @@
+-obj -lib tiff
+-include ./soobj/jpegd.dev
+-include ./soobj/jpege.dev

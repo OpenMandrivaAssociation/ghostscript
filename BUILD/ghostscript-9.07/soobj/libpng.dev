@@ -1,0 +1,2 @@
+-obj -lib png
+-include ./soobj/zlibe.dev
