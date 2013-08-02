@@ -3,7 +3,7 @@
 %bcond_with bootstrap
 
 %define _disable_ld_no_undefined 1
-%define rel	7
+%define rel	8
 
 %define gsver 9.07
 %define ijsver 0.35
@@ -92,7 +92,7 @@ BuildRequires:	pkgconfig(jasper)
 BuildConflicts:	pkgconfig(lcms2)
 BuildRequires:	pkgconfig(libidn)
 BuildRequires:	pkgconfig(libpng)
-BuildRequires:	pkgconfig(libxml)
+BuildRequires:	pkgconfig(libxml-2.0)
 BuildRequires:	pkgconfig(sm)
 BuildRequires:	pkgconfig(x11)
 BuildRequires:	pkgconfig(xext)
