@@ -3,12 +3,12 @@
 %bcond_with bootstrap
 
 %define _disable_ld_no_undefined 1
-%define rel	8
+%define rel	1
 
-%define gsver 9.07
+%define gsver 9.09
 %define ijsver 0.35
 # (tpg) BUMP THIS EVERY UPDATE
-%define ijsreloffset 86
+%define ijsreloffset 87
 %define ijsrel %(echo $((%{rel} + %{ijsreloffset})))
 
 %define ijsmajor 1
@@ -21,11 +21,6 @@
 
 %define GSx11SVGAmodule 1
 %define debug 0
-%if %{with bootstrap}
-%define withcupsfilters 0
-%else
-%define withcupsfilters 1
-%endif
 
 Summary:	PostScript/PDF interpreter and renderer (Main executable)
 Name:		ghostscript
@@ -52,8 +47,6 @@ Patch3:		ghostscript-noopt.patch
 #Patch4:		ghostscript-ijs-automake-ver.patch
 # Define .runlibfileifexists.
 Patch5:		ghostscript-runlibfileifexists.patch
-# Install CUPS filter convs files in the correct place.
-Patch10:	ghostscript-cups-filters.patch
 # Restored Fontmap.local patch, incorrectly dropped after
 # ghostscript-8.15.4-3 (bug #610301).
 # Note: don't use -b here to avoid the backup file ending up in the
@@ -63,13 +56,11 @@ Patch27:	ghostscript-Fontmap.local.patch
 #Patch28: ghostscript-iccprofiles-initdir.patch
 # gdevcups: don't use uninitialized variables in debugging output.
 #Patch29:	ghostscript-gdevcups-debug-uninit.patch
-Patch30:	ghostscript-9.06-automake-1.13.patch
 Patch31:	objarch-aarch64.patch
-Patch32:	ghostscript-9.05-configure-endian.patch
+Patch32:	ghostscript-9.09-buildfix.patch
 
 %if !%{with bootstrap}
-BuildRequires:	pkgconfig(gtk+-2.0)
-BuildRequires:	cups-devel
+BuildRequires:	pkgconfig(gtk+-3.0)
 BuildRequires:	pkgconfig(fontconfig)
 %endif
 BuildRequires:	bison
@@ -86,10 +77,12 @@ BuildRequires:	pkgconfig(libtiff-4)
 BuildRequires:	pkgconfig(freetype2)
 BuildRequires:	pkgconfig(ice)
 BuildRequires:	pkgconfig(jasper)
+%if 0
 # Using external lcms2 results in
 # http://bugs.ghostscript.com/show_bug.cgi?id=693942
 # FIXME enable external lcms2 once this is fixed.
 BuildConflicts:	pkgconfig(lcms2)
+%endif
 BuildRequires:	pkgconfig(libidn)
 BuildRequires:	pkgconfig(libpng)
 BuildRequires:	pkgconfig(libxml-2.0)
@@ -297,8 +290,8 @@ pushd ijs*
 %ifarch %{ix86}
 	--disable-sse2 \
 %endif
-    --enable-shared \
-    --disable-static
+	--enable-shared \
+	--disable-static
 
 %make
 popd
@@ -309,24 +302,23 @@ popd
 %configure2_5x \
 	--enable-dynamic \
 %if !%{with bootstrap}
-    --enable-fontconfig \
+	--enable-fontconfig \
 %endif
 %ifarch %{ix86}
-    --disable-sse2 \
+	--disable-sse2 \
 %endif
-    --with-drivers=ALL,opvp \
-    --with-fontpath="/usr/share/fonts/default/ghostscript:/usr/share/fonts/default/type1:/usr/share/ghostscript/fonts:/usr/share/ghostscript/%{gsver}/Resource:/usr/share/ghostscript/Resource:/usr/share/ghostscript/CIDFont:/usr/share/fonts/ttf:/usr/share/fonts/type1:/usr/share/fonts/default/Type1" \
+	--with-drivers=ALL,opvp \
+	--with-fontpath="/usr/share/fonts/default/ghostscript:/usr/share/fonts/default/type1:/usr/share/ghostscript/fonts:/usr/share/ghostscript/%{gsver}/Resource:/usr/share/ghostscript/Resource:/usr/share/ghostscript/CIDFont:/usr/share/fonts/ttf:/usr/share/fonts/type1:/usr/share/fonts/default/Type1" \
 %if %{with ijs}
-    --with-ijs \
+	--with-ijs \
 %endif
-    --without-omni \
-    --with-x \
-    --disable-compile-inits \
-    --with-system-libtiff \
-    --with-libidn \
-    --enable-dbus \
-    --enable-dynamic \
-    --with-install-cups
+	--without-omni \
+	--with-x \
+	--disable-compile-inits \
+	--with-system-libtiff \
+	--with-libidn \
+	--enable-dbus \
+	--enable-dynamic
 
 # Drivers which do not compile:
 # Needs newsiop/lbp.h: nwp533
@@ -376,11 +368,6 @@ install -d %{buildroot}%{_libdir}
 install -d %{buildroot}%{_includedir}
 install -d %{buildroot}%{_sysconfdir}
 install -d %{buildroot}%{_mandir}/man1
-%if !%{with bootstrap}
-install -d %{buildroot}%{_prefix}/lib/cups
-install -d %{buildroot}%{_datadir}/cups/model
-install -d %{buildroot}%{_sysconfdir}/cups
-%endif
 
 pushd ijs*
 %configure2_5x \
@@ -399,17 +386,6 @@ popd
 
 ##### GHOSTSCRIPT
 mkdir -p %{buildroot}%{_docdir}/ghostscript-doc-%{gsver}
-
-%if !%{with bootstrap}
-make \
-	prefix=%{_prefix} \
-	DESTDIR=%{buildroot} \
-	gssharedir=%{_libdir}/ghostscript/%{gsver} \
-	docdir=%{_docdir}/ghostscript-doc-%{gsver} \
-	bindir=%{_bindir} \
-	mandir=%{_mandir} \
-	install-cups
-%endif
 
 make \
 	prefix=%{_prefix} \
@@ -446,11 +422,6 @@ install -m 644 sipixa6.upp %{buildroot}%{_datadir}/ghostscript/%{gsver}/lib/
 # 2006 and older
 ln -s %{_bindir}/gsc %{buildroot}%{_bindir}/gs-common
 ln -s %{_bindir}/gsc %{buildroot}%{_bindir}/ghostscript
-
-%if !%{with bootstrap}
-# why?
-mv %{buildroot}%{_datadir}/cups/mime/gstoraster.convs %{buildroot}%{_sysconfdir}/cups/gstoraster.convs
-%endif
 
 # Correct permissions for all documentation files
 chmod -R a+rX %{buildroot}%{_docdir}
@@ -504,13 +475,6 @@ fi
 %{_bindir}/gs[d-n]*
 %{_bindir}/[j-l]*
 %{_bindir}/[n-z]*
-%if %{withcupsfilters}
-# "pstoraster" wrapper script to make GhostScript being used as the
-# cups-internal RIP
-%attr(0755,root,root) %{_prefix}/lib*/cups/filter/*
-%{_datadir}/cups/model/*
-%config(noreplace) %{_sysconfdir}/cups/gstoraster.convs
-%endif
 
 %files doc
 %doc %{_docdir}/ghostscript-doc-%{gsver}
