@@ -3,7 +3,7 @@
 %bcond_with bootstrap
 
 %define _disable_ld_no_undefined 1
-%define rel	1
+%define rel	2
 
 %define gsver 9.10
 %define ijsver 0.35
@@ -93,6 +93,7 @@ BuildRequires:	pkgconfig(xt)
 BuildRequires:	pkgconfig(zlib)
 BuildRequires:	pkgconfig(dbus-1)
 BuildRequires:	pkgconfig(libopenjpeg1)
+BuildRequires:	cups
 
 Requires:	ghostscript-common
 Requires:	update-alternatives
