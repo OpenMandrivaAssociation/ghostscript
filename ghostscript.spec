@@ -3,12 +3,12 @@
 %bcond_with bootstrap
 
 %define _disable_ld_no_undefined 1
-%define rel	3
+%define rel	4
 
 %define gsver 9.10
 %define ijsver 0.35
 # (tpg) BUMP THIS EVERY UPDATE
-%define ijsreloffset 87
+%define ijsreloffset 88
 %define ijsrel %(echo $((%{rel} + %{ijsreloffset})))
 
 %define ijsmajor 1
