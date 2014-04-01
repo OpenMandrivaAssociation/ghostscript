@@ -1,0 +1,11 @@
+--- ghostscript-9.14/devices/devs.mak.omv~	2014-04-01 20:30:46.582025513 +0200
++++ ghostscript-9.14/devices/devs.mak	2014-04-01 20:30:56.038025274 +0200
+@@ -1597,7 +1597,7 @@ $(DD)pngalpha.dev : $(DEVS_MAK) $(libpng
+ fpng_=$(DEVOBJ)gdevfpng.$(OBJ) $(DEVOBJ)gdevpccm.$(OBJ)
+ 
+ $(DEVOBJ)gdevfpng.$(OBJ) : $(DEVSRC)gdevfpng.c\
+- $(gdevprn_h) $(gdevpccm_h) $(gscdefs_h) $(zlib_h)
++ $(gdevprn_h) $(gdevpccm_h) $(gscdefs_h)
+ 	$(CC_) $(I_)$(DEVI_) $(II)$(PI_)$(_I) $(PCF_) $(GLF_) $(DEVO_)gdevfpng.$(OBJ) $(C_) $(DEVSRC)gdevfpng.c
+ 
+ $(DD)fpng.dev : $(DEVS_MAK) $(fpng_) $(GLD)page.dev $(GDEV)

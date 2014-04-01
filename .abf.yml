@@ -1,7 +1,4 @@
-removed_sources:
-  ghostscript-9.07.tar.gz: b04a88ea8d661fc53d4f7eac34d84456272afc06
-  ghostscript-9.09.tar.gz: 688ea92ee80f88bbcdc4f772b1bdad1e0f911e01
 sources:
-  ghostscript-9.10.tar.gz: 29d6538ae77565c09f399b06455e94e7bcd83d01
   ps2pdfpress.bz2: 57ce49682f94fd1afad7327bda8378b2a60983aa
   sipixa6.upp.bz2: 5ef937dbcd836abb6fe03a6a46ba5161147c6556
+  ghostscript-9.14.tar.gz: 85001be316ebc11a6060ae7e208fe08dcbfd70ae

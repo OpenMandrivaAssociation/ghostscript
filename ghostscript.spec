@@ -3,9 +3,9 @@
 %bcond_with bootstrap
 
 %define _disable_ld_no_undefined 1
-%define rel	5
+%define rel	1
 
-%define gsver 9.10
+%define gsver 9.14
 %define ijsver 0.35
 # (tpg) BUMP THIS EVERY UPDATE
 %define ijsreloffset 90
@@ -57,7 +57,7 @@ Patch27:	ghostscript-Fontmap.local.patch
 # gdevcups: don't use uninitialized variables in debugging output.
 #Patch29:	ghostscript-gdevcups-debug-uninit.patch
 Patch31:	objarch-aarch64.patch
-Patch32:	ghostscript-9.09-buildfix.patch
+Patch32:	ghostscript-9.14-system-zlib.patch
 
 %if !%{with bootstrap}
 BuildRequires:	pkgconfig(gtk+-3.0)
@@ -183,6 +183,7 @@ PDF interpreters of GhostScript.
 Summary:	Headers and links to compile against the "%{libgs}" library
 Group:		Development/C
 Requires:	%{libgs} >= %{gsver}
+Requires:	ghostscript = %{gsver}
 Provides:	%{name}-devel = %{gsver}
 Provides:	libgs-devel = %{gsver}
 Obsoletes:	%{_lib}gs9-devel < %{gsver}
@@ -353,8 +354,6 @@ perl -p -i -e "s|^EXTRALIBS=|EXTRALIBS=-L/%{_lib} -lz |g" Makefile
 %make cups
 
 %install
-rm -rf %{buildroot}
-
 # Change compiler flags for debugging when in debug mode
 %if %debug
 export DONT_STRIP=1
