@@ -3,7 +3,7 @@
 %bcond_with bootstrap
 
 %define _disable_ld_no_undefined 1
-%define rel	1
+%define rel	2
 
 %define gsver 9.14
 %define ijsver 0.35
