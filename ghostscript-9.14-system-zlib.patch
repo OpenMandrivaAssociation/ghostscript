@@ -1,11 +1,20 @@
---- ghostscript-9.15/devices/devs.mak.0032~	2014-11-06 14:00:30.379685192 +0100
-+++ ghostscript-9.15/devices/devs.mak	2014-11-06 14:00:50.838429422 +0100
-@@ -1589,7 +1589,7 @@ $(DD)pngalpha.dev : $(DEVS_MAK) $(libpng
+--- ghostscript-9.16/devices/devs.mak.0032~	2015-04-04 11:33:58.483293580 +0200
++++ ghostscript-9.16/devices/devs.mak	2015-04-04 11:34:31.591146597 +0200
+@@ -1231,7 +1231,7 @@ $(libtiff_dev) $(MAKEDIRS)
+ 
+ $(DEVOBJ)gdevxps.$(OBJ) : $(DEVVECSRC)gdevxps.c $(gdevvec_h) \
+ $(string__h) $(stdio__h) $(libtiff_dev) $(gx_h) $(gserrors_h) \
+-$(gxpath_h) $(gzcpath_h) $(stream_h) $(zlib_h) \
++$(gxpath_h) $(gzcpath_h) $(stream_h) \
+ $(stdint__h) $(gdevtifs_h) $(gsicc_create_h) $(gsicc_cache_h) \
+ $(gximdecode_h) $(MAKEDIRS)
+ 	$(XPSDEVCC) $(I_)$(TI_)$(_I) $(GLO_)gdevxps.$(OBJ) $(C_) $(DEVVECSRC)gdevxps.c
+@@ -1683,7 +1683,7 @@ $(DD)pngalpha.dev : $(DEVS_MAK) $(libpng
  fpng_=$(DEVOBJ)gdevfpng.$(OBJ) $(DEVOBJ)gdevpccm.$(OBJ)
  
  $(DEVOBJ)gdevfpng_0.$(OBJ) : $(DEVSRC)gdevfpng.c\
-- $(gdevprn_h) $(gdevpccm_h) $(gscdefs_h) $(zlib_h)
-+ $(gdevprn_h) $(gdevpccm_h) $(gscdefs_h)
+- $(gdevprn_h) $(gdevpccm_h) $(gscdefs_h) $(zlib_h) $(MAKEDIRS)
++ $(gdevprn_h) $(gdevpccm_h) $(gscdefs_h) $(MAKEDIRS)
  	$(CC_) $(I_)$(DEVI_) $(II)$(PI_)$(_I) $(PCF_) $(GLF_) $(DEVO_)gdevfpng_0.$(OBJ) $(C_) $(DEVSRC)gdevfpng.c
  
  $(DEVOBJ)gdevfpng_1.$(OBJ) : $(DEVSRC)gdevfpng.c\

@@ -5,10 +5,10 @@
 %define _disable_ld_no_undefined 1
 %define rel	1
 
-%define gsver 9.15
+%define gsver 9.16
 %define ijsver 0.35
 # (tpg) BUMP THIS EVERY UPDATE
-%define ijsreloffset 95
+%define ijsreloffset 96
 %define ijsrel %(echo $((%{rel} + %{ijsreloffset})))
 
 %define ijsmajor 1
@@ -40,8 +40,6 @@ Patch300:	ghostscript-9.05-x11_shared.diff
 Patch1:		ghostscript-multilib.patch
 # Fix some shell scripts
 Patch2:		ghostscript-scripts.patch
-# Build igcref.c with -O0 to work around bug #150771.
-Patch3:		ghostscript-noopt.patch
 # Fix ./autgen.sh in ijs sub-project
 # See http://bugs.ghostscript.com/show_bug.cgi?id=692040 for details.
 #Patch4:		ghostscript-ijs-automake-ver.patch
