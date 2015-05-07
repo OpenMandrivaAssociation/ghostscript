@@ -3,12 +3,12 @@
 %bcond_with bootstrap
 
 %define _disable_ld_no_undefined 1
-%define rel	1
+%define rel	2
 
 %define gsver 9.16
 %define ijsver 0.35
 # (tpg) BUMP THIS EVERY UPDATE
-%define ijsreloffset 96
+%define ijsreloffset 97
 %define ijsrel %(echo $((%{rel} + %{ijsreloffset})))
 
 %define ijsmajor 1
@@ -286,7 +286,7 @@ pushd ijs*
 # Rebuild broken build infrastructure
 # Needed by patch4.
 ./autogen.sh
-%configure2_5x \
+%configure \
 %ifarch %{ix86}
 	--disable-sse2 \
 %endif
@@ -299,7 +299,7 @@ popd
 
 # We have a Subversion version, so we must re-generate "configure"
 #./autogen.sh
-%configure2_5x \
+%configure \
 	--enable-dynamic \
 %if !%{with bootstrap}
 	--enable-fontconfig \
@@ -368,7 +368,7 @@ install -d %{buildroot}%{_sysconfdir}
 install -d %{buildroot}%{_mandir}/man1
 
 pushd ijs*
-%configure2_5x \
+%configure \
 	--enable-shared \
 	--prefix=%{buildroot}%{_prefix} \
 	--libdir=%{buildroot}%{_libdir}
