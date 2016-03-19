@@ -3,13 +3,11 @@
 %bcond_with bootstrap
 
 %define _disable_ld_no_undefined 1
-%define rel	2
 
-%define gsver 9.16
 %define ijsver 0.35
 # (tpg) BUMP THIS EVERY UPDATE
-%define ijsreloffset 97
-%define ijsrel %(echo $((%{rel} + %{ijsreloffset})))
+%define ijsreloffset 98
+%define ijsrel %(echo $((%{release} + %{ijsreloffset})))
 
 %define ijsmajor 1
 %define libijs %mklibname ijs %{ijsmajor}
@@ -24,8 +22,8 @@
 
 Summary:	PostScript/PDF interpreter and renderer (Main executable)
 Name:		ghostscript
-Version:	%{gsver}
-Release:	%{rel}
+Version:	9.16
+Release:	3
 License:	GPLv2+
 Group:		Publishing
 URL:		http://www.ghostscript.com/awki/Index
@@ -276,9 +274,9 @@ export ac_cv_c_bigendian=yes
 # Change compiler flags for debugging when in debug mode
 %if %debug
 export DONT_STRIP=1
-export CFLAGS="`echo %optflags |sed -e 's/-O3/-g/' |sed -e 's/-O2/-g/'`"
-export CXXFLAGS="`echo %optflags |sed -e 's/-O3/-g/' |sed -e 's/-O2/-g/'`"
-export RPM_OPT_FLAGS="`echo %optflags |sed -e 's/-O3/-g/' |sed -e 's/-O2/-g/'`"
+export CFLAGS="`echo %{optflags} |sed -e 's/-O3/-g/' |sed -e 's/-O2/-g/'`"
+export CXXFLAGS="`echo %{optflags} |sed -e 's/-O3/-g/' |sed -e 's/-O2/-g/'`"
+export RPM_OPT_FLAGS="`echo %{optflags} |sed -e 's/-O3/-g/' |sed -e 's/-O2/-g/'`"
 %endif
 
 %if %{with ijs}
@@ -355,9 +353,9 @@ perl -p -i -e "s|^EXTRALIBS=|EXTRALIBS=-L/%{_lib} -lz |g" Makefile
 # Change compiler flags for debugging when in debug mode
 %if %debug
 export DONT_STRIP=1
-export CFLAGS="`echo %optflags |sed -e 's/-O3/-g/' |sed -e 's/-O2/-g/'`"
-export CXXFLAGS="`echo %optflags |sed -e 's/-O3/-g/' |sed -e 's/-O2/-g/'`"
-export RPM_OPT_FLAGS="`echo %optflags |sed -e 's/-O3/-g/' |sed -e 's/-O2/-g/'`"
+export CFLAGS="`echo %{optflags |sed -e 's/-O3/-g/' |sed -e 's/-O2/-g/'`"
+export CXXFLAGS="`echo %{optflags} |sed -e 's/-O3/-g/' |sed -e 's/-O2/-g/'`"
+export RPM_OPT_FLAGS="`echo %{optflags} |sed -e 's/-O3/-g/' |sed -e 's/-O2/-g/'`"
 %endif
 
 # Make directories
