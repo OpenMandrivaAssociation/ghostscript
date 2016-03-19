@@ -23,7 +23,7 @@
 Summary:	PostScript/PDF interpreter and renderer (Main executable)
 Name:		ghostscript
 Version:	9.16
-Release:	4
+Release:	5
 License:	GPLv2+
 Group:		Publishing
 URL:		http://www.ghostscript.com/awki/Index
