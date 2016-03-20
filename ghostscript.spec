@@ -73,12 +73,7 @@ BuildRequires:	pkgconfig(libtiff-4)
 BuildRequires:	pkgconfig(freetype2)
 BuildRequires:	pkgconfig(ice)
 BuildRequires:	pkgconfig(jasper)
-%if 0
-# Using external lcms2 results in
-# http://bugs.ghostscript.com/show_bug.cgi?id=693942
-# FIXME enable external lcms2 once this is fixed.
-BuildConflicts:	pkgconfig(lcms2)
-%endif
+BuildRequires:	pkgconfig(lcms2)
 BuildRequires:	pkgconfig(libidn)
 BuildRequires:	pkgconfig(libpng)
 BuildRequires:	pkgconfig(libxml-2.0)
