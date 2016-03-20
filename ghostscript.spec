@@ -1,6 +1,8 @@
 %bcond_without ijs
 %bcond_with crosscompile
 %bcond_with bootstrap
+%bcond_without GSx11SVGAmodule
+%bcond_with debug
 
 %define _disable_ld_no_undefined 1
 
@@ -16,9 +18,6 @@
 %define gsmajor 9
 %define libgs %mklibname gs %{gsmajor}
 %define libgs_devel %mklibname -d gs
-
-%define GSx11SVGAmodule 1
-%define debug 0
 
 Summary:	PostScript/PDF interpreter and renderer (Main executable)
 Name:		ghostscript
@@ -88,7 +87,7 @@ BuildRequires:	cups-devel
 
 Requires:	ghostscript-common
 Requires:	update-alternatives
-%if !%{GSx11SVGAmodule}
+%if !%{with GSx11SVGAmodule}
 %rename	ghostscript-module-X ghostscript-module-SVGALIB
 %endif
 
@@ -148,7 +147,7 @@ display support ("display" device, default, so it displays files by
 simply entering "gs <file>" on the command line). It makes use of the
 GhostScript shared library.
 
-%if %{GSx11SVGAmodule}
+%if %{with GSx11SVGAmodule}
 %package module-X
 Summary:	PostScript/PDF interpreter and renderer (Additional support for X)
 Group:		Publishing
@@ -240,7 +239,7 @@ from8859_1() {
 for i in man/de/*.1; do from8859_1 "$i"; done
 
 # Stuff for shared library support to ghostscript.
-%if %{GSx11SVGAmodule}
+%if %{with GSx11SVGAmodule}
 # build a small README describing the features available.
 cat <<EOF >README.shared.mandrivalinux
 This version of ghostscript support shared modules dynamically loaded
@@ -267,7 +266,7 @@ bzcat %{SOURCE3} > sipixa6.upp
 export ac_cv_c_bigendian=yes
 %endif
 # Change compiler flags for debugging when in debug mode
-%if %debug
+%if %{with debug}
 export DONT_STRIP=1
 export CFLAGS="`echo %{optflags} |sed -e 's/-O3/-g/' |sed -e 's/-O2/-g/'`"
 export CXXFLAGS="`echo %{optflags} |sed -e 's/-O3/-g/' |sed -e 's/-O2/-g/'`"
@@ -336,7 +335,7 @@ perl -p -i -e "s|^EXTRALIBS=|EXTRALIBS=-L/%{_lib} -lz |g" Makefile
 
 # The RPM macro for make is not used here, as parallelization of the build 
 # process does not work.
-%if %{GSx11SVGAmodule}
+%if %{with GSx11SVGAmodule}
 #make STDDIRS
 %make obj/X11.so
 %endif
@@ -346,7 +345,7 @@ perl -p -i -e "s|^EXTRALIBS=|EXTRALIBS=-L/%{_lib} -lz |g" Makefile
 
 %install
 # Change compiler flags for debugging when in debug mode
-%if %debug
+%if %{with debug}
 export DONT_STRIP=1
 export CFLAGS="`echo %{optflags |sed -e 's/-O3/-g/' |sed -e 's/-O2/-g/'`"
 export CXXFLAGS="`echo %{optflags} |sed -e 's/-O3/-g/' |sed -e 's/-O2/-g/'`"
@@ -388,7 +387,7 @@ make \
 	mandir=%{_mandir} \
 	soinstall
 
-%if %{GSx11SVGAmodule}
+%if %{with GSx11SVGAmodule}
 make \
 	prefix=%{_prefix} \
 	DESTDIR=%{buildroot} \
@@ -473,7 +472,7 @@ fi
 %files dvipdf
 %{_bindir}/dvipdf
 
-%if %{GSx11SVGAmodule}
+%if %{with GSx11SVGAmodule}
 %files module-X
 %doc README.shared.mandrivalinux
 %dir %{_libdir}/ghostscript/%{version}
