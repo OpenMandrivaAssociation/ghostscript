@@ -347,7 +347,7 @@ perl -p -i -e "s|^EXTRALIBS=|EXTRALIBS=-L/%{_lib} -lz |g" Makefile
 # Change compiler flags for debugging when in debug mode
 %if %{with debug}
 export DONT_STRIP=1
-export CFLAGS="`echo %{optflags |sed -e 's/-O3/-g/' |sed -e 's/-O2/-g/'`"
+export CFLAGS="`echo %{optflags} |sed -e 's/-O3/-g/' |sed -e 's/-O2/-g/'`"
 export CXXFLAGS="`echo %{optflags} |sed -e 's/-O3/-g/' |sed -e 's/-O2/-g/'`"
 export RPM_OPT_FLAGS="`echo %{optflags} |sed -e 's/-O3/-g/' |sed -e 's/-O2/-g/'`"
 %endif
