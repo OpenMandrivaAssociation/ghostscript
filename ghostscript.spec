@@ -6,6 +6,7 @@
 
 %define _disable_ld_no_undefined 1
 
+%define gsver 9.18
 %define ijsver 0.35
 # (tpg) BUMP THIS EVERY UPDATE
 %define ijsreloffset 98
@@ -21,17 +22,17 @@
 
 Summary:	PostScript/PDF interpreter and renderer (Main executable)
 Name:		ghostscript
-Version:	9.18
+Version:	%{gsver}
 Release:	1
 License:	GPLv2+
 Group:		Publishing
 URL:		http://www.ghostscript.com/awki/Index
-Source0:	http://downloads.ghostscript.com/public/%{name}-%{version}.tar.gz
+Source0:	http://downloads.ghostscript.com/public/%{name}-%{gsver}.tar.gz
 Source2:	ps2pdfpress.bz2
 Source3:	http://www.linuxprinting.org/download/printing/sipixa6.upp.bz2
 Source4:	ghostscript.rpmlintrc
 
-Patch300:	ghostscript-9.05-x11_shared.diff
+#Patch300:	ghostscript-9.05-x11_shared.diff
 # Fedora patches
 # Fix ijs-config not to have multilib conflicts (bug #192672)
 Patch1:		ghostscript-multilib.patch
@@ -229,7 +230,7 @@ This package contains documentation for GhostScript.
 #backup files not needed
 find . -name "*.*~" |xargs rm -f
 # prevent building and using bundled libs
-rm -rf jasper jbig2dec libpng jpeg tiff expat zlib lcms freetype openjpeg
+rm -rf jbig2dec libpng jpeg jpegxr tiff zlib lcms2 freetype cups/libs
 
 # Convert manual pages to UTF-8
 from8859_1() {
@@ -300,7 +301,7 @@ popd
 	--disable-sse2 \
 %endif
 	--with-drivers=ALL,opvp \
-	--with-fontpath="/usr/share/fonts/default/ghostscript:/usr/share/fonts/default/type1:/usr/share/ghostscript/fonts:/usr/share/ghostscript/%{version}/Resource:/usr/share/ghostscript/Resource:/usr/share/ghostscript/CIDFont:/usr/share/fonts/ttf:/usr/share/fonts/type1:/usr/share/fonts/default/Type1" \
+	--with-fontpath="/usr/share/fonts/default/ghostscript:/usr/share/fonts/default/type1:/usr/share/ghostscript/fonts:/usr/share/ghostscript/%{gsver}/Resource:/usr/share/ghostscript/Resource:/usr/share/ghostscript/CIDFont:/usr/share/fonts/ttf:/usr/share/fonts/type1:/usr/share/fonts/default/Type1" \
 %if %{with ijs}
 	--with-ijs \
 %endif
@@ -318,7 +319,7 @@ popd
 # Needs unbdev/lpviio.h: sparc
 
 # Set documentation dir
-perl -p -i -e 's|^(docdir=).*$|$1\$\(datadir\)/doc/%{name}-doc-%{version}|' Makefile
+perl -p -i -e 's|^(docdir=).*$|$1\$\(datadir\)/doc/%{name}-doc-%{gsver}|' Makefile
 
 # Fix references to X11 libraries
 perl -p -i -e "s|(/usr/X11R6)/lib\b|\1/%{_lib}|g" Makefile base/*.mak
@@ -375,13 +376,13 @@ perl -p -i -e "s:%{buildroot}::g" %{buildroot}%{_libdir}/pkgconfig/ijs.pc
 popd
 
 ##### GHOSTSCRIPT
-mkdir -p %{buildroot}%{_docdir}/ghostscript-doc-%{version}
+mkdir -p %{buildroot}%{_docdir}/ghostscript-doc-%{gsver}
 
 make \
 	prefix=%{_prefix} \
 	DESTDIR=%{buildroot} \
-	gssharedir=%{_libdir}/ghostscript/%{version} \
-	docdir=%{_docdir}/ghostscript-doc-%{version} \
+	gssharedir=%{_libdir}/ghostscript/%{gsver} \
+	docdir=%{_docdir}/ghostscript-doc-%{gsver} \
 	bindir=%{_bindir} \
 	libdir=%{_libdir} \
 	mandir=%{_mandir} \
@@ -391,8 +392,8 @@ make \
 make \
 	prefix=%{_prefix} \
 	DESTDIR=%{buildroot} \
-	gssharedir=%{_libdir}/ghostscript/%{version} \
-	docdir=%{_docdir}/ghostscript-doc-%{version} \
+	gssharedir=%{_libdir}/ghostscript/%{gsver} \
+	docdir=%{_docdir}/ghostscript-doc-%{gsver} \
 	bindir=%{_bindir} \
 	libdir=%{_libdir} \
 	mandir=%{_mandir} \
@@ -406,7 +407,7 @@ install -m 755 ps2pdfpress %{buildroot}%{_bindir}
 
 # UPP file for SiPix Pocket Printer A6
 #mkdir -p %{buildroot}%{_datadir}/ghostscript/%{gsver}/lib
-install -m 644 sipixa6.upp %{buildroot}%{_datadir}/ghostscript/%{version}/lib/
+install -m 644 sipixa6.upp %{buildroot}%{_datadir}/ghostscript/%{gsver}/lib/
 
 # Add backward compatibility link to not break printerdrake in Mandriva
 # 2006 and older
@@ -454,7 +455,7 @@ fi
 
 %files common
 %dir %{_datadir}/ghostscript
-%{_datadir}/ghostscript/%{version}
+%{_datadir}/ghostscript/%{gsver}
 %{_mandir}/man1/*
 %lang(de) %{_mandir}/de/man1/*
 #%{_bindir}/[a-c]*
@@ -467,7 +468,7 @@ fi
 %{_bindir}/[n-z]*
 
 %files doc
-%doc %{_docdir}/ghostscript-doc-%{version}
+%doc %{_docdir}/ghostscript-doc-%{gsver}
 
 %files dvipdf
 %{_bindir}/dvipdf
@@ -475,8 +476,8 @@ fi
 %if %{with GSx11SVGAmodule}
 %files module-X
 %doc README.shared.mandrivalinux
-%dir %{_libdir}/ghostscript/%{version}
-%{_libdir}/ghostscript/%{version}/X11.so
+%dir %{_libdir}/ghostscript/%{gsver}
+%{_libdir}/ghostscript/%{gsver}/X11.so
 %endif
 
 %files -n %{libgs}
