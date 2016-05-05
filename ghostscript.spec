@@ -6,10 +6,10 @@
 
 %define _disable_ld_no_undefined 1
 
-%define gsver 9.18
+%define gsver 9.19
 %define ijsver 0.35
 # (tpg) BUMP THIS EVERY UPDATE
-%define ijsreloffset 98
+%define ijsreloffset 99
 %define ijsrel %(echo $((%{release} + %{ijsreloffset})))
 
 %define ijsmajor 1
@@ -24,18 +24,15 @@ Summary:	PostScript/PDF interpreter and renderer (Main executable)
 Name:		ghostscript
 Version:	%{gsver}
 Release:	1
-License:	GPLv2+
+License:	AGPLv3
 Group:		Publishing
 URL:		http://www.ghostscript.com/awki/Index
-Source0:	http://downloads.ghostscript.com/public/%{name}-%{gsver}.tar.gz
+Source0:	https://github.com/ArtifexSoftware/ghostpdl-downloads/releases/download/gs%(echo %{gsver}|sed -e 's,\.,,g')/%{name}-%{version}.tar.gz
 Source2:	ps2pdfpress.bz2
 Source3:	http://www.linuxprinting.org/download/printing/sipixa6.upp.bz2
 Source4:	ghostscript.rpmlintrc
 
 #Patch300:	ghostscript-9.05-x11_shared.diff
-# Fedora patches
-# Fix ijs-config not to have multilib conflicts (bug #192672)
-Patch1:		ghostscript-multilib.patch
 # Fix some shell scripts
 Patch2:		ghostscript-scripts.patch
 # Fix ./autgen.sh in ijs sub-project
@@ -371,7 +368,6 @@ perl -p -i -e 's/\@OBJEXT\@/o/g' Makefile
 perl -p -i -e 's/\@EXEEXT\@//g' Makefile
 %makeinstall
 # Fix prefixes in scripts
-perl -p -i -e "s:%{buildroot}::g" %{buildroot}%{_bindir}/ijs-config
 perl -p -i -e "s:%{buildroot}::g" %{buildroot}%{_libdir}/pkgconfig/ijs.pc
 popd
 
@@ -497,4 +493,3 @@ fi
 %{_includedir}/ijs
 %{_bindir}/ijs_client_example
 %{_bindir}/ijs_server_example
-%{_bindir}/ijs-config
