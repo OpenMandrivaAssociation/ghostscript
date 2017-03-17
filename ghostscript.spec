@@ -6,7 +6,7 @@
 
 %define _disable_ld_no_undefined 1
 
-%define gsver 9.20
+%define gsver 9.21
 %define ijsver 0.35
 # (tpg) BUMP THIS EVERY UPDATE
 %define ijsreloffset 99
