@@ -6,7 +6,7 @@
 
 %define _disable_ld_no_undefined 1
 
-%define gsver 9.21
+%define gsver 9.22
 %define ijsver 0.35
 # (tpg) BUMP THIS EVERY UPDATE
 %define ijsreloffset 99
@@ -80,7 +80,7 @@ BuildRequires:	pkgconfig(xext)
 BuildRequires:	pkgconfig(xt)
 BuildRequires:	pkgconfig(zlib)
 BuildRequires:	pkgconfig(dbus-1)
-BuildRequires:	pkgconfig(libopenjpeg1)
+BuildRequires:	pkgconfig(libopenjp2)
 BuildRequires:	cups-devel
 
 Requires:	ghostscript-common
@@ -227,7 +227,7 @@ This package contains documentation for GhostScript.
 #backup files not needed
 find . -name "*.*~" |xargs rm -f
 # prevent building and using bundled libs
-rm -rf jbig2dec libpng jpeg jpegxr tiff zlib lcms2 freetype cups/libs
+rm -rf jbig2dec libpng jpeg jpegxr tiff zlib lcms2 freetype cups/libs openjpeg
 
 # Convert manual pages to UTF-8
 from8859_1() {
