@@ -81,6 +81,8 @@ BuildRequires:	pkgconfig(xt)
 BuildRequires:	pkgconfig(zlib)
 BuildRequires:	pkgconfig(dbus-1)
 BuildRequires:	pkgconfig(libopenjp2)
+BuildRequires:	pkgconfig(com_err)
+BuildRequires:	pkgconfig(krb5)
 BuildRequires:	cups-devel
 
 Requires:	ghostscript-common
@@ -331,7 +333,7 @@ perl -p -i -e "s:-ansi::g" Makefile
 # bork
 perl -p -i -e "s|^EXTRALIBS=|EXTRALIBS=-L/%{_lib} -lz |g" Makefile
 
-# The RPM macro for make is not used here, as parallelization of the build 
+# The RPM macro for make is not used here, as parallelization of the build
 # process does not work.
 %if %{with GSx11SVGAmodule}
 #make STDDIRS
