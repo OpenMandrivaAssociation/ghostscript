@@ -205,7 +205,6 @@ Summary:	Headers and links for compiling against the "%{libijs}" library
 Group:		Development/C
 URL:		http://www.linuxprinting.org/ijs/
 Requires:	%{libijs} >= %{ijsver}
-Requires:	multiarch-utils
 Provides:	libijs-devel = %{ijsver}-%{ijsrel}
 Provides:	ijs-devel = %{ijsver}-%{ijsrel}
 Obsoletes:	%{_lib}ijs1-devel < %{ijsver}-%{ijsrel}
