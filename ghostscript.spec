@@ -1,6 +1,6 @@
 %bcond_without ijs
 %bcond_with crosscompile
-%bcond_with bootstrap
+%bcond_without bootstrap
 %bcond_without GSx11SVGAmodule
 %bcond_with debug
 
@@ -88,7 +88,8 @@ BuildRequires:	cups-devel
 Requires:	ghostscript-common
 Requires:	update-alternatives
 %if !%{with GSx11SVGAmodule}
-%rename	ghostscript-module-X ghostscript-module-SVGALIB
+%rename	ghostscript-module-X
+%rename ghostscript-module-SVGALIB
 %endif
 
 %description
