@@ -1,6 +1,7 @@
---- ghostscript-9.19/devices/devs.mak.0032~	2016-05-04 23:13:39.486983947 +0200
-+++ ghostscript-9.19/devices/devs.mak	2016-05-04 23:14:54.657459187 +0200
-@@ -1233,7 +1233,7 @@ $(gximdecode_h) $(DEVS_MAK) $(MAKEDIRS)
+diff -up ghostscript-9.23/devices/devs.mak.0032~ ghostscript-9.23/devices/devs.mak
+--- ghostscript-9.23/devices/devs.mak.0032~	2018-03-21 09:48:06.000000000 +0100
++++ ghostscript-9.23/devices/devs.mak	2018-04-29 22:37:10.833434345 +0200
+@@ -1084,7 +1084,7 @@ $(gximdecode_h) $(DEVS_MAK) $(MAKEDIRS)
  
  $(DEVOBJ)gdevxps_0.$(OBJ) : $(DEVVECSRC)gdevxps.c $(gdevvec_h) \
  $(string__h) $(stdio__h) $(libtiff_dev) $(gx_h) $(gserrors_h) \
@@ -9,7 +10,7 @@
  $(stdint__h) $(gdevtifs_h) $(gsicc_create_h) $(gsicc_cache_h) \
  $(gximdecode_h) $(DEVS_MAK) $(MAKEDIRS)
  	$(XPSDEVCC) $(I_)$(TI_)$(_I) $(GLO_)gdevxps_0.$(OBJ) $(C_) $(DEVVECSRC)gdevxps.c
-@@ -1417,7 +1417,7 @@ $(DEVOBJ)gdevgprf_1.$(OBJ) : $(DEVSRC)gd
+@@ -1224,7 +1224,7 @@ $(DEVOBJ)gdevgprf_1.$(OBJ) : $(DEVSRC)gd
  
  $(DEVOBJ)gdevgprf_0.$(OBJ) : $(DEVSRC)gdevgprf.c $(PDEVH) $(math__h)\
   $(gdevdcrd_h) $(gscrd_h) $(gscrdp_h) $(gsparam_h) $(gxlum_h)\
@@ -18,12 +19,12 @@
   $(gscms_h) $(gsicc_cache_h) $(gsicc_manage_h) $(gxgetbit_h)\
   $(gdevppla_h) $(DEVS_MAK) $(MAKEDIRS)
  	$(DEVCC) $(DEVO_)gdevgprf_0.$(OBJ) $(II)$(ZI_)$(_I) $(C_) $(DEVSRC)gdevgprf.c
-@@ -1702,7 +1702,7 @@ $(DD)pngalpha.dev : $(libpng_dev) $(png_
+@@ -1509,7 +1509,7 @@ $(DD)pngalpha.dev : $(libpng_dev) $(png_
  fpng_=$(DEVOBJ)gdevfpng.$(OBJ) $(DEVOBJ)gdevpccm.$(OBJ)
  
  $(DEVOBJ)gdevfpng_0.$(OBJ) : $(DEVSRC)gdevfpng.c\
-- $(gdevprn_h) $(gdevpccm_h) $(gscdefs_h) $(zlib_h) $(DEVS_MAK) $(MAKEDIRS)
-+ $(gdevprn_h) $(gdevpccm_h) $(gscdefs_h) $(DEVS_MAK) $(MAKEDIRS)
+- $(gdevprn_h) $(gxdevsop_h) $(gdevpccm_h) $(gscdefs_h) $(zlib_h) $(DEVS_MAK) $(MAKEDIRS)
++ $(gdevprn_h) $(gxdevsop_h) $(gdevpccm_h) $(gscdefs_h) $(DEVS_MAK) $(MAKEDIRS)
  	$(CC_) $(I_)$(DEVI_) $(II)$(ZI_)$(_I) $(PCF_) $(GLF_) $(DEVO_)gdevfpng_0.$(OBJ) $(C_) $(DEVSRC)gdevfpng.c
  
  $(DEVOBJ)gdevfpng_1.$(OBJ) : $(DEVSRC)gdevfpng.c\

@@ -6,10 +6,10 @@
 
 %define _disable_ld_no_undefined 1
 
-%define gsver 9.22
+%define gsver 9.23
 %define ijsver 0.35
 # (tpg) BUMP THIS EVERY UPDATE
-%define ijsreloffset 99
+%define ijsreloffset 100
 %define ijsrel %(echo $((%{release} + %{ijsreloffset})))
 
 %define ijsmajor 1
@@ -415,6 +415,10 @@ ln -s %{_bindir}/gsc %{buildroot}%{_bindir}/ghostscript
 chmod -R a+rX %{buildroot}%{_docdir}
 chmod -R go-w %{buildroot}%{_docdir}
 chmod -R u+w %{buildroot}%{_docdir}
+
+# Fix symlink to buildroot
+rm -f %{buildroot}%{_datadir}/ghostscript/%{gsver}/doc
+ln -s %{_docdir}/ghostscript-doc-%{gsver} %{buildroot}%{_datadir}/ghostscript/%{gsver}/doc
 
 %post
 # Set up update-alternatives entries
