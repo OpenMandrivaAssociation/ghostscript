@@ -317,19 +317,6 @@ export CXXFLAGS="`echo %{optflags} |sed -e 's/-O3/-g/' |sed -e 's/-O2/-g/'`"
 export RPM_OPT_FLAGS="`echo %{optflags} |sed -e 's/-O3/-g/' |sed -e 's/-O2/-g/'`"
 %endif
 
-%ifarch %{ix86}
-# FIXME workaround for compile-time bug in clang 7.0-331113
-# *** Inconsistent CFA register and/or offset between pred and succ ***
-# Pred:  outgoing CFA Reg:4
-# Pred:  outgoing CFA Offset:972
-# Succ:  incoming CFA Reg:4
-# Succ:  incoming CFA Offset:976
-# LLVM ERROR: Found 1 in/out CFI information errors.
-# clang-7: error: linker command failed with exit code 1 (use -v to see invocation)
-export CC=gcc
-export CXX=g++
-%endif
-
 %if %{with ijs}
 pushd ijs*
 # Rebuild broken build infrastructure
