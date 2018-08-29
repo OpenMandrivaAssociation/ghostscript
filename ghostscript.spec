@@ -6,11 +6,11 @@
 
 %define _disable_ld_no_undefined 1
 
-%define gsver 9.23
+%define gsver 9.24
 %define ijsver 0.35
-# (tpg) BUMP THIS EVERY UPDATE
-%define ijsreloffset 100
-%define ijsrel %(echo $((%{release} + %{ijsreloffset})))
+# (tpg) BUMP THIS EVERY UPDATE, RESET WHEN IJSVER INCREASES
+%define ijsreloffset 105
+%define ijsrel %(echo $((%(echo %{release} |cut -d. -f1) + %{ijsreloffset})))
 
 %define ijsmajor 1
 %define libijs %mklibname ijs %{ijsmajor}
@@ -19,15 +19,23 @@
 %define gsmajor 9
 %define libgs %mklibname gs %{gsmajor}
 %define libgs_devel %mklibname -d gs
+%define libgxps %mklibname gxps %{gsmajor}
+%define libgpcl6 %mklibname gpcl6 %{gsmajor}
+
+%define pre rc1
 
 Summary:	PostScript/PDF interpreter and renderer (Main executable)
 Name:		ghostscript
 Version:	%{gsver}
-Release:	3
+%if "%{pre}" != ""
+Release:	0.%{pre}.1
+%else
+Release:	1
+%endif
 License:	AGPLv3
 Group:		Publishing
 URL:		http://www.ghostscript.com/awki/Index
-Source0:	https://github.com/ArtifexSoftware/ghostpdl-downloads/releases/download/gs%(echo %{gsver}|sed -e 's,\.,,g')/%{name}-%{version}.tar.gz
+Source0:	https://github.com/ArtifexSoftware/ghostpdl-downloads/releases/download/ghostpdl-%{version}%{?pre:%pre}.tar.xz
 Source2:	ps2pdfpress.bz2
 Source3:	http://www.linuxprinting.org/download/printing/sipixa6.upp.bz2
 Source4:	ghostscript.rpmlintrc
@@ -148,6 +156,26 @@ display support ("display" device, default, so it displays files by
 simply entering "gs <file>" on the command line). It makes use of the
 GhostScript shared library.
 
+%package pcl6
+Summary:	PCL6 interpreter and renderer
+Group:		Publishing
+Requires:	ghostscript-common
+
+%description pcl6
+GhostPDL is a PCL6 interpreter. It can render PCL6
+files to devices which include X window, many
+printer formats, and popular graphics file formats.
+
+%package xps
+Summary:	XPS interpreter and renderer
+Group:		Publishing
+Requires:	ghostscript-common
+
+%description xps
+GhostPDL is an XPS interpreter. It can render XPS
+files to devices which include X window, many
+printer formats, and popular graphics file formats.
+
 %if %{with GSx11SVGAmodule}
 %package module-X
 Summary:	PostScript/PDF interpreter and renderer (Additional support for X)
@@ -183,6 +211,22 @@ Obsoletes:	%{_lib}gs8-devel < %{EVRD}
 %description -n %{libgs_devel}
 This package contains the static library and the header files needed
 to compile applications using the GhostScript shared library.
+
+%package -n %{libgxps}
+Summary:	XPS interpreter and renderer (GhostScript shared library)
+Group:		Publishing
+
+%description -n %{libgxps}
+This is the API library for programs which use the XPS
+interpreter of GhostScript.
+
+%package -n %{libgpcl6}
+Summary:	PCL6 interpreter and renderer (GhostScript shared library)
+Group:		Publishing
+
+%description -n %{libgpcl6}
+This is the API library for programs which use the PCL6
+interpreters of GhostScript.
 
 %package -n %{libijs}
 Version:	%{ijsver}
@@ -223,13 +267,13 @@ Requires:	ghostscript
 This package contains documentation for GhostScript.
 
 %prep
-%setup -q
-%apply_patches
+%autosetup -p1 -n ghostpdl-%{gsver}%{?pre:%pre}
+[ -e autogen.sh ] && ./autogen.sh
 
 #backup files not needed
 find . -name "*.*~" |xargs rm -f
 # prevent building and using bundled libs
-rm -rf jbig2dec libpng jpeg jpegxr tiff zlib lcms2 freetype cups/libs openjpeg
+rm -rf jbig2dec libpng jpeg tiff zlib lcms2 freetype cups/libs openjpeg
 
 # Convert manual pages to UTF-8
 from8859_1() {
@@ -420,6 +464,10 @@ install -m 755 ps2pdfpress %{buildroot}%{_bindir}
 #mkdir -p %{buildroot}%{_datadir}/ghostscript/%{gsver}/lib
 install -m 644 sipixa6.upp %{buildroot}%{_datadir}/ghostscript/%{gsver}/lib/
 
+# GhostPDL and GhostXPS
+cp -a sobin/gpcl* sobin/gxps* %{buildroot}%{_bindir}
+cp -a sobin/libgpcl* sobin/libgxps* %{buildroot}%{_libdir}
+
 # Add backward compatibility link to not break printerdrake in Mandriva
 # 2006 and older
 ln -s %{_bindir}/gsc %{buildroot}%{_bindir}/gs-common
@@ -468,6 +516,12 @@ fi
 %files X
 %{_bindir}/gsx
 
+%files pcl6
+%{_bindir}/gpcl6c
+
+%files xps
+%{_bindir}/gxpsc
+
 %files common
 %dir %{_datadir}/ghostscript
 %{_datadir}/ghostscript/%{gsver}
@@ -500,7 +554,15 @@ fi
 
 %files -n %{libgs_devel}
 %{_libdir}/libgs.so
+%{_libdir}/libgxps.so
+%{_libdir}/libgpcl6.so
 %{_includedir}/ghostscript
+
+%files -n %{libgxps}
+%{_libdir}/libgxps.so.*%{gsmajor}*
+
+%files -n %{libgpcl6}
+%{_libdir}/libgpcl6.so.*%{gsmajor}*
 
 %files -n %{libijs}
 %{_libdir}/libijs-%{ijsver}.so

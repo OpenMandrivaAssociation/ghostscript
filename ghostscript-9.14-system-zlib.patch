@@ -1,6 +1,6 @@
-diff -up ghostscript-9.23/devices/devs.mak.0032~ ghostscript-9.23/devices/devs.mak
---- ghostscript-9.23/devices/devs.mak.0032~	2018-03-21 09:48:06.000000000 +0100
-+++ ghostscript-9.23/devices/devs.mak	2018-04-29 22:37:10.833434345 +0200
+diff -up ghostpdl-9.24rc1/devices/devs.mak.5~ ghostpdl-9.24rc1/devices/devs.mak
+--- ghostpdl-9.24rc1/devices/devs.mak.5~	2018-08-28 18:00:41.000000000 +0200
++++ ghostpdl-9.24rc1/devices/devs.mak	2018-08-29 22:27:12.908995477 +0200
 @@ -1084,7 +1084,7 @@ $(gximdecode_h) $(DEVS_MAK) $(MAKEDIRS)
  
  $(DEVOBJ)gdevxps_0.$(OBJ) : $(DEVVECSRC)gdevxps.c $(gdevvec_h) \
@@ -17,7 +17,7 @@ diff -up ghostscript-9.23/devices/devs.mak.0032~ ghostscript-9.23/devices/devs.m
 - $(gstypes_h) $(gxdcconv_h) $(gdevdevn_h) $(gsequivc_h) $(zlib_h)\
 + $(gstypes_h) $(gxdcconv_h) $(gdevdevn_h) $(gsequivc_h) \
   $(gscms_h) $(gsicc_cache_h) $(gsicc_manage_h) $(gxgetbit_h)\
-  $(gdevppla_h) $(DEVS_MAK) $(MAKEDIRS)
+  $(gdevppla_h) $(gxdevsop_h) $(DEVS_MAK) $(MAKEDIRS)
  	$(DEVCC) $(DEVO_)gdevgprf_0.$(OBJ) $(II)$(ZI_)$(_I) $(C_) $(DEVSRC)gdevgprf.c
 @@ -1509,7 +1509,7 @@ $(DD)pngalpha.dev : $(libpng_dev) $(png_
  fpng_=$(DEVOBJ)gdevfpng.$(OBJ) $(DEVOBJ)gdevpccm.$(OBJ)
