@@ -11,6 +11,7 @@
 # (tpg) BUMP THIS EVERY UPDATE, RESET WHEN IJSVER INCREASES
 %define ijsreloffset 105
 %define ijsrel %(echo $((%(echo %{release} |cut -d. -f1) + %{ijsreloffset})))
+%define nodot_ver %(echo %{gsver} |sed -e 's,\\.,,g')
 
 %define ijsmajor 1
 %define libijs %mklibname ijs %{ijsmajor}
@@ -22,7 +23,7 @@
 %define libgxps %mklibname gxps %{gsmajor}
 %define libgpcl6 %mklibname gpcl6 %{gsmajor}
 
-%define pre rc1
+%define pre %{nil}
 
 Summary:	PostScript/PDF interpreter and renderer (Main executable)
 Name:		ghostscript
@@ -35,7 +36,7 @@ Release:	1
 License:	AGPLv3
 Group:		Publishing
 URL:		http://www.ghostscript.com/awki/Index
-Source0:	https://github.com/ArtifexSoftware/ghostpdl-downloads/releases/download/ghostpdl-%{version}%{?pre:%pre}.tar.xz
+Source0:	https://github.com/ArtifexSoftware/ghostpdl-downloads/releases/download/gs%{nodot_ver}/ghostpdl-%{version}%{?pre:%pre}.tar.xz
 Source2:	ps2pdfpress.bz2
 Source3:	http://www.linuxprinting.org/download/printing/sipixa6.upp.bz2
 Source4:	ghostscript.rpmlintrc
