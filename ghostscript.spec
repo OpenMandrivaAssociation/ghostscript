@@ -6,7 +6,7 @@
 
 %define _disable_ld_no_undefined 1
 
-%define gsver 9.25
+%define gsver 9.26
 %define ijsver 0.35
 # (tpg) BUMP THIS EVERY UPDATE, RESET WHEN IJSVER INCREASES
 %define ijsreloffset 106
@@ -23,7 +23,7 @@
 %define libgxps %mklibname gxps %{gsmajor}
 %define libgpcl6 %mklibname gpcl6 %{gsmajor}
 
-%define pre rc1
+%define pre %{nil}
 
 Summary:	PostScript/PDF interpreter and renderer (Main executable)
 Name:		ghostscript
