@@ -265,6 +265,7 @@ This package contains documentation for GhostScript.
 
 %prep
 %autosetup -p1 -n ghostpdl-%{gsver}%{?pre:%pre}
+%config_update
 [ -e autogen.sh ] && ./autogen.sh
 
 #backup files not needed
