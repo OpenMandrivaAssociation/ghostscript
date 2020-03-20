@@ -1,0 +1,151 @@
+diff -up ghostpdl-9.51/base/gdevlx7.c.omv~ ghostpdl-9.51/base/gdevlx7.c
+diff -up ghostpdl-9.51/base/gdevmpla.c.omv~ ghostpdl-9.51/base/gdevmpla.c
+--- ghostpdl-9.51/base/gdevmpla.c.omv~	2020-03-16 02:36:30.861624271 +0100
++++ ghostpdl-9.51/base/gdevmpla.c	2020-03-16 02:36:37.691905200 +0100
+@@ -1016,7 +1016,7 @@ mem_planar_strip_tile_rect_devn(gx_devic
+         }
+ #ifdef DEBUG
+         if (c0 == gx_no_color_index && c1 == gx_no_color_index) {
+-            dprintf("mem_planar_strip_tile_rect_dev called with two non-devn colors\n");
++            d_printf("mem_planar_strip_tile_rect_dev called with two non-devn colors\n");
+         }
+ #endif
+         MEM_SET_PARAMS(mdev, plane_depth);
+diff -up ghostpdl-9.51/base/gfxapi.c.omv~ ghostpdl-9.51/base/gfxapi.c
+diff -up ghostpdl-9.51/base/gsmisc.c.omv~ ghostpdl-9.51/base/gsmisc.c
+diff -up ghostpdl-9.51/base/gxclrect.c.omv~ ghostpdl-9.51/base/gxclrect.c
+--- ghostpdl-9.51/base/gxclrect.c.omv~	2020-03-16 02:36:52.943671687 +0100
++++ ghostpdl-9.51/base/gxclrect.c	2020-03-16 02:37:02.495386314 +0100
+@@ -921,7 +921,7 @@ clist_copy_planes(gx_device * dev,
+ 
+ #ifdef DEBUG
+     if (plane_height == 0) {
+-        dprintf("clist_copy_planes called with plane_height == 0.\n");
++      d_printf("clist_copy_planes called with plane_height == 0.\n");
+     }
+ #endif
+ 
+diff -up ghostpdl-9.51/base/gxfapi.c.omv~ ghostpdl-9.51/base/gxfapi.c
+--- ghostpdl-9.51/base/gxfapi.c.omv~	2020-03-16 02:35:49.309164212 +0100
++++ ghostpdl-9.51/base/gxfapi.c	2020-03-16 02:35:56.490317146 +0100
+@@ -1772,13 +1772,13 @@ gs_fapi_passfont(gs_font *pfont, int sub
+         }
+         if (!I) {
+             if (gs_debug_c('1'))
+-                dprintf("not found. Falling back to normal plugin search\n");
++                d_printf("not found. Falling back to normal plugin search\n");
+             list = (gs_fapi_server **) gs_fapi_get_server_list(mem);
+             I = *list;
+         }
+         else {
+             if (gs_debug_c('1'))
+-                dprintf("found.\n");
++                d_printf("found.\n");
+             do_restart = true;
+         }
+     }
+diff -up ghostpdl-9.51/base/std.h.omv~ ghostpdl-9.51/base/std.h
+--- ghostpdl-9.51/base/std.h.omv~	2020-03-16 02:34:55.004398086 +0100
++++ ghostpdl-9.51/base/std.h	2020-03-16 02:35:35.894978873 +0100
+@@ -125,7 +125,7 @@ typedef ulong bits32;
+  * All these above functions/macros take a "const gs_memory_t *" pointer to
+  * ensure that the correct stdout/stderr is used for the given gsapi instance.
+  *
+- * If you do not have a gs_memory_t * to hand, then you may call dprintf (and
++ * If you do not have a gs_memory_t * to hand, then you may call d_printf (and
+  * family) and eprintf(and family) insteads. Be aware that these functions
+  * compile away to nothing in GS_THREADSAFE builds, as they will not work in
+  * multithreaded environments.
+@@ -210,7 +210,7 @@ int errprintf_nomem();
+ #define dlputc(chr) DO_NOTHING
+ #define dputs(str) DO_NOTHING
+ #define dlputs(str) DO_NOTHING
+-#define dprintf(str)\
++#define d_printf(str)\
+   DO_NOTHING
+ #define dlprintf(str)\
+   DO_NOTHING
+@@ -276,7 +276,7 @@ void dflush(void);              /* flush
+ #define dlputc(chr) dlprintf1("%c", chr)
+ #define dputs(str) dprintf1("%s", str)
+ #define dlputs(str) dlprintf1("%s", str)
+-#define dprintf(str)\
++#define d_printf(str)\
+   dpf(str)
+ #define dlprintf(str)\
+   (_dpl dpf(str))
+diff -up ghostpdl-9.51/contrib/gdevlx7.c.omv~ ghostpdl-9.51/contrib/gdevlx7.c
+--- ghostpdl-9.51/contrib/gdevlx7.c.omv~	2020-03-16 02:37:29.162356482 +0100
++++ ghostpdl-9.51/contrib/gdevlx7.c	2020-03-16 02:37:51.169966426 +0100
+@@ -245,7 +245,7 @@ static void lex_eject(gp_file *out)
+ {
+    byte buf[4]={0x1b,0x2a,0x7,0x65};
+ #ifdef DEBUG
+-   dprintf("Sending page eject.\n");
++   d_printf("Sending page eject.\n");
+ #endif
+    gp_fwrite(buf,sizeof(buf),1,out);
+ }
+@@ -530,7 +530,7 @@ static int print_cols(gp_file *prn_strea
+      {
+ #if 0
+         dprintf2("\n**RLE2 WIN** %d > %d \n",rle1size,rle2size);
+-        dprintf("\nUsing RLE2 compression\n");
++        d_printf("\nUsing RLE2 compression\n");
+ #endif
+         memcpy(tbits,ob,rle2size);
+         p=tbits+rle2size;
+@@ -777,7 +777,7 @@ lxmgen_print_page(gx_device_printer *pde
+                   obp,bwidth,lr_shift);
+ 
+ #ifdef DEBUG
+-            dprintf("Overflow workaround used\n");
++            d_printf("Overflow workaround used\n");
+ #endif
+          }
+ 
+diff -up ghostpdl-9.51/contrib/japanese/gdevmjc.c.omv~ ghostpdl-9.51/contrib/japanese/gdevmjc.c
+--- ghostpdl-9.51/contrib/japanese/gdevmjc.c.omv~	2020-03-16 02:38:07.441445871 +0100
++++ ghostpdl-9.51/contrib/japanese/gdevmjc.c	2020-03-16 02:38:21.164632003 +0100
+@@ -904,7 +904,7 @@ xtal_plane( byte *dp , short *buf[] , by
+         for ( i = 0 ; i < 100 ; i++ ) {
+                 dprintf1("[%04X]",bar[0][i]);
+         }
+-        dprintf("\n");
++        d_printf("\n");
+ */
+         for ( i = 0 ; i < plane_size ; i++ ) {
+                 bitmask = 0x80;
+@@ -916,9 +916,9 @@ xtal_plane( byte *dp , short *buf[] , by
+                 }
+                 *oP++ = out;
+         }
+-/*dprintf("\n");*/
++/*d_printf("\n");*/
+         p = buf[0];
+-/*	dprintf("\n"); */
++/*	d_printf("\n"); */
+         buf[0] = buf[1];
+         buf[1] = p;
+ 
+@@ -1309,7 +1309,7 @@ mj_print_page(gx_device_printer * pdev,
+                 dprintf4 ( "[%02X%02X%02X%02X]" , p[0] , p[1] , p[2] , p[3] );
+                 p += 4;
+         }
+-        dprintf("\n");
++        d_printf("\n");
+ 
+ }
+ */
+diff -up ghostpdl-9.51/cups/gdevcups.c.omv~ ghostpdl-9.51/cups/gdevcups.c
+--- ghostpdl-9.51/cups/gdevcups.c.omv~	2020-03-16 02:38:39.003113857 +0100
++++ ghostpdl-9.51/cups/gdevcups.c	2020-03-16 02:38:41.733109718 +0100
+@@ -896,7 +896,7 @@ cups_get_matrix(gx_device *pdev,	/* I -
+     * Do landscape orientation...
+     */
+ #ifdef CUPS_DEBUG2
+-    dprintf("DEBUG2: Landscape matrix: XX=0 XY=+1 YX=+1 YY=0\n");
++    d_printf("DEBUG2: Landscape matrix: XX=0 XY=+1 YX=+1 YY=0\n");
+ #endif /* CUPS_DEBUG2 */
+     pmat->xx = 0.0;
+     pmat->xy = (float)cups->header.HWResolution[1] / 72.0;

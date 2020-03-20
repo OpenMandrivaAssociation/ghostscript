@@ -6,7 +6,7 @@
 
 %define _disable_ld_no_undefined 1
 
-%define gsver 9.26
+%define gsver 9.52
 %define ijsver 0.35
 # (tpg) BUMP THIS EVERY UPDATE, RESET WHEN IJSVER INCREASES
 %define ijsreloffset 106
@@ -56,6 +56,8 @@ Patch27:	ghostscript-Fontmap.local.patch
 #Patch29:	ghostscript-gdevcups-debug-uninit.patch
 Patch31:	objarch-aarch64.patch
 Patch32:	ghostscript-9.14-system-zlib.patch
+Patch33:	ghostpdl-9.51-dprintf.patch
+Patch34:	ghostpdl-9.52-system-jpeg-buildfix.patch
 
 %if !%{with bootstrap}
 BuildRequires:	pkgconfig(gtk+-3.0)

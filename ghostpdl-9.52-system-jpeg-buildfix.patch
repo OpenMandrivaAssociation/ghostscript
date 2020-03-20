@@ -1,0 +1,20 @@
+diff -up ghostpdl-9.52/base/jmemcust.h.omv~ ghostpdl-9.52/base/jmemcust.h
+--- ghostpdl-9.52/base/jmemcust.h.omv~	2020-03-20 11:21:10.561799351 +0100
++++ ghostpdl-9.52/base/jmemcust.h	2020-03-20 11:22:23.984014253 +0100
+@@ -18,7 +18,6 @@
+ 
+ #include "std.h" /* FILE needed by jpeglib.h */
+ #include "jpeglib.h"
+-#include "jmemsys.h"
+ 
+ typedef JMETHOD(long, j_custmem_init_ptr, (j_common_ptr cinfo));
+ typedef JMETHOD(void, j_custmem_term_ptr, (j_common_ptr cinfo));
+@@ -32,7 +31,7 @@ typedef JMETHOD(void *, j_cust_mem_get_l
+ typedef JMETHOD(void, j_custmem_free_large_ptr,
+     (j_common_ptr cinfo, void *object, size_t size));
+ typedef JMETHOD(void, j_custmem_open_backing_store_ptr,
+-    (j_common_ptr cinfo, backing_store_ptr info, long total_bytes_needed));
++    (j_common_ptr cinfo, void *info, long total_bytes_needed));
+ 
+ typedef struct {
+   j_custmem_init_ptr               j_mem_init;
