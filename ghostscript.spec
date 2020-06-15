@@ -1,3 +1,9 @@
+# libgs is used by libspectre, libspectre is used by cairo,
+# cairo is used by gtk-3.0, gtk-3.0 is used by wine
+%ifarch %{x86_64}
+%bcond_without compat32
+%endif
+
 %bcond_without ijs
 %bcond_with crosscompile
 %bcond_without bootstrap
@@ -22,13 +28,17 @@
 %define libgs_devel %mklibname -d gs
 %define libgxps %mklibname gxps %{gsmajor}
 %define libgpcl6 %mklibname gpcl6 %{gsmajor}
+%define lib32gs %mklib32name gs %{gsmajor}
+%define lib32gs_devel %mklib32name -d gs
+%define lib32gxps %mklib32name gxps %{gsmajor}
+%define lib32gpcl6 %mklib32name gpcl6 %{gsmajor}
 
 %define pre %{nil}
 
 Summary:	PostScript/PDF interpreter and renderer (Main executable)
 Name:		ghostscript
 Version:	%{gsver}
-Release:	%{-pre:0.%{pre}.}1
+Release:	%{-pre:0.%{pre}.}3
 License:	AGPLv3
 Group:		Publishing
 URL:		http://www.ghostscript.com/awki/Index
@@ -78,7 +88,7 @@ BuildRequires:	pkgconfig(freetype2)
 BuildRequires:	pkgconfig(ice)
 BuildRequires:	pkgconfig(jasper)
 BuildRequires:	pkgconfig(lcms2)
-BuildRequires:	pkgconfig(libidn)
+BuildRequires:	pkgconfig(libidn2)
 BuildRequires:	pkgconfig(libpng)
 BuildRequires:	pkgconfig(libxml-2.0)
 BuildRequires:	pkgconfig(sm)
@@ -97,6 +107,25 @@ Requires:	update-alternatives
 %if !%{with GSx11SVGAmodule}
 %rename	ghostscript-module-X
 %rename ghostscript-module-SVGALIB
+%endif
+
+%if %{with compat32}
+BUildRequires:	devel(libjpeg)
+BuildRequires:	devel(libjbig2dec)
+BuildRequires:	devel(libopenjp2)
+BuildRequires:	devel(libxml2)
+BuildRequires:	devel(libtiff)
+BuildRequires:	devel(libfreetype)
+BuildRequires:	devel(libICE)
+BuildRequires:	devel(liblcms2)
+BuildRequires:	devel(libidn2)
+BuildRequires:	devel(libpng16)
+BuildRequires:	devel(libcom_err)
+BuildRequires:	devel(libkrb5)
+BuildRequires:	devel(libdbus-1)
+BuildRequires:	devel(libz)
+BuildRequires:	devel(libbz2)
+BuildRequires:	devel(libcups)
 %endif
 
 %description
@@ -203,7 +232,6 @@ Group:		Development/C
 Requires:	%{libgs} >= %{EVRD}
 Requires:	ghostscript = %{EVRD}
 Provides:	%{name}-devel = %{EVRD}
-Provides:	libgs-devel = %{EVRD}
 Obsoletes:	%{_lib}gs9-devel < %{EVRD}
 Obsoletes:	%{_lib}gs8-devel < %{EVRD}
 
@@ -226,6 +254,50 @@ Group:		Publishing
 %description -n %{libgpcl6}
 This is the API library for programs which use the PCL6
 interpreters of GhostScript.
+
+%package doc
+Summary:	Documentation for GhostScript
+Group:		Publishing
+Requires:	ghostscript
+
+%description doc
+This package contains documentation for GhostScript.
+
+%if %{with compat32}
+%package -n %{lib32gs}
+Summary:	PostScript/PDF interpreter and renderer (GhostScript shared library) (32-bit)
+Group:		Publishing
+
+%description -n %{lib32gs}
+This is the API library for programs which use the PostScript and/or
+PDF interpreters of GhostScript.
+
+%package -n %{lib32gs_devel}
+Summary:	Headers and links to compile against the "%{libgs}" library (32-bit)
+Group:		Development/C
+Requires:	%{libgs_devel} = %{EVRD}
+Requires:	%{lib32gs} >= %{EVRD}
+
+%description -n %{lib32gs_devel}
+This package contains the static library and the header files needed
+to compile applications using the GhostScript shared library.
+
+%package -n %{lib32gxps}
+Summary:	XPS interpreter and renderer (GhostScript shared library)
+Group:		Publishing
+
+%description -n %{lib32gxps}
+This is the API library for programs which use the XPS
+interpreter of GhostScript.
+
+%package -n %{lib32gpcl6}
+Summary:	PCL6 interpreter and renderer (GhostScript shared library)
+Group:		Publishing
+
+%description -n %{lib32gpcl6}
+This is the API library for programs which use the PCL6
+interpreters of GhostScript.
+%endif
 
 %package -n %{libijs}
 Version:	%{ijsver}
@@ -257,13 +329,6 @@ Obsoletes:	%{_lib}ijs1-devel < %{ijsver}-%{ijsrel}
 This package contains the static library and the header files needed
 to compile applications using the IJS library.
 
-%package doc
-Summary:	Documentation for GhostScript
-Group:		Publishing
-Requires:	ghostscript
-
-%description doc
-This package contains documentation for GhostScript.
 
 %prep
 %autosetup -p1 -n ghostpdl-%{gsver}%{?pre:%pre}
@@ -305,6 +370,19 @@ bzcat %{SOURCE2} > ps2pdfpress
 # UPP file for SiPix Pocket Printer A6
 bzcat %{SOURCE3} > sipixa6.upp
 
+export CONFIGURE_TOP="$(pwd)"
+mkdir build32
+cd build32
+%configure32 \
+	--without-x \
+	--disable-gtk \
+	--enable-shared \
+	--disable-static \
+	--enable-dynamic \
+	--enable-fontconfig \
+	--enable-dbus
+%make_build so
+
 %build
 %if %{with crosscompile}
 export ac_cv_c_bigendian=yes
@@ -329,7 +407,7 @@ pushd ijs*
 	--enable-shared \
 	--disable-static
 
-%make
+%make_build
 popd
 %endif
 
@@ -352,7 +430,6 @@ popd
 	--with-x \
 	--disable-compile-inits \
 	--with-system-libtiff \
-	--with-libidn \
 	--enable-dbus \
 	--enable-dynamic
 
@@ -419,6 +496,20 @@ popd
 
 ##### GHOSTSCRIPT
 mkdir -p %{buildroot}%{_docdir}/ghostscript-doc-%{gsver}
+
+%if %{with compat32}
+cd build32
+make \
+	prefix=%{_prefix} \
+	DESTDIR=%{buildroot} \
+	gssharedir=%{_libdir}/ghostscript/%{gsver} \
+	docdir=%{_docdir}/ghostscript-doc-%{gsver} \
+	bindir=%{_bindir} \
+	libdir=%{_prefix}/lib \
+	mandir=%{_mandir} \
+	soinstall
+cd ..
+%endif
 
 make \
 	prefix=%{_prefix} \
@@ -561,3 +652,11 @@ fi
 %{_includedir}/ijs
 %{_bindir}/ijs_client_example
 %{_bindir}/ijs_server_example
+
+%if %{with compat32}
+%files -n %{lib32gs}
+%{_prefix}/lib/libgs.so.*%{gsmajor}*
+
+%files -n %{lib32gs_devel}
+%{_prefix}/lib/libgs.so
+%endif
