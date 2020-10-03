@@ -12,7 +12,7 @@
 
 %define _disable_ld_no_undefined 1
 
-%define gsver 9.53.1
+%define gsver 9.53.3
 %define ijsver 0.35
 # (tpg) BUMP THIS EVERY UPDATE, RESET WHEN IJSVER INCREASES
 %define ijsreloffset 106
