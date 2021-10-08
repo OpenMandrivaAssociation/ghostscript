@@ -15,7 +15,7 @@
 %define gsver 9.53.3
 %define ijsver 0.35
 # (tpg) BUMP THIS EVERY UPDATE, RESET WHEN IJSVER INCREASES
-%define ijsreloffset 106
+%define ijsreloffset 107
 %define ijsrel %(echo $((%(echo %{release} |cut -d. -f1) + %{ijsreloffset})))
 %define nodot_ver %(echo %{gsver} |sed -e 's,\\.,,g')
 
@@ -38,7 +38,7 @@
 Summary:	PostScript/PDF interpreter and renderer (Main executable)
 Name:		ghostscript
 Version:	%{gsver}
-Release:	%{-pre:0.%{pre}.}1
+Release:	%{-pre:0.%{pre}.}2
 License:	AGPLv3
 Group:		Publishing
 URL:		http://www.ghostscript.com/awki/Index
@@ -68,6 +68,7 @@ Patch31:	objarch-aarch64.patch
 Patch32:	ghostscript-9.14-system-zlib.patch
 Patch33:	ghostpdl-9.51-dprintf.patch
 Patch34:	ghostpdl-9.52-system-jpeg-buildfix.patch
+Patch35:	ghostpdl-git-drop-use-of-FT_CALLBACK_DEF-def.patch
 
 %if !%{with bootstrap}
 BuildRequires:	pkgconfig(gtk+-3.0)
@@ -79,8 +80,8 @@ BuildRequires:	libtool
 BuildRequires:	unzip
 BuildRequires:	gettext-devel
 BuildRequires:	glibc-devel
-BuildRequires:	jbig2dec-devel
-BuildRequires:	jpeg-devel
+BuildRequires:	pkgconfig(jbig2dec)
+BuildRequires:	pkgconfig(libjpeg)
 BuildRequires:	libpaper-devel
 BuildRequires:	netpbm-devel
 BuildRequires:	pkgconfig(libtiff-4)
@@ -371,6 +372,7 @@ bzcat %{SOURCE2} > ps2pdfpress
 bzcat %{SOURCE3} > sipixa6.upp
 
 export CONFIGURE_TOP="$(pwd)"
+%if %{with compat32}
 mkdir build32
 cd build32
 %configure32 \
@@ -382,6 +384,7 @@ cd build32
 	--enable-fontconfig \
 	--enable-dbus
 %make_build so
+%endif
 
 %build
 %if %{with crosscompile}
@@ -390,9 +393,9 @@ export ac_cv_c_bigendian=yes
 # Change compiler flags for debugging when in debug mode
 %if %{with debug}
 export DONT_STRIP=1
-export CFLAGS="`echo %{optflags} |sed -e 's/-O3/-g/' |sed -e 's/-O2/-g/'`"
-export CXXFLAGS="`echo %{optflags} |sed -e 's/-O3/-g/' |sed -e 's/-O2/-g/'`"
-export RPM_OPT_FLAGS="`echo %{optflags} |sed -e 's/-O3/-g/' |sed -e 's/-O2/-g/'`"
+export CFLAGS="$(echo %{optflags} |sed -e 's/-O3/-g/' |sed -e 's/-O2/-g/')"
+export CXXFLAGS="$(echo %{optflags} |sed -e 's/-O3/-g/' |sed -e 's/-O2/-g/')"
+export RPM_OPT_FLAGS="$(echo %{optflags} |sed -e 's/-O3/-g/' |sed -e 's/-O2/-g/')"
 %endif
 
 %if %{with ijs}
@@ -468,9 +471,9 @@ perl -p -i -e "s|^EXTRALIBS=|EXTRALIBS=-L/%{_lib} -lz |g" Makefile
 # Change compiler flags for debugging when in debug mode
 %if %{with debug}
 export DONT_STRIP=1
-export CFLAGS="`echo %{optflags} |sed -e 's/-O3/-g/' |sed -e 's/-O2/-g/'`"
-export CXXFLAGS="`echo %{optflags} |sed -e 's/-O3/-g/' |sed -e 's/-O2/-g/'`"
-export RPM_OPT_FLAGS="`echo %{optflags} |sed -e 's/-O3/-g/' |sed -e 's/-O2/-g/'`"
+export CFLAGS="$(echo %{optflags} |sed -e 's/-O3/-g/' |sed -e 's/-O2/-g/')"
+export CXXFLAGS="$(echo %{optflags} |sed -e 's/-O3/-g/' |sed -e 's/-O2/-g/')"
+export RPM_OPT_FLAGS="$(echo %{optflags} |sed -e 's/-O3/-g/' |sed -e 's/-O2/-g/')"
 %endif
 
 # Make directories
@@ -603,7 +606,7 @@ fi
 %files common
 %dir %{_datadir}/ghostscript
 %{_datadir}/ghostscript/%{gsver}
-%{_mandir}/man1/*
+%doc %{_mandir}/man1/*
 %lang(de) %{_mandir}/de/man1/*
 #%{_bindir}/[a-c]*
 #{_bindir}/dumphint
