@@ -6,7 +6,7 @@
 
 %bcond_without ijs
 %bcond_with crosscompile
-%bcond_without bootstrap
+%bcond_with bootstrap
 %bcond_without GSx11SVGAmodule
 %bcond_with debug
 
@@ -38,7 +38,7 @@
 Summary:	PostScript/PDF interpreter and renderer (Main executable)
 Name:		ghostscript
 Version:	%{gsver}
-Release:	%{-pre:0.%{pre}.}2
+Release:	%{-pre:0.%{pre}.}3
 License:	AGPLv3
 Group:		Publishing
 URL:		http://www.ghostscript.com/awki/Index
