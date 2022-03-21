@@ -1,0 +1,13 @@
+diff -up ghostpdl-9.56.0rc2/base/unix-dll.mak.omv~ ghostpdl-9.56.0rc2/base/unix-dll.mak
+--- ghostpdl-9.56.0rc2/base/unix-dll.mak.omv~	2022-03-21 10:17:00.816133761 +0100
++++ ghostpdl-9.56.0rc2/base/unix-dll.mak	2022-03-21 10:18:15.986483900 +0100
+@@ -196,6 +196,9 @@ gpdl-so-links-subtarget: $(GPDL_SO) $(UN
+ $(GLOBJ)dxmainc.$(OBJ): $(PSSRC)dxmainc.c $(UNIX_DLL_MAK) $(MAKEDIRS)
+ 	$(GLCC) $(GLO_)dxmainc.$(OBJ) $(C_) $(PSSRC)dxmainc.c
+ 
++$(GLOBJ)dxmain.$(OBJ): $(PSSRC)dxmain.c $(UNIX_DLL_MAK) $(MAKEDIRS)
++	$(GLCC) $(GLO_)dxmain.$(OBJ) $(SOC_CFLAGS) $(C_) $(PSSRC)dxmain.c
++
+ $(GSSOC_XE): gs-so-links-subtarget $(GLOBJ)dxmainc.$(OBJ) $(UNIX_DLL_MAK) $(MAKEDIRS)
+ 	$(GLCC) -L$(BINDIR) $(LDFLAGS) $(O_) $(GSSOC_XE) $(GLOBJ)dxmainc.$(OBJ) -l$(GS_SO_BASE)
+ 

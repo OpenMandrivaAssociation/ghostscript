@@ -1,8 +1,7 @@
-diff -up ghostpdl-9.51/base/gdevlx7.c.omv~ ghostpdl-9.51/base/gdevlx7.c
-diff -up ghostpdl-9.51/base/gdevmpla.c.omv~ ghostpdl-9.51/base/gdevmpla.c
---- ghostpdl-9.51/base/gdevmpla.c.omv~	2020-03-16 02:36:30.861624271 +0100
-+++ ghostpdl-9.51/base/gdevmpla.c	2020-03-16 02:36:37.691905200 +0100
-@@ -1016,7 +1016,7 @@ mem_planar_strip_tile_rect_devn(gx_devic
+diff -up ghostpdl-9.56.0rc2/base/gdevmpla.c.6~ ghostpdl-9.56.0rc2/base/gdevmpla.c
+--- ghostpdl-9.56.0rc2/base/gdevmpla.c.6~	2022-03-14 14:31:38.000000000 +0100
++++ ghostpdl-9.56.0rc2/base/gdevmpla.c	2022-03-20 23:48:51.220112949 +0100
+@@ -1035,7 +1035,7 @@ mem_planar_strip_tile_rect_devn(gx_devic
          }
  #ifdef DEBUG
          if (c0 == gx_no_color_index && c1 == gx_no_color_index) {
@@ -11,12 +10,10 @@ diff -up ghostpdl-9.51/base/gdevmpla.c.omv~ ghostpdl-9.51/base/gdevmpla.c
          }
  #endif
          MEM_SET_PARAMS(mdev, plane_depth);
-diff -up ghostpdl-9.51/base/gfxapi.c.omv~ ghostpdl-9.51/base/gfxapi.c
-diff -up ghostpdl-9.51/base/gsmisc.c.omv~ ghostpdl-9.51/base/gsmisc.c
-diff -up ghostpdl-9.51/base/gxclrect.c.omv~ ghostpdl-9.51/base/gxclrect.c
---- ghostpdl-9.51/base/gxclrect.c.omv~	2020-03-16 02:36:52.943671687 +0100
-+++ ghostpdl-9.51/base/gxclrect.c	2020-03-16 02:37:02.495386314 +0100
-@@ -921,7 +921,7 @@ clist_copy_planes(gx_device * dev,
+diff -up ghostpdl-9.56.0rc2/base/gxclrect.c.6~ ghostpdl-9.56.0rc2/base/gxclrect.c
+--- ghostpdl-9.56.0rc2/base/gxclrect.c.6~	2022-03-14 14:31:38.000000000 +0100
++++ ghostpdl-9.56.0rc2/base/gxclrect.c	2022-03-20 23:48:51.221112930 +0100
+@@ -942,7 +942,7 @@ clist_copy_planes(gx_device * dev,
  
  #ifdef DEBUG
      if (plane_height == 0) {
@@ -25,10 +22,10 @@ diff -up ghostpdl-9.51/base/gxclrect.c.omv~ ghostpdl-9.51/base/gxclrect.c
      }
  #endif
  
-diff -up ghostpdl-9.51/base/gxfapi.c.omv~ ghostpdl-9.51/base/gxfapi.c
---- ghostpdl-9.51/base/gxfapi.c.omv~	2020-03-16 02:35:49.309164212 +0100
-+++ ghostpdl-9.51/base/gxfapi.c	2020-03-16 02:35:56.490317146 +0100
-@@ -1772,13 +1772,13 @@ gs_fapi_passfont(gs_font *pfont, int sub
+diff -up ghostpdl-9.56.0rc2/base/gxfapi.c.6~ ghostpdl-9.56.0rc2/base/gxfapi.c
+--- ghostpdl-9.56.0rc2/base/gxfapi.c.6~	2022-03-14 14:31:38.000000000 +0100
++++ ghostpdl-9.56.0rc2/base/gxfapi.c	2022-03-20 23:48:51.221112930 +0100
+@@ -1818,13 +1818,13 @@ gs_fapi_passfont(gs_font *pfont, int sub
          }
          if (!I) {
              if (gs_debug_c('1'))
@@ -44,28 +41,19 @@ diff -up ghostpdl-9.51/base/gxfapi.c.omv~ ghostpdl-9.51/base/gxfapi.c
              do_restart = true;
          }
      }
-diff -up ghostpdl-9.51/base/std.h.omv~ ghostpdl-9.51/base/std.h
---- ghostpdl-9.51/base/std.h.omv~	2020-03-16 02:34:55.004398086 +0100
-+++ ghostpdl-9.51/base/std.h	2020-03-16 02:35:35.894978873 +0100
-@@ -125,7 +125,7 @@ typedef ulong bits32;
+diff -up ghostpdl-9.56.0rc2/base/std.h.6~ ghostpdl-9.56.0rc2/base/std.h
+--- ghostpdl-9.56.0rc2/base/std.h.6~	2022-03-14 14:31:38.000000000 +0100
++++ ghostpdl-9.56.0rc2/base/std.h	2022-03-20 23:49:13.049708580 +0100
+@@ -126,7 +126,7 @@ typedef ulong bits32;
   * All these above functions/macros take a "const gs_memory_t *" pointer to
   * ensure that the correct stdout/stderr is used for the given gsapi instance.
   *
 - * If you do not have a gs_memory_t * to hand, then you may call dprintf (and
 + * If you do not have a gs_memory_t * to hand, then you may call d_printf (and
   * family) and eprintf(and family) insteads. Be aware that these functions
-  * compile away to nothing in GS_THREADSAFE builds, as they will not work in
-  * multithreaded environments.
-@@ -210,7 +210,7 @@ int errprintf_nomem();
- #define dlputc(chr) DO_NOTHING
- #define dputs(str) DO_NOTHING
- #define dlputs(str) DO_NOTHING
--#define dprintf(str)\
-+#define d_printf(str)\
-   DO_NOTHING
- #define dlprintf(str)\
-   DO_NOTHING
-@@ -276,7 +276,7 @@ void dflush(void);              /* flush
+  * compile away to nothing in non-DEBUG builds (and even in some DEBUG
+  * environments), as they rely on platform specific threading tricks.
+@@ -209,7 +209,7 @@ void dflush(void);              /* flush
  #define dlputc(chr) dlprintf1("%c", chr)
  #define dputs(str) dprintf1("%s", str)
  #define dlputs(str) dlprintf1("%s", str)
@@ -74,10 +62,10 @@ diff -up ghostpdl-9.51/base/std.h.omv~ ghostpdl-9.51/base/std.h
    dpf(str)
  #define dlprintf(str)\
    (_dpl dpf(str))
-diff -up ghostpdl-9.51/contrib/gdevlx7.c.omv~ ghostpdl-9.51/contrib/gdevlx7.c
---- ghostpdl-9.51/contrib/gdevlx7.c.omv~	2020-03-16 02:37:29.162356482 +0100
-+++ ghostpdl-9.51/contrib/gdevlx7.c	2020-03-16 02:37:51.169966426 +0100
-@@ -245,7 +245,7 @@ static void lex_eject(gp_file *out)
+diff -up ghostpdl-9.56.0rc2/contrib/gdevlx7.c.6~ ghostpdl-9.56.0rc2/contrib/gdevlx7.c
+--- ghostpdl-9.56.0rc2/contrib/gdevlx7.c.6~	2022-03-14 14:31:38.000000000 +0100
++++ ghostpdl-9.56.0rc2/contrib/gdevlx7.c	2022-03-20 23:48:51.222112911 +0100
+@@ -250,7 +250,7 @@ static void lex_eject(gp_file *out)
  {
     byte buf[4]={0x1b,0x2a,0x7,0x65};
  #ifdef DEBUG
@@ -86,7 +74,7 @@ diff -up ghostpdl-9.51/contrib/gdevlx7.c.omv~ ghostpdl-9.51/contrib/gdevlx7.c
  #endif
     gp_fwrite(buf,sizeof(buf),1,out);
  }
-@@ -530,7 +530,7 @@ static int print_cols(gp_file *prn_strea
+@@ -535,7 +535,7 @@ static int print_cols(gp_file *prn_strea
       {
  #if 0
          dprintf2("\n**RLE2 WIN** %d > %d \n",rle1size,rle2size);
@@ -95,7 +83,7 @@ diff -up ghostpdl-9.51/contrib/gdevlx7.c.omv~ ghostpdl-9.51/contrib/gdevlx7.c
  #endif
          memcpy(tbits,ob,rle2size);
          p=tbits+rle2size;
-@@ -777,7 +777,7 @@ lxmgen_print_page(gx_device_printer *pde
+@@ -782,7 +782,7 @@ lxmgen_print_page(gx_device_printer *pde
                    obp,bwidth,lr_shift);
  
  #ifdef DEBUG
@@ -104,10 +92,10 @@ diff -up ghostpdl-9.51/contrib/gdevlx7.c.omv~ ghostpdl-9.51/contrib/gdevlx7.c
  #endif
           }
  
-diff -up ghostpdl-9.51/contrib/japanese/gdevmjc.c.omv~ ghostpdl-9.51/contrib/japanese/gdevmjc.c
---- ghostpdl-9.51/contrib/japanese/gdevmjc.c.omv~	2020-03-16 02:38:07.441445871 +0100
-+++ ghostpdl-9.51/contrib/japanese/gdevmjc.c	2020-03-16 02:38:21.164632003 +0100
-@@ -904,7 +904,7 @@ xtal_plane( byte *dp , short *buf[] , by
+diff -up ghostpdl-9.56.0rc2/contrib/japanese/gdevmjc.c.6~ ghostpdl-9.56.0rc2/contrib/japanese/gdevmjc.c
+--- ghostpdl-9.56.0rc2/contrib/japanese/gdevmjc.c.6~	2022-03-14 14:31:38.000000000 +0100
++++ ghostpdl-9.56.0rc2/contrib/japanese/gdevmjc.c	2022-03-20 23:48:51.222112911 +0100
+@@ -889,7 +889,7 @@ xtal_plane( byte *dp , short *buf[] , by
          for ( i = 0 ; i < 100 ; i++ ) {
                  dprintf1("[%04X]",bar[0][i]);
          }
@@ -116,7 +104,7 @@ diff -up ghostpdl-9.51/contrib/japanese/gdevmjc.c.omv~ ghostpdl-9.51/contrib/jap
  */
          for ( i = 0 ; i < plane_size ; i++ ) {
                  bitmask = 0x80;
-@@ -916,9 +916,9 @@ xtal_plane( byte *dp , short *buf[] , by
+@@ -901,9 +901,9 @@ xtal_plane( byte *dp , short *buf[] , by
                  }
                  *oP++ = out;
          }
@@ -128,7 +116,7 @@ diff -up ghostpdl-9.51/contrib/japanese/gdevmjc.c.omv~ ghostpdl-9.51/contrib/jap
          buf[0] = buf[1];
          buf[1] = p;
  
-@@ -1309,7 +1309,7 @@ mj_print_page(gx_device_printer * pdev,
+@@ -1294,7 +1294,7 @@ mj_print_page(gx_device_printer * pdev,
                  dprintf4 ( "[%02X%02X%02X%02X]" , p[0] , p[1] , p[2] , p[3] );
                  p += 4;
          }
@@ -137,10 +125,10 @@ diff -up ghostpdl-9.51/contrib/japanese/gdevmjc.c.omv~ ghostpdl-9.51/contrib/jap
  
  }
  */
-diff -up ghostpdl-9.51/cups/gdevcups.c.omv~ ghostpdl-9.51/cups/gdevcups.c
---- ghostpdl-9.51/cups/gdevcups.c.omv~	2020-03-16 02:38:39.003113857 +0100
-+++ ghostpdl-9.51/cups/gdevcups.c	2020-03-16 02:38:41.733109718 +0100
-@@ -896,7 +896,7 @@ cups_get_matrix(gx_device *pdev,	/* I -
+diff -up ghostpdl-9.56.0rc2/cups/gdevcups.c.6~ ghostpdl-9.56.0rc2/cups/gdevcups.c
+--- ghostpdl-9.56.0rc2/cups/gdevcups.c.6~	2022-03-14 14:31:38.000000000 +0100
++++ ghostpdl-9.56.0rc2/cups/gdevcups.c	2022-03-20 23:48:51.223112893 +0100
+@@ -847,7 +847,7 @@ cups_get_matrix(gx_device *pdev,	/* I -
      * Do landscape orientation...
      */
  #ifdef CUPS_DEBUG2
@@ -149,3 +137,15 @@ diff -up ghostpdl-9.51/cups/gdevcups.c.omv~ ghostpdl-9.51/cups/gdevcups.c
  #endif /* CUPS_DEBUG2 */
      pmat->xx = 0.0;
      pmat->xy = (float)cups->header.HWResolution[1] / 72.0;
+diff -up ghostpdl-9.56.0rc2/pdf/pdf_cmap.c.omv~ ghostpdl-9.56.0rc2/pdf/pdf_cmap.c
+--- ghostpdl-9.56.0rc2/pdf/pdf_cmap.c.omv~	2022-03-21 00:01:45.102772692 +0100
++++ ghostpdl-9.56.0rc2/pdf/pdf_cmap.c	2022-03-21 00:01:48.503709656 +0100
+@@ -316,7 +316,7 @@ static int cmap_endfbrange_func(gs_memor
+             int kslen = stobj[i].size;
+ 
+             if (kslen > 4) {
+-                dprintf("CMap: value out of range\n");
++                d_printf("CMap: value out of range\n");
+                 continue;
+             }
+ 

@@ -12,7 +12,7 @@
 
 %define _disable_ld_no_undefined 1
 
-%define gsver 9.53.3
+%define gsver 9.56.0
 %define ijsver 0.35
 # (tpg) BUMP THIS EVERY UPDATE, RESET WHEN IJSVER INCREASES
 %define ijsreloffset 107
@@ -27,13 +27,15 @@
 %define libgs %mklibname gs %{gsmajor}
 %define libgs_devel %mklibname -d gs
 %define libgxps %mklibname gxps %{gsmajor}
+%define libgpdl %mklibname gpdl %{gsmajor}
 %define libgpcl6 %mklibname gpcl6 %{gsmajor}
 %define lib32gs %mklib32name gs %{gsmajor}
 %define lib32gs_devel %mklib32name -d gs
 %define lib32gxps %mklib32name gxps %{gsmajor}
+%define lib32gpdl %mklib32name gpdl %{gsmajor}
 %define lib32gpcl6 %mklib32name gpcl6 %{gsmajor}
 
-#define pre %{nil}
+%define pre rc2
 
 Summary:	PostScript/PDF interpreter and renderer (Main executable)
 Name:		ghostscript
@@ -42,7 +44,7 @@ Release:	%{-pre:0.%{pre}.}3
 License:	AGPLv3
 Group:		Publishing
 URL:		http://www.ghostscript.com/awki/Index
-Source0:	https://github.com/ArtifexSoftware/ghostpdl-downloads/releases/download/gs%{nodot_ver}/ghostpdl-%{version}.tar.gz
+Source0:	https://github.com/ArtifexSoftware/ghostpdl-downloads/releases/download/gs%{nodot_ver}%{?pre:%{pre}}/ghostpdl-%{version}%{?pre:%{pre}}.tar.xz
 Source2:	ps2pdfpress.bz2
 Source3:	http://www.linuxprinting.org/download/printing/sipixa6.upp.bz2
 Source4:	ghostscript.rpmlintrc
@@ -50,6 +52,7 @@ Source4:	ghostscript.rpmlintrc
 #Patch300:	ghostscript-9.05-x11_shared.diff
 # Fix some shell scripts
 Patch2:		ghostscript-scripts.patch
+Patch3:		ghostpdl-9.56.0rc2-compile.patch
 # Fix ./autgen.sh in ijs sub-project
 # See http://bugs.ghostscript.com/show_bug.cgi?id=692040 for details.
 #Patch4:		ghostscript-ijs-automake-ver.patch
@@ -68,7 +71,6 @@ Patch31:	objarch-aarch64.patch
 Patch32:	ghostscript-9.14-system-zlib.patch
 Patch33:	ghostpdl-9.51-dprintf.patch
 Patch34:	ghostpdl-9.52-system-jpeg-buildfix.patch
-Patch35:	ghostpdl-git-drop-use-of-FT_CALLBACK_DEF-def.patch
 
 %if !%{with bootstrap}
 BuildRequires:	pkgconfig(gtk+-3.0)
@@ -205,6 +207,16 @@ GhostPDL is an XPS interpreter. It can render XPS
 files to devices which include X window, many
 printer formats, and popular graphics file formats.
 
+%package pdl
+Summary:	PDL interpreter and renderer
+Group:		Publishing
+Requires:	ghostscript-common
+
+%description pdl
+GhostPDL is a PDL interpreter. It can render PDL
+files to devices which include X window, many
+printer formats, and popular graphics file formats.
+
 %if %{with GSx11SVGAmodule}
 %package module-X
 Summary:	PostScript/PDF interpreter and renderer (Additional support for X)
@@ -245,6 +257,14 @@ Summary:	XPS interpreter and renderer (GhostScript shared library)
 Group:		Publishing
 
 %description -n %{libgxps}
+This is the API library for programs which use the XPS
+interpreter of GhostScript.
+
+%package -n %{libgpdl}
+Summary:	PDL interpreter and renderer (GhostScript shared library)
+Group:		Publishing
+
+%description -n %{libgpdl}
 This is the API library for programs which use the XPS
 interpreter of GhostScript.
 
@@ -289,6 +309,14 @@ Group:		Publishing
 
 %description -n %{lib32gxps}
 This is the API library for programs which use the XPS
+interpreter of GhostScript.
+
+%package -n %{lib32gpdl}
+Summary:	PDL interpreter and renderer (GhostScript shared library)
+Group:		Publishing
+
+%description -n %{lib32gpdl}
+This is the API library for programs which use the PDL
 interpreter of GhostScript.
 
 %package -n %{lib32gpcl6}
@@ -383,6 +411,9 @@ cd build32
 	--enable-dynamic \
 	--enable-fontconfig \
 	--enable-dbus
+sed -i -e 's,include base,include ../base,g' Makefile
+ln -s ../tesseract .
+ln -s ../leptonica .
 %make_build so
 %endif
 
@@ -461,11 +492,11 @@ perl -p -i -e "s|^EXTRALIBS=|EXTRALIBS=-L/%{_lib} -lz |g" Makefile
 # process does not work.
 %if %{with GSx11SVGAmodule}
 #make STDDIRS
-%make obj/X11.so
+%make_build obj/X11.so
 %endif
-%make so
+%make_build so
 #make pcl3opts
-%make cups
+%make_build cups
 
 %install
 # Change compiler flags for debugging when in debug mode
@@ -547,7 +578,7 @@ install -m 644 sipixa6.upp %{buildroot}%{_datadir}/ghostscript/%{gsver}/lib/
 
 # GhostPDL and GhostXPS
 cp -a sobin/gpcl* sobin/gxps* %{buildroot}%{_bindir}
-cp -a sobin/libgpcl* sobin/libgxps* %{buildroot}%{_libdir}
+#cp -a sobin/libgpcl* sobin/libgxps* %{buildroot}%{_libdir}
 
 # Add backward compatibility link to not break printerdrake in Mandriva
 # 2006 and older
@@ -603,6 +634,9 @@ fi
 %files xps
 %{_bindir}/gxpsc
 
+%files pdl
+%{_bindir}/gpdlc
+
 %files common
 %dir %{_datadir}/ghostscript
 %{_datadir}/ghostscript/%{gsver}
@@ -636,11 +670,15 @@ fi
 %files -n %{libgs_devel}
 %{_libdir}/libgs.so
 %{_libdir}/libgxps.so
+%{_libdir}/libgpdl.so
 %{_libdir}/libgpcl6.so
 %{_includedir}/ghostscript
 
 %files -n %{libgxps}
 %{_libdir}/libgxps.so.*%{gsmajor}*
+
+%files -n %{libgpdl}
+%{_libdir}/libgpdl.so.*%{gsmajor}*
 
 %files -n %{libgpcl6}
 %{_libdir}/libgpcl6.so.*%{gsmajor}*
@@ -660,6 +698,18 @@ fi
 %files -n %{lib32gs}
 %{_prefix}/lib/libgs.so.*%{gsmajor}*
 
+%files -n %{lib32gpcl6}
+%{_prefix}/lib/libgpcl6.so.*%{gsmajor}*
+
+%files -n %{lib32gpdl}
+%{_prefix}/lib/libgpdl.so.*%{gsmajor}*
+
+%files -n %{lib32gxps}
+%{_prefix}/lib/libgxps.so.*%{gsmajor}*
+
 %files -n %{lib32gs_devel}
 %{_prefix}/lib/libgs.so
+%{_prefix}/lib/libgpcl6.so
+%{_prefix}/lib/libgpdl.so
+%{_prefix}/lib/libgxps.so
 %endif

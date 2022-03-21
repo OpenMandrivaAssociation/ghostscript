@@ -1,0 +1,28 @@
+diff -up ghostpdl-9.56.0rc2/configure.ac.omv~ ghostpdl-9.56.0rc2/configure.ac
+--- ghostpdl-9.56.0rc2/configure.ac.omv~	2022-03-20 23:53:50.904560760 +0100
++++ ghostpdl-9.56.0rc2/configure.ac	2022-03-20 23:54:07.905245740 +0100
+@@ -959,8 +959,8 @@ if test x$with_tesseract != xno; then
+ 
+         OCR_VERSION=1
+         OCR_DEVS="\$(DD)ocr.dev \$(DD)hocr.dev \$(DD)pdfocr8.dev \$(DD)pdfocr24.dev \$(DD)pdfocr32.dev"
+-        LEPTONICAINCLUDE="include base/leptonica.mak"
+-        TESSERACTINCLUDE="include base/tesseract.mak"
++        LEPTONICAINCLUDE="include ../base/leptonica.mak"
++        TESSERACTINCLUDE="include ../base/tesseract.mak"
+         TESSERACT_LIBS="-lstdc++"
+       else
+         OCR_DEVS_WARNING_LINE1="OCR devices disabled due to incompatible compiler: tesseract requires a C++17 compatible compiler"
+diff -up ghostpdl-9.56.0rc2/configure.omv~ ghostpdl-9.56.0rc2/configure
+--- ghostpdl-9.56.0rc2/configure.omv~	2022-03-20 23:54:09.685212757 +0100
++++ ghostpdl-9.56.0rc2/configure	2022-03-20 23:54:16.151092945 +0100
+@@ -8342,8 +8342,8 @@ printf "%s\n" "no" >&6; }
+ 
+         OCR_VERSION=1
+         OCR_DEVS="\$(DD)ocr.dev \$(DD)hocr.dev \$(DD)pdfocr8.dev \$(DD)pdfocr24.dev \$(DD)pdfocr32.dev"
+-        LEPTONICAINCLUDE="include base/leptonica.mak"
+-        TESSERACTINCLUDE="include base/tesseract.mak"
++        LEPTONICAINCLUDE="include ../base/leptonica.mak"
++        TESSERACTINCLUDE="include ../base/tesseract.mak"
+         TESSERACT_LIBS="-lstdc++"
+       else
+         OCR_DEVS_WARNING_LINE1="OCR devices disabled due to incompatible compiler: tesseract requires a C++17 compatible compiler"
