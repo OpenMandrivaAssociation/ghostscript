@@ -35,12 +35,12 @@
 %define lib32gpdl %mklib32name gpdl %{gsmajor}
 %define lib32gpcl6 %mklib32name gpcl6 %{gsmajor}
 
-%define pre rc2
+#define pre rc2
 
 Summary:	PostScript/PDF interpreter and renderer (Main executable)
 Name:		ghostscript
 Version:	%{gsver}
-Release:	%{-pre:0.%{pre}.}3
+Release:	%{-pre:0.%{pre}.}1
 License:	AGPLv3
 Group:		Publishing
 URL:		http://www.ghostscript.com/awki/Index
