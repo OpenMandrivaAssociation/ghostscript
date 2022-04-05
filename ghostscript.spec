@@ -12,7 +12,7 @@
 
 %define _disable_ld_no_undefined 1
 
-%define gsver 9.56.0
+%define gsver 9.56.1
 %define ijsver 0.35
 # (tpg) BUMP THIS EVERY UPDATE, RESET WHEN IJSVER INCREASES
 %define ijsreloffset 107
@@ -52,7 +52,6 @@ Source4:	ghostscript.rpmlintrc
 #Patch300:	ghostscript-9.05-x11_shared.diff
 # Fix some shell scripts
 Patch2:		ghostscript-scripts.patch
-Patch3:		ghostpdl-9.56.0rc2-compile.patch
 # Fix ./autgen.sh in ijs sub-project
 # See http://bugs.ghostscript.com/show_bug.cgi?id=692040 for details.
 #Patch4:		ghostscript-ijs-automake-ver.patch
