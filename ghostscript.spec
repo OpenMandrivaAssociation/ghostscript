@@ -12,10 +12,12 @@
 
 %define _disable_ld_no_undefined 1
 
+%global optflags %{optflags} -O2
+
 %define gsver 9.56.1
 %define ijsver 0.35
 # (tpg) BUMP THIS EVERY UPDATE, RESET WHEN IJSVER INCREASES
-%define ijsreloffset 107
+%define ijsreloffset 108
 %define ijsrel %(echo $((%(echo %{release} |cut -d. -f1) + %{ijsreloffset})))
 %define nodot_ver %(echo %{gsver} |sed -e 's,\\.,,g')
 
