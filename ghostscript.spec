@@ -89,6 +89,7 @@ BuildRequires:	pkgconfig(jbig2dec)
 BuildRequires:	pkgconfig(libjpeg)
 BuildRequires:	libpaper-devel
 BuildRequires:	netpbm-devel
+BuildRequires:	locales-extra-charsets
 BuildRequires:	pkgconfig(libtiff-4)
 BuildRequires:	pkgconfig(freetype2)
 BuildRequires:	pkgconfig(ice)
