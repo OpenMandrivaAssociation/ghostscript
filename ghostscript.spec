@@ -14,7 +14,8 @@
 
 %global optflags %{optflags} -O2
 
-%define gsver 9.56.1
+%define gsver 10.0.0
+%define fsver 10.00.0
 %define ijsver 0.35
 # (tpg) BUMP THIS EVERY UPDATE, RESET WHEN IJSVER INCREASES
 %define ijsreloffset 108
@@ -25,7 +26,7 @@
 %define libijs %mklibname ijs %{ijsmajor}
 %define libijs_devel %mklibname -d ijs
 
-%define gsmajor 9
+%define gsmajor 10
 %define libgs %mklibname gs %{gsmajor}
 %define libgs_devel %mklibname -d gs
 %define libgxps %mklibname gxps %{gsmajor}
@@ -37,12 +38,12 @@
 %define lib32gpdl %mklib32name gpdl %{gsmajor}
 %define lib32gpcl6 %mklib32name gpcl6 %{gsmajor}
 
-#define pre rc2
+%define pre rc2
 
 Summary:	PostScript/PDF interpreter and renderer (Main executable)
 Name:		ghostscript
 Version:	%{gsver}
-Release:	%{-pre:0.%{pre}.}2
+Release:	%{?pre:0.%{pre}.}1
 License:	AGPLv3
 Group:		Publishing
 URL:		http://www.ghostscript.com/awki/Index
@@ -72,6 +73,7 @@ Patch31:	objarch-aarch64.patch
 Patch32:	ghostscript-9.14-system-zlib.patch
 Patch33:	ghostpdl-9.51-dprintf.patch
 Patch34:	ghostpdl-9.52-system-jpeg-buildfix.patch
+Patch35:	ghostpdl-10.0.0rc2-build.patch
 
 %if !%{with bootstrap}
 BuildRequires:	pkgconfig(gtk+-3.0)
@@ -575,7 +577,7 @@ install -m 755 ps2pdfpress %{buildroot}%{_bindir}
 
 # UPP file for SiPix Pocket Printer A6
 #mkdir -p %{buildroot}%{_datadir}/ghostscript/%{gsver}/lib
-install -m 644 sipixa6.upp %{buildroot}%{_datadir}/ghostscript/%{gsver}/lib/
+install -m 644 sipixa6.upp %{buildroot}%{_datadir}/ghostscript/%{fsver}/lib/
 
 # GhostPDL and GhostXPS
 cp -a sobin/gpcl* sobin/gxps* %{buildroot}%{_bindir}
@@ -592,8 +594,8 @@ chmod -R go-w %{buildroot}%{_docdir}
 chmod -R u+w %{buildroot}%{_docdir}
 
 # Fix symlink to buildroot
-rm -f %{buildroot}%{_datadir}/ghostscript/%{gsver}/doc
-ln -s %{_docdir}/ghostscript-doc-%{gsver} %{buildroot}%{_datadir}/ghostscript/%{gsver}/doc
+rm -f %{buildroot}%{_datadir}/ghostscript/%{fsver}/doc
+ln -s %{_docdir}/ghostscript-doc-%{gsver} %{buildroot}%{_datadir}/ghostscript/%{fsver}/doc
 
 %post
 # Set up update-alternatives entries
@@ -640,7 +642,7 @@ fi
 
 %files common
 %dir %{_datadir}/ghostscript
-%{_datadir}/ghostscript/%{gsver}
+%{_datadir}/ghostscript/%{fsver}
 %doc %{_mandir}/man1/*
 %lang(de) %{_mandir}/de/man1/*
 #%{_bindir}/[a-c]*

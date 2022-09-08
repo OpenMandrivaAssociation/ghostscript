@@ -1,0 +1,12 @@
+diff -up ghostpdl-10.0.0rc2/pdf/pdf_font1C.c.omv~ ghostpdl-10.0.0rc2/pdf/pdf_font1C.c
+--- ghostpdl-10.0.0rc2/pdf/pdf_font1C.c.omv~	2022-09-08 09:38:04.594762124 +0100
++++ ghostpdl-10.0.0rc2/pdf/pdf_font1C.c	2022-09-08 09:38:14.034796873 +0100
+@@ -38,6 +38,8 @@
+ static byte *
+ pdfi_find_cff_index(byte *p, byte *e, int idx, byte **pp, byte **ep);
+ 
++extern int pdfi_dict_put_unchecked(pdf_context *ctx, pdf_dict *d, const char *Key, pdf_obj *value);
++
+ /* This is a super set of the contents of a pdfi Type 1C font/CIDFont.
+    Meaning we can store everying as we interpret, and not worry
+    about the actual font type until the end
