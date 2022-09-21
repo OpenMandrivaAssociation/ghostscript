@@ -38,7 +38,7 @@
 %define lib32gpdl %mklib32name gpdl %{gsmajor}
 %define lib32gpcl6 %mklib32name gpcl6 %{gsmajor}
 
-%define pre rc2
+#define pre rc2
 
 Summary:	PostScript/PDF interpreter and renderer (Main executable)
 Name:		ghostscript
