@@ -7,15 +7,14 @@
 %bcond_without ijs
 %bcond_with crosscompile
 %bcond_with bootstrap
-%bcond_without GSx11SVGAmodule
 %bcond_with debug
 
 %define _disable_ld_no_undefined 1
 
 %global optflags %{optflags} -O2
 
-%define gsver 10.0.0
-%define fsver 10.00.0
+%define gsver 10.01.0
+%define fsver 10.01.0
 %define ijsver 0.35
 # (tpg) BUMP THIS EVERY UPDATE, RESET WHEN IJSVER INCREASES
 %define ijsreloffset 108
@@ -38,7 +37,7 @@
 %define lib32gpdl %mklib32name gpdl %{gsmajor}
 %define lib32gpcl6 %mklib32name gpcl6 %{gsmajor}
 
-#define pre rc2
+%define pre rc2
 
 Summary:	PostScript/PDF interpreter and renderer (Main executable)
 Name:		ghostscript
@@ -111,10 +110,7 @@ BuildRequires:	cups-devel
 
 Requires:	ghostscript-common
 Requires:	update-alternatives
-%if !%{with GSx11SVGAmodule}
 %rename	ghostscript-module-X
-%rename ghostscript-module-SVGALIB
-%endif
 
 %if %{with compat32}
 BUildRequires:	devel(libjpeg)
@@ -220,20 +216,6 @@ Requires:	ghostscript-common
 GhostPDL is a PDL interpreter. It can render PDL
 files to devices which include X window, many
 printer formats, and popular graphics file formats.
-
-%if %{with GSx11SVGAmodule}
-%package module-X
-Summary:	PostScript/PDF interpreter and renderer (Additional support for X)
-Group:		Publishing
-Requires:	ghostscript-common
-
-%description module-X
-Ghostscript is a PostScript/PDF interpreter. It can render both
-PostScript and PDF files to devices which include X window, many
-printer formats, and popular graphics file formats.
-
-This package enhances Ghostscript with X window support
-%endif
 
 %package -n %{libgs}
 Summary:	PostScript/PDF interpreter and renderer (GhostScript shared library)
@@ -373,30 +355,6 @@ find . -name "*.*~" |xargs rm -f
 # prevent building and using bundled libs
 rm -rf jbig2dec libpng jpeg tiff zlib lcms2 freetype cups/libs openjpeg
 
-# Convert manual pages to UTF-8
-from8859_1() {
-        iconv -f iso-8859-1 -t utf-8 < "$1" > "${1}_"
-        mv "${1}_" "$1"
-}
-for i in man/de/*.1; do from8859_1 "$i"; done
-
-# Stuff for shared library support to ghostscript.
-%if %{with GSx11SVGAmodule}
-# build a small README describing the features available.
-cat <<EOF >README.shared.mandrivalinux
-This version of ghostscript support shared modules dynamically loaded
-at run time.
-
-There are currently two modules compiled with the Mandriva Linux version of
-ghostscript, one to support all X11 devices (typically used by gv) and
-another to support the svgalib devices. Look at the
-ghostscript-module-??? packages.
-
-There is no configuration needed, just can add (or remove) the package
-to add (or remove) the devices concerned in ghostscript.
-EOF
-%endif
-
 # ps2pdfpress
 bzcat %{SOURCE2} > ps2pdfpress
 
@@ -412,7 +370,6 @@ cd build32
 	--disable-gtk \
 	--enable-shared \
 	--disable-static \
-	--enable-dynamic \
 	--enable-fontconfig \
 	--enable-dbus
 sed -i -e 's,include base,include ../base,g' Makefile
@@ -452,7 +409,6 @@ popd
 # We have a Subversion version, so we must re-generate "configure"
 #./autogen.sh
 %configure \
-	--enable-dynamic \
 %if !%{with bootstrap}
 	--enable-fontconfig \
 %endif
@@ -468,8 +424,7 @@ popd
 	--with-x \
 	--disable-compile-inits \
 	--with-system-libtiff \
-	--enable-dbus \
-	--enable-dynamic
+	--enable-dbus
 
 # Drivers which do not compile:
 # Needs newsiop/lbp.h: nwp533
@@ -494,10 +449,6 @@ perl -p -i -e "s|^EXTRALIBS=|EXTRALIBS=-L/%{_lib} -lz |g" Makefile
 
 # The RPM macro for make is not used here, as parallelization of the build
 # process does not work.
-%if %{with GSx11SVGAmodule}
-#make STDDIRS
-%make_build obj/X11.so
-%endif
 %make_build so
 #make pcl3opts
 %make_build cups
@@ -558,18 +509,6 @@ make \
 	libdir=%{_libdir} \
 	mandir=%{_mandir} \
 	soinstall
-
-%if %{with GSx11SVGAmodule}
-make \
-	prefix=%{_prefix} \
-	DESTDIR=%{buildroot} \
-	gssharedir=%{_libdir}/ghostscript/%{gsver} \
-	docdir=%{_docdir}/ghostscript-doc-%{gsver} \
-	bindir=%{_bindir} \
-	libdir=%{_libdir} \
-	mandir=%{_mandir} \
-	install-shared
-%endif
 
 ln -sf gs.1%{_extension} %{buildroot}%{_mandir}/man1/ghostscript.1%{_extension}
 
@@ -645,7 +584,6 @@ fi
 %dir %{_datadir}/ghostscript
 %{_datadir}/ghostscript/%{fsver}
 %doc %{_mandir}/man1/*
-%lang(de) %{_mandir}/de/man1/*
 #%{_bindir}/[a-c]*
 #{_bindir}/dumphint
 %{_bindir}/[e-f]*
@@ -660,13 +598,6 @@ fi
 
 %files dvipdf
 %{_bindir}/dvipdf
-
-%if %{with GSx11SVGAmodule}
-%files module-X
-%doc README.shared.mandrivalinux
-%dir %{_libdir}/ghostscript/%{gsver}
-%{_libdir}/ghostscript/%{gsver}/X11.so
-%endif
 
 %files -n %{libgs}
 %{_libdir}/libgs.so.*%{gsmajor}*
