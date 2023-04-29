@@ -13,8 +13,8 @@
 
 %global optflags %{optflags} -O2
 
-%define gsver 10.01.0
-%define fsver 10.01.0
+%define gsver 10.01.1
+%define fsver 10.01.1
 %define ijsver 0.35
 # (tpg) BUMP THIS EVERY UPDATE, RESET WHEN IJSVER INCREASES
 %define ijsreloffset 108
@@ -45,7 +45,7 @@ Version:	%{gsver}
 Release:	%{?pre:0.%{pre}.}1
 License:	AGPLv3
 Group:		Publishing
-URL:		http://www.ghostscript.com/awki/Index
+URL:		http://www.ghostscript.com/
 Source0:	https://github.com/ArtifexSoftware/ghostpdl-downloads/releases/download/gs%{nodot_ver}%{?pre:%{pre}}/ghostpdl-%{version}%{?pre:%{pre}}.tar.xz
 Source2:	ps2pdfpress.bz2
 Source3:	http://www.linuxprinting.org/download/printing/sipixa6.upp.bz2
