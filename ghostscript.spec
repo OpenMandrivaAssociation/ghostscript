@@ -13,8 +13,8 @@
 
 %global optflags %{optflags} -O2
 
-%define gsver 10.01.1
-%define fsver 10.01.1
+%define gsver 10.01.2
+%define fsver 10.01.2
 %define ijsver 0.35
 # (tpg) BUMP THIS EVERY UPDATE, RESET WHEN IJSVER INCREASES
 %define ijsreloffset 108
@@ -37,7 +37,7 @@
 %define lib32gpdl %mklib32name gpdl %{gsmajor}
 %define lib32gpcl6 %mklib32name gpcl6 %{gsmajor}
 
-#define pre rc1
+#define pre rc2
 
 Summary:	PostScript/PDF interpreter and renderer (Main executable)
 Name:		ghostscript
