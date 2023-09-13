@@ -13,8 +13,8 @@
 
 %global optflags %{optflags} -O2
 
-%define gsver 10.01.2
-%define fsver 10.01.2
+%define gsver 10.02.0
+%define fsver 10.02.0
 %define ijsver 0.35
 # (tpg) BUMP THIS EVERY UPDATE, RESET WHEN IJSVER INCREASES
 %define ijsreloffset 108

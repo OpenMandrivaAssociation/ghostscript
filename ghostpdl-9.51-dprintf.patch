@@ -1,7 +1,7 @@
-diff -up ghostpdl-9.56.0rc2/base/gdevmpla.c.6~ ghostpdl-9.56.0rc2/base/gdevmpla.c
---- ghostpdl-9.56.0rc2/base/gdevmpla.c.6~	2022-03-14 14:31:38.000000000 +0100
-+++ ghostpdl-9.56.0rc2/base/gdevmpla.c	2022-03-20 23:48:51.220112949 +0100
-@@ -1035,7 +1035,7 @@ mem_planar_strip_tile_rect_devn(gx_devic
+diff -up ghostpdl-10.02.0/base/gdevmpla.c.6~ ghostpdl-10.02.0/base/gdevmpla.c
+--- ghostpdl-10.02.0/base/gdevmpla.c.6~	2023-09-12 14:40:30.000000000 +0200
++++ ghostpdl-10.02.0/base/gdevmpla.c	2023-09-13 12:04:25.884403672 +0200
+@@ -1033,7 +1033,7 @@ mem_planar_strip_tile_rect_devn(gx_devic
          }
  #ifdef DEBUG
          if (c0 == gx_no_color_index && c1 == gx_no_color_index) {
@@ -10,9 +10,9 @@ diff -up ghostpdl-9.56.0rc2/base/gdevmpla.c.6~ ghostpdl-9.56.0rc2/base/gdevmpla.
          }
  #endif
          MEM_SET_PARAMS(mdev, plane_depth);
-diff -up ghostpdl-9.56.0rc2/base/gxclrect.c.6~ ghostpdl-9.56.0rc2/base/gxclrect.c
---- ghostpdl-9.56.0rc2/base/gxclrect.c.6~	2022-03-14 14:31:38.000000000 +0100
-+++ ghostpdl-9.56.0rc2/base/gxclrect.c	2022-03-20 23:48:51.221112930 +0100
+diff -up ghostpdl-10.02.0/base/gxclrect.c.6~ ghostpdl-10.02.0/base/gxclrect.c
+--- ghostpdl-10.02.0/base/gxclrect.c.6~	2023-09-12 14:40:30.000000000 +0200
++++ ghostpdl-10.02.0/base/gxclrect.c	2023-09-13 12:04:25.884574805 +0200
 @@ -942,7 +942,7 @@ clist_copy_planes(gx_device * dev,
  
  #ifdef DEBUG
@@ -22,10 +22,10 @@ diff -up ghostpdl-9.56.0rc2/base/gxclrect.c.6~ ghostpdl-9.56.0rc2/base/gxclrect.
      }
  #endif
  
-diff -up ghostpdl-9.56.0rc2/base/gxfapi.c.6~ ghostpdl-9.56.0rc2/base/gxfapi.c
---- ghostpdl-9.56.0rc2/base/gxfapi.c.6~	2022-03-14 14:31:38.000000000 +0100
-+++ ghostpdl-9.56.0rc2/base/gxfapi.c	2022-03-20 23:48:51.221112930 +0100
-@@ -1818,13 +1818,13 @@ gs_fapi_passfont(gs_font *pfont, int sub
+diff -up ghostpdl-10.02.0/base/gxfapi.c.6~ ghostpdl-10.02.0/base/gxfapi.c
+--- ghostpdl-10.02.0/base/gxfapi.c.6~	2023-09-12 14:40:30.000000000 +0200
++++ ghostpdl-10.02.0/base/gxfapi.c	2023-09-13 12:04:25.884769532 +0200
+@@ -1823,13 +1823,13 @@ gs_fapi_passfont(gs_font *pfont, int sub
          }
          if (!I) {
              if (gs_debug_c('1'))
@@ -41,9 +41,9 @@ diff -up ghostpdl-9.56.0rc2/base/gxfapi.c.6~ ghostpdl-9.56.0rc2/base/gxfapi.c
              do_restart = true;
          }
      }
-diff -up ghostpdl-9.56.0rc2/base/std.h.6~ ghostpdl-9.56.0rc2/base/std.h
---- ghostpdl-9.56.0rc2/base/std.h.6~	2022-03-14 14:31:38.000000000 +0100
-+++ ghostpdl-9.56.0rc2/base/std.h	2022-03-20 23:49:13.049708580 +0100
+diff -up ghostpdl-10.02.0/base/std.h.6~ ghostpdl-10.02.0/base/std.h
+--- ghostpdl-10.02.0/base/std.h.6~	2023-09-12 14:40:30.000000000 +0200
++++ ghostpdl-10.02.0/base/std.h	2023-09-13 12:04:25.884884659 +0200
 @@ -126,7 +126,7 @@ typedef ulong bits32;
   * All these above functions/macros take a "const gs_memory_t *" pointer to
   * ensure that the correct stdout/stderr is used for the given gsapi instance.
@@ -62,9 +62,9 @@ diff -up ghostpdl-9.56.0rc2/base/std.h.6~ ghostpdl-9.56.0rc2/base/std.h
    dpf(str)
  #define dlprintf(str)\
    (_dpl dpf(str))
-diff -up ghostpdl-9.56.0rc2/contrib/gdevlx7.c.6~ ghostpdl-9.56.0rc2/contrib/gdevlx7.c
---- ghostpdl-9.56.0rc2/contrib/gdevlx7.c.6~	2022-03-14 14:31:38.000000000 +0100
-+++ ghostpdl-9.56.0rc2/contrib/gdevlx7.c	2022-03-20 23:48:51.222112911 +0100
+diff -up ghostpdl-10.02.0/contrib/gdevlx7.c.6~ ghostpdl-10.02.0/contrib/gdevlx7.c
+--- ghostpdl-10.02.0/contrib/gdevlx7.c.6~	2023-09-12 14:40:30.000000000 +0200
++++ ghostpdl-10.02.0/contrib/gdevlx7.c	2023-09-13 12:04:25.884951715 +0200
 @@ -250,7 +250,7 @@ static void lex_eject(gp_file *out)
  {
     byte buf[4]={0x1b,0x2a,0x7,0x65};
@@ -92,9 +92,9 @@ diff -up ghostpdl-9.56.0rc2/contrib/gdevlx7.c.6~ ghostpdl-9.56.0rc2/contrib/gdev
  #endif
           }
  
-diff -up ghostpdl-9.56.0rc2/contrib/japanese/gdevmjc.c.6~ ghostpdl-9.56.0rc2/contrib/japanese/gdevmjc.c
---- ghostpdl-9.56.0rc2/contrib/japanese/gdevmjc.c.6~	2022-03-14 14:31:38.000000000 +0100
-+++ ghostpdl-9.56.0rc2/contrib/japanese/gdevmjc.c	2022-03-20 23:48:51.222112911 +0100
+diff -up ghostpdl-10.02.0/contrib/japanese/gdevmjc.c.6~ ghostpdl-10.02.0/contrib/japanese/gdevmjc.c
+--- ghostpdl-10.02.0/contrib/japanese/gdevmjc.c.6~	2023-09-12 14:40:30.000000000 +0200
++++ ghostpdl-10.02.0/contrib/japanese/gdevmjc.c	2023-09-13 12:04:25.885043969 +0200
 @@ -889,7 +889,7 @@ xtal_plane( byte *dp , short *buf[] , by
          for ( i = 0 ; i < 100 ; i++ ) {
                  dprintf1("[%04X]",bar[0][i]);
@@ -125,10 +125,10 @@ diff -up ghostpdl-9.56.0rc2/contrib/japanese/gdevmjc.c.6~ ghostpdl-9.56.0rc2/con
  
  }
  */
-diff -up ghostpdl-9.56.0rc2/cups/gdevcups.c.6~ ghostpdl-9.56.0rc2/cups/gdevcups.c
---- ghostpdl-9.56.0rc2/cups/gdevcups.c.6~	2022-03-14 14:31:38.000000000 +0100
-+++ ghostpdl-9.56.0rc2/cups/gdevcups.c	2022-03-20 23:48:51.223112893 +0100
-@@ -847,7 +847,7 @@ cups_get_matrix(gx_device *pdev,	/* I -
+diff -up ghostpdl-10.02.0/cups/gdevcups.c.6~ ghostpdl-10.02.0/cups/gdevcups.c
+--- ghostpdl-10.02.0/cups/gdevcups.c.6~	2023-09-12 14:40:30.000000000 +0200
++++ ghostpdl-10.02.0/cups/gdevcups.c	2023-09-13 12:04:25.885290504 +0200
+@@ -862,7 +862,7 @@ cups_get_matrix(gx_device *pdev,	/* I -
      * Do landscape orientation...
      */
  #ifdef CUPS_DEBUG2
@@ -137,15 +137,4 @@ diff -up ghostpdl-9.56.0rc2/cups/gdevcups.c.6~ ghostpdl-9.56.0rc2/cups/gdevcups.
  #endif /* CUPS_DEBUG2 */
      pmat->xx = 0.0;
      pmat->xy = (float)cups->header.HWResolution[1] / 72.0;
-diff -up ghostpdl-9.56.0rc2/pdf/pdf_cmap.c.omv~ ghostpdl-9.56.0rc2/pdf/pdf_cmap.c
---- ghostpdl-9.56.0rc2/pdf/pdf_cmap.c.omv~	2022-03-21 00:01:45.102772692 +0100
-+++ ghostpdl-9.56.0rc2/pdf/pdf_cmap.c	2022-03-21 00:01:48.503709656 +0100
-@@ -316,7 +316,7 @@ static int cmap_endfbrange_func(gs_memor
-             int kslen = stobj[i].size;
- 
-             if (kslen > 4) {
--                dprintf("CMap: value out of range\n");
-+                d_printf("CMap: value out of range\n");
-                 continue;
-             }
- 
+diff -up ghostpdl-10.02.0/pdf/pdf_cmap.c.6~ ghostpdl-10.02.0/pdf/pdf_cmap.c
