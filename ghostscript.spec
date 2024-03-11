@@ -75,6 +75,7 @@ Patch34:	ghostpdl-9.52-system-jpeg-buildfix.patch
 Patch35:	ghostpdl-10.0.0rc2-build.patch
 Patch36:	ghostpdl-10.03.0-openjpeg-buildfix.patch
 Patch37:	ghostpdl-10.03.0-compile.patch
+Patch38:	ghostpdl-10.03.0-aarch64-clang.patch
 
 %if !%{with bootstrap}
 BuildRequires:	pkgconfig(gtk+-3.0)
