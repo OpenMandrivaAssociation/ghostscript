@@ -1,7 +1,7 @@
-diff -up ghostpdl-9.51/Resource/Init/gs_fonts.ps.2~ ghostpdl-9.51/Resource/Init/gs_fonts.ps
---- ghostpdl-9.51/Resource/Init/gs_fonts.ps.2~	2020-03-15 20:37:43.696586167 +0100
-+++ ghostpdl-9.51/Resource/Init/gs_fonts.ps	2020-03-15 20:39:35.711029531 +0100
-@@ -139,10 +139,20 @@ userdict /.nativeFontmap .FontDirectory
+diff -up ghostpdl-10.03.0/Resource/Init/gs_fonts.ps.2~ ghostpdl-10.03.0/Resource/Init/gs_fonts.ps
+--- ghostpdl-10.03.0/Resource/Init/gs_fonts.ps.2~	2024-03-06 10:52:27.000000000 +0100
++++ ghostpdl-10.03.0/Resource/Init/gs_fonts.ps	2024-03-11 20:29:48.649125943 +0100
+@@ -142,10 +142,20 @@ userdict /.nativeFontmap .FontDirectory
        } if
        1 index type /stringtype eq
        1 index type /nametype eq and 1 index xcheck and
@@ -25,13 +25,13 @@ diff -up ghostpdl-9.51/Resource/Init/gs_fonts.ps.2~ ghostpdl-9.51/Resource/Init/
        } {
                  % This is a real entry.
                  % Read and pop tokens until a semicolon.
-diff -up ghostpdl-9.51/Resource/Init/gs_init.ps.2~ ghostpdl-9.51/Resource/Init/gs_init.ps
---- ghostpdl-9.51/Resource/Init/gs_init.ps.2~	2020-03-12 12:49:11.000000000 +0100
-+++ ghostpdl-9.51/Resource/Init/gs_init.ps	2020-03-15 20:40:10.829420099 +0100
-@@ -863,6 +863,14 @@ currentdict /.makeinternaldict .undef
+diff -up ghostpdl-10.03.0/Resource/Init/gs_init.ps.2~ ghostpdl-10.03.0/Resource/Init/gs_init.ps
+--- ghostpdl-10.03.0/Resource/Init/gs_init.ps.2~	2024-03-11 20:29:48.649125943 +0100
++++ ghostpdl-10.03.0/Resource/Init/gs_init.ps	2024-03-11 20:45:09.567260091 +0100
+@@ -894,6 +894,14 @@ currentdict /.makeinternaldict .undef
             { /undefinedfilename signalerror }
            ifelse
-         } bind def
+         } .internalbind def
 +/runlibfileifexists
 +        {		% We don't want to bind 'run' into this procedure,
 +                        % since run may get redefined.
@@ -41,10 +41,10 @@ diff -up ghostpdl-9.51/Resource/Init/gs_init.ps.2~ ghostpdl-9.51/Resource/Init/g
 +          ifelse
 +        } bind def
  /selectdevice
-         { finddevice setdevice .setdefaultscreen } bind def
+         { finddevice setdevice .setdefaultscreen } .internalbind odef
  /signalerror		% <object> <errorname> signalerror -
-@@ -991,6 +999,7 @@ def
-         } bind def
+@@ -1129,6 +1137,7 @@ def
+         } .internalbind def
  % Temporarily substitute it for the real runlibfile.
  /.runlibfile /runlibfile load def
 +/.runlibfileifexists /runlibfileifexists load def

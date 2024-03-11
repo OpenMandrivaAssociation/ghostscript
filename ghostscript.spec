@@ -13,8 +13,8 @@
 
 %global optflags %{optflags} -O2
 
-%define gsver 10.02.0
-%define fsver 10.02.0
+%define gsver 10.03.0
+%define fsver 10.03.0
 %define ijsver 0.35
 # (tpg) BUMP THIS EVERY UPDATE, RESET WHEN IJSVER INCREASES
 %define ijsreloffset 109
@@ -73,6 +73,8 @@ Patch32:	ghostscript-9.14-system-zlib.patch
 Patch33:	ghostpdl-9.51-dprintf.patch
 Patch34:	ghostpdl-9.52-system-jpeg-buildfix.patch
 Patch35:	ghostpdl-10.0.0rc2-build.patch
+Patch36:	ghostpdl-10.03.0-openjpeg-buildfix.patch
+Patch37:	ghostpdl-10.03.0-compile.patch
 
 %if !%{with bootstrap}
 BuildRequires:	pkgconfig(gtk+-3.0)

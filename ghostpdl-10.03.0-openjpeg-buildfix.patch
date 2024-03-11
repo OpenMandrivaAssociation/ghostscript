@@ -1,0 +1,11 @@
+diff -up ghostpdl-10.03.0/base/sjpx_openjpeg.c.omv~ ghostpdl-10.03.0/base/sjpx_openjpeg.c
+--- ghostpdl-10.03.0/base/sjpx_openjpeg.c.omv~	2024-03-11 20:58:26.839249691 +0100
++++ ghostpdl-10.03.0/base/sjpx_openjpeg.c	2024-03-11 20:58:49.647474772 +0100
+@@ -17,6 +17,7 @@
+ 
+ /* opj filter implementation using OpenJPeg library */
+ 
++#include <opj_config.h> // for OPJ_VERSION_*
+ #include "memory_.h"
+ #include "gserrors.h"
+ #include "gdebug.h"
