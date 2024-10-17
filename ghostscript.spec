@@ -45,7 +45,7 @@ Version:	%{gsver}
 Release:	%{?pre:0.%{pre}.}1
 License:	AGPLv3
 Group:		Publishing
-URL:		http://www.ghostscript.com/
+URL:		https://www.ghostscript.com/
 Source0:	https://github.com/ArtifexSoftware/ghostpdl-downloads/releases/download/gs%{nodot_ver}%{?pre:%{pre}}/ghostpdl-%{version}%{?pre:%{pre}}.tar.xz
 Source2:	ps2pdfpress.bz2
 Source3:	http://www.linuxprinting.org/download/printing/sipixa6.upp.bz2
@@ -322,7 +322,7 @@ Version:	%{ijsver}
 Release:	%{ijsrel}
 Summary:	Dynamic library for the IJS printer driver plug-in interface
 Group:		Publishing
-URL:		http://www.linuxprinting.org/ijs/
+URL:		https://www.linuxprinting.org/ijs/
 Provides:	libijs = %{ijsver}-%{ijsrel}
 
 %description -n %{libijs}
@@ -337,7 +337,7 @@ Version:	%{ijsver}
 Release:	%{ijsrel}
 Summary:	Headers and links for compiling against the "%{libijs}" library
 Group:		Development/C
-URL:		http://www.linuxprinting.org/ijs/
+URL:		https://www.linuxprinting.org/ijs/
 Requires:	%{libijs} >= %{ijsver}
 Provides:	libijs-devel = %{ijsver}-%{ijsrel}
 Provides:	ijs-devel = %{ijsver}-%{ijsrel}
