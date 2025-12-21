@@ -76,6 +76,11 @@ Patch35:	ghostpdl-10.0.0rc2-build.patch
 Patch36:	ghostpdl-10.03.0-openjpeg-buildfix.patch
 
 %if !%{with bootstrap}
+BuildRequires:	autoconf
+BuildRequires:	automake
+BuildRequires:	libtool-base
+BuildRequires:	slibtool
+BuildRequires:	make
 BuildRequires:	pkgconfig(gtk+-3.0)
 BuildRequires:	pkgconfig(fontconfig)
 %endif
