@@ -25,10 +25,10 @@ diff -up ghostpdl-10.03.0/Resource/Init/gs_fonts.ps.2~ ghostpdl-10.03.0/Resource
        } {
                  % This is a real entry.
                  % Read and pop tokens until a semicolon.
-diff -up ghostpdl-10.03.0/Resource/Init/gs_init.ps.2~ ghostpdl-10.03.0/Resource/Init/gs_init.ps
---- ghostpdl-10.03.0/Resource/Init/gs_init.ps.2~	2024-03-11 20:29:48.649125943 +0100
-+++ ghostpdl-10.03.0/Resource/Init/gs_init.ps	2024-03-11 20:45:09.567260091 +0100
-@@ -894,6 +894,14 @@ currentdict /.makeinternaldict .undef
+diff -up ghostpdl-10.08.0rc1/Resource/Init/gs_init.ps.2~ ghostpdl-10.08.0rc1/Resource/Init/gs_init.ps
+--- ghostpdl-10.08.0rc1/Resource/Init/gs_init.ps.2~	2026-08-18 00:00:00.000000000 +0000
++++ ghostpdl-10.08.0rc1/Resource/Init/gs_init.ps	2026-08-18 00:00:00.000000000 +0000
+@@ -875,6 +875,14 @@
             { /undefinedfilename signalerror }
            ifelse
          } .internalbind def
@@ -40,10 +40,10 @@ diff -up ghostpdl-10.03.0/Resource/Init/gs_init.ps.2~ ghostpdl-10.03.0/Resource/
 +           { pop }
 +          ifelse
 +        } bind def
- /selectdevice
-         { finddevice setdevice .setdefaultscreen } .internalbind odef
  /signalerror		% <object> <errorname> signalerror -
-@@ -1129,6 +1137,7 @@ def
+         { /errordict .systemvar exch get exec } .internalbind def
+ /signaloperror {	% <object> <errorname> signaloperror -
+@@ -1108,6 +1116,7 @@
          } .internalbind def
  % Temporarily substitute it for the real runlibfile.
  /.runlibfile /runlibfile load def

@@ -13,11 +13,11 @@
 
 %global optflags %{optflags} -O2
 
-%define gsver 10.05.1
-%define fsver 10.05.1
+%define gsver 10.08.0
+%define fsver 10.08.0
 %define ijsver 0.35
 # (tpg) BUMP THIS EVERY UPDATE, RESET WHEN IJSVER INCREASES
-%define ijsreloffset 109
+%define ijsreloffset 110
 %define ijsrel %(echo $((%(echo %{release} |cut -d. -f1) + %{ijsreloffset})))
 %define nodot_ver %(echo %{gsver} |sed -e 's,\\.,,g')
 
@@ -37,7 +37,7 @@
 %define lib32gpdl %mklib32name gpdl %{gsmajor}
 %define lib32gpcl6 %mklib32name gpcl6 %{gsmajor}
 
-#define pre rc2
+%define pre rc1
 
 Summary:	PostScript/PDF interpreter and renderer (Main executable)
 Name:		ghostscript
@@ -78,15 +78,13 @@ Patch36:	ghostpdl-10.03.0-openjpeg-buildfix.patch
 %if !%{with bootstrap}
 BuildRequires:	autoconf
 BuildRequires:	automake
-BuildRequires:	libtool-base
-BuildRequires:	slibtool
 BuildRequires:	make
 BuildRequires:	pkgconfig(gtk+-3.0)
 BuildRequires:	pkgconfig(fontconfig)
 %endif
 BuildRequires:	bison
 BuildRequires:	flex
-BuildRequires:	libtool
+BuildRequires:	slibtool
 BuildRequires:	unzip
 BuildRequires:	gettext-devel
 BuildRequires:	glibc-devel
@@ -110,6 +108,9 @@ BuildRequires:	pkgconfig(xt)
 BuildRequires:	pkgconfig(zlib)
 BuildRequires:	pkgconfig(dbus-1)
 BuildRequires:	pkgconfig(libopenjp2)
+BuildRequires:	pkgconfig(libbrotlicommon)
+BuildRequires:	pkgconfig(libbrotlidec)
+BuildRequires:	pkgconfig(libbrotlienc)
 BuildRequires:	pkgconfig(com_err)
 BuildRequires:	pkgconfig(krb5)
 BuildRequires:	cups-devel
@@ -122,6 +123,9 @@ Requires:	update-alternatives
 BUildRequires:	devel(libjpeg)
 BuildRequires:	devel(libjbig2dec)
 BuildRequires:	devel(libopenjp2)
+BuildRequires:	devel(libbrotlicommon)
+BuildRequires:	devel(libbrotlidec)
+BuildRequires:	devel(libbrotlienc)
 BuildRequires:	devel(libxml2)
 BuildRequires:	devel(libtiff)
 BuildRequires:	devel(libfreetype)
@@ -359,7 +363,7 @@ to compile applications using the IJS library.
 #backup files not needed
 find . -name "*.*~" |xargs rm -f
 # prevent building and using bundled libs
-rm -rf jbig2dec libpng jpeg tiff zlib lcms2 freetype cups/libs openjpeg
+rm -rf jbig2dec libpng jpeg tiff zlib lcms2 freetype cups/libs openjpeg brotli
 
 # ps2pdfpress
 bzcat %{SOURCE2} > ps2pdfpress
@@ -398,9 +402,10 @@ export RPM_OPT_FLAGS="$(echo %{optflags} |sed -e 's/-O3/-g/' |sed -e 's/-O2/-g/'
 
 %if %{with ijs}
 pushd ijs*
-# Rebuild broken build infrastructure
-# Needed by patch4.
-./autogen.sh
+# Rebuild ijs autotools with slibtool instead of GNU libtool
+%if !%{with bootstrap}
+LIBTOOLIZE=slibtoolize autoreconf -fi
+%endif
 %configure \
 %ifarch %{ix86}
 	--disable-sse2 \
@@ -408,7 +413,7 @@ pushd ijs*
 	--enable-shared \
 	--disable-static
 
-%make_build
+%make_build LIBTOOL=slibtool-shared
 popd
 %endif
 
@@ -476,17 +481,7 @@ install -d %{buildroot}%{_sysconfdir}
 install -d %{buildroot}%{_mandir}/man1
 
 pushd ijs*
-%configure \
-	--enable-shared \
-	--prefix=%{buildroot}%{_prefix} \
-	--libdir=%{buildroot}%{_libdir}
-
-# Work around bug in "configure" script
-perl -p -i -e 's/\@OBJEXT\@/o/g' Makefile
-perl -p -i -e 's/\@EXEEXT\@//g' Makefile
-%makeinstall
-# Fix prefixes in scripts
-perl -p -i -e "s:%{buildroot}::g" %{buildroot}%{_libdir}/pkgconfig/ijs.pc
+%make_install LIBTOOL=slibtool-shared
 popd
 
 ##### GHOSTSCRIPT
