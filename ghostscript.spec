@@ -159,11 +159,11 @@ Summary:	PostScript/PDF interpreter and renderer (DVI-to-PDF converter)
 Group:		Publishing
 Requires:	ghostscript
 Requires:	coreutils
-Requires:	tetex-dvips
+Requires:	texlive-dvips
 
 %description dvipdf
 Tool to convert the DVI format of TeX into the PDF format. There are
-more such tools (for different quality levels) in the tetex-dvipdfm
+more such tools (for different quality levels) in the texlive-dvipdfm
 package. All these tools use dvips of TeX to convert the DVI file to
 PostScript, then they use GhostScript to generate the PDF file.
 
