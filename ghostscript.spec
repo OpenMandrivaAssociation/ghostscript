@@ -370,7 +370,7 @@ find . -name "*.*~" |xargs rm -f
 # does not try to probe the copies we are about to delete)
 rm -rf jbig2dec libpng jpeg tiff zlib lcms2 freetype cups/libs openjpeg brotli
 
-# Only regenerate configure; %configure / %configure32 run it for real
+# Only regenerate the configure script; the real configure runs later
 [ -e autogen.sh ] && NOCONFIGURE=1 ./autogen.sh
 
 # ps2pdfpress
