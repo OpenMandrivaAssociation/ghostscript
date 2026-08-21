@@ -410,10 +410,9 @@ export RPM_OPT_FLAGS="$(echo %{optflags} |sed -e 's/-O3/-g/' |sed -e 's/-O2/-g/'
 
 %if %{with ijs}
 pushd ijs*
-# Rebuild ijs autotools with slibtool instead of GNU libtool.
-# slibtool.m4 lives in %%{_datadir}/slibtool, not the default aclocal path.
+# slibtool.m4 is not on the default aclocal path; %%configure re-runs aclocal
+export ACLOCAL_PATH=%{_datadir}/slibtool${ACLOCAL_PATH:+:$ACLOCAL_PATH}
 %if !%{with bootstrap}
-ACLOCAL_PATH=%{_datadir}/slibtool${ACLOCAL_PATH:+:$ACLOCAL_PATH} \
 LIBTOOLIZE=slibtoolize autoreconf -fi
 %endif
 %configure \
