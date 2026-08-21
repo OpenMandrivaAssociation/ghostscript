@@ -1,0 +1,23 @@
+--- ghostpdl-10.08.0rc1/pdf/pdf_shading.c.omv~
++++ ghostpdl-10.08.0rc1/pdf/pdf_shading.c
+@@ -41,7 +41,8 @@
+ 
+ static int pdfi_build_shading_function(pdf_context *ctx, gs_function_t **ppfn, const float *shading_domain, int num_inputs, pdf_dict *shading_dict, pdf_dict *page_dict)
+ {
+-    int code, type;
++    int code;
++    int64_t type;
+     pdf_obj *o = NULL;
+     pdf_obj * rsubfn = NULL;
+     gs_function_AdOt_params_t params;
+--- ghostpdl-10.08.0rc1/psi/zpdfops.c.omv~
++++ ghostpdl-10.08.0rc1/psi/zpdfops.c
+@@ -1435,7 +1435,7 @@ static int zPDFInit(i_ctx_t *i_ctx_p)
+     }
+     pdfctx->cache_memory = imemory;
+     /* The size is arbitrary */
+-    code = dict_alloc(imemory->stable_memory, 1, &pdfctx->names_dict);
++    code = dict_alloc((gs_ref_memory_t *)imemory->stable_memory, 1, &pdfctx->names_dict);
+     if (code < 0)
+         goto error;
+ 

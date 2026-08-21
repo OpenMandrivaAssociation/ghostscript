@@ -74,6 +74,8 @@ Patch33:	ghostpdl-9.51-dprintf.patch
 Patch34:	ghostpdl-9.52-system-jpeg-buildfix.patch
 Patch35:	ghostpdl-10.0.0rc2-build.patch
 Patch36:	ghostpdl-10.03.0-openjpeg-buildfix.patch
+# 10.08.0rc1: clang -Wincompatible-pointer-types errors (int vs int64_t, gs_memory_t vs gs_ref_memory_t)
+Patch37:	ghostpdl-10.08.0rc1-clang-types.patch
 
 %if !%{with bootstrap}
 BuildRequires:	autoconf
@@ -84,6 +86,7 @@ BuildRequires:	pkgconfig(fontconfig)
 %endif
 BuildRequires:	bison
 BuildRequires:	flex
+BuildRequires:	atomic-devel
 BuildRequires:	slibtool
 BuildRequires:	unzip
 BuildRequires:	gettext-devel
@@ -120,7 +123,9 @@ Requires:	update-alternatives
 %rename	ghostscript-module-X
 
 %if %{with compat32}
-BUildRequires:	devel(libjpeg)
+BuildRequires:	devel(libjpeg)
+BuildRequires:	devel(libatomic)
+BuildRequires:	devel(libfontconfig)
 BuildRequires:	devel(libjbig2dec)
 BuildRequires:	devel(libopenjp2)
 BuildRequires:	devel(libbrotlicommon)
@@ -358,12 +363,15 @@ to compile applications using the IJS library.
 %prep
 %autosetup -p1 -n ghostpdl-%{gsver}%{?pre:%pre}
 %config_update
-[ -e autogen.sh ] && ./autogen.sh
 
 #backup files not needed
 find . -name "*.*~" |xargs rm -f
-# prevent building and using bundled libs
+# prevent building and using bundled libs (before autogen, so configure
+# does not try to probe the copies we are about to delete)
 rm -rf jbig2dec libpng jpeg tiff zlib lcms2 freetype cups/libs openjpeg brotli
+
+# Only regenerate configure; %configure / %configure32 run it for real
+[ -e autogen.sh ] && NOCONFIGURE=1 ./autogen.sh
 
 # ps2pdfpress
 bzcat %{SOURCE2} > ps2pdfpress
