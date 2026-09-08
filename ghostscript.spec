@@ -17,7 +17,7 @@
 %define fsver 10.08.0
 %define ijsver 0.35
 # (tpg) BUMP THIS EVERY UPDATE, RESET WHEN IJSVER INCREASES
-%define ijsreloffset 110
+%define ijsreloffset 111
 %define ijsrel %(echo $((%(echo %{release} |cut -d. -f1) + %{ijsreloffset})))
 %define nodot_ver %(echo %{gsver} |sed -e 's,\\.,,g')
 
@@ -37,16 +37,14 @@
 %define lib32gpdl %mklib32name gpdl %{gsmajor}
 %define lib32gpcl6 %mklib32name gpcl6 %{gsmajor}
 
-%define pre rc1
-
 Summary:	PostScript/PDF interpreter and renderer (Main executable)
 Name:		ghostscript
 Version:	%{gsver}
-Release:	%{?pre:0.%{pre}.}1
+Release:	1
 License:	AGPLv3
 Group:		Publishing
 URL:		https://www.ghostscript.com/
-Source0:	https://github.com/ArtifexSoftware/ghostpdl-downloads/releases/download/gs%{nodot_ver}%{?pre:%{pre}}/ghostpdl-%{version}%{?pre:%{pre}}.tar.xz
+Source0:	https://github.com/ArtifexSoftware/ghostpdl-downloads/releases/download/gs%{nodot_ver}/ghostpdl-%{version}.tar.xz
 Source2:	ps2pdfpress.bz2
 Source3:	http://www.linuxprinting.org/download/printing/sipixa6.upp.bz2
 Source4:	ghostscript.rpmlintrc
@@ -74,8 +72,6 @@ Patch33:	ghostpdl-9.51-dprintf.patch
 Patch34:	ghostpdl-9.52-system-jpeg-buildfix.patch
 Patch35:	ghostpdl-10.0.0rc2-build.patch
 Patch36:	ghostpdl-10.03.0-openjpeg-buildfix.patch
-# 10.08.0rc1: clang -Wincompatible-pointer-types errors (int vs int64_t, gs_memory_t vs gs_ref_memory_t)
-Patch37:	ghostpdl-10.08.0rc1-clang-types.patch
 
 %if !%{with bootstrap}
 BuildRequires:	autoconf
@@ -361,7 +357,7 @@ to compile applications using the IJS library.
 
 
 %prep
-%autosetup -p1 -n ghostpdl-%{gsver}%{?pre:%pre}
+%autosetup -p1 -n ghostpdl-%{gsver}
 %config_update
 
 #backup files not needed
@@ -393,7 +389,6 @@ cd build32
 sed -i -e 's,include base,include ../base,g' Makefile
 ln -s ../tesseract .
 ln -s ../leptonica .
-%make_build so
 %endif
 
 %build
@@ -406,6 +401,10 @@ export DONT_STRIP=1
 export CFLAGS="$(echo %{optflags} |sed -e 's/-O3/-g/' |sed -e 's/-O2/-g/')"
 export CXXFLAGS="$(echo %{optflags} |sed -e 's/-O3/-g/' |sed -e 's/-O2/-g/')"
 export RPM_OPT_FLAGS="$(echo %{optflags} |sed -e 's/-O3/-g/' |sed -e 's/-O2/-g/')"
+%endif
+
+%if %{with compat32}
+%make_build -C build32 so
 %endif
 
 %if %{with ijs}
@@ -472,6 +471,65 @@ perl -p -i -e "s|^EXTRALIBS=|EXTRALIBS=-L/%{_lib} -lz |g" Makefile
 %make_build so
 #make pcl3opts
 %make_build cups
+
+# Interpreters are a classic PGO win (branchy operators, device
+# selection, font/ICC paths). Train the so-linked gs plus pcl/xps on
+# typical print/convert jobs: tiny PS, a real PDF, cups raster, jpeg/png.
+%pgo
+gs=
+for c in sobin/gsc bin/gs bin/gsc sobin/gs; do
+	[ -x "$c" ] && gs="$c" && break
+done
+if [ -z "$gs" ]; then
+	echo "PGO: instrumented gs missing" >&2
+	find . -name gsc -o -name gs | head
+	exit 1
+fi
+pcl=
+xps=
+for c in sobin/gpcl6c bin/gpcl6c sobin/gpcl6; do
+	[ -x "$c" ] && pcl="$c" && break
+done
+for c in sobin/gxpsc bin/gxpsc sobin/gxps; do
+	[ -x "$c" ] && xps="$c" && break
+done
+train=$(mktemp -d)
+trap 'rm -rf "$train"' EXIT
+cat > "$train/hello.ps" <<'EOF'
+%!PS-Adobe-3.0
+%%BoundingBox: 0 0 612 792
+/Helvetica findfont 24 scalefont setfont
+72 720 moveto (OpenMandriva Ghostscript PGO) show
+72 680 moveto (0123456789 abcdefghijklmnopqrstuvwxyz) show
+newpath 72 400 80 0 360 arc fill
+showpage
+%%EOF
+EOF
+run_gs() {
+	"$gs" -dSAFER -dBATCH -dNOPAUSE -dQUIET "$@"
+}
+run_gs -sDEVICE=pdfwrite -sOutputFile="$train/hello.pdf" "$train/hello.ps"
+run_gs -sDEVICE=png16m -r72 -sOutputFile="$train/hello.png" "$train/hello.ps"
+run_gs -sDEVICE=jpeg -r72 -sOutputFile="$train/hello.jpg" "$train/hello.ps"
+run_gs -sDEVICE=ps2write -sOutputFile="$train/hello-out.ps" "$train/hello.pdf"
+run_gs -sDEVICE=pdfwrite -dCompatibilityLevel=1.4 -sOutputFile="$train/round.pdf" "$train/hello.pdf"
+run_gs -sDEVICE=cups -sOutputFile="$train/hello.cups" "$train/hello.ps" || true
+if [ -f doc/Ghostscript.pdf ]; then
+	run_gs -sDEVICE=png16m -r72 -dFirstPage=1 -dLastPage=2 \
+		-sOutputFile="$train/doc-%d.png" doc/Ghostscript.pdf
+	run_gs -sDEVICE=pdfwrite -sOutputFile="$train/doc-opt.pdf" \
+		-dFirstPage=1 -dLastPage=4 doc/Ghostscript.pdf
+fi
+if [ -n "$pcl" ] && [ -f pcl/examples/tiger.px3 ]; then
+	"$pcl" -dSAFER -dBATCH -dNOPAUSE -dQUIET -sDEVICE=pdfwrite \
+		-sOutputFile="$train/tiger.pdf" pcl/examples/tiger.px3 || true
+	"$pcl" -dSAFER -dBATCH -dNOPAUSE -dQUIET -sDEVICE=png16m -r72 \
+		-sOutputFile="$train/tiger.png" pcl/examples/origins.pcl || true
+fi
+if [ -n "$xps" ] && [ -f xps/tools/tiger.xps ]; then
+	"$xps" -dSAFER -dBATCH -dNOPAUSE -dQUIET -sDEVICE=png16m -r72 \
+		-sOutputFile="$train/tiger-xps.png" xps/tools/tiger.xps || true
+fi
 
 %install
 # Change compiler flags for debugging when in debug mode
