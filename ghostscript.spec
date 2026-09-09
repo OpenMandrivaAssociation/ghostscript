@@ -388,9 +388,10 @@ export CONFIGURE_TOP="$(pwd)"
 mkdir build32
 cd build32
 # clang -m32 reads the i686 sysroot; 32-bit system libs are in /usr/lib.
+# Do not add -I/usr/include — that makes glibc headers non-system and
+# trips -Werror=declaration-after-statement in bits/stdio2.h.
 export LIBRARY_PATH=/usr/lib${LIBRARY_PATH:+:$LIBRARY_PATH}
 export PKG_CONFIG_LIBDIR=/usr/lib/pkgconfig:/usr/share/pkgconfig
-CFLAGS="${CFLAGS:-%{optflags}} -I/usr/include" \
 LDFLAGS="${LDFLAGS:-%{build_ldflags}} -L/usr/lib" \
 %configure32 \
 	--without-x \
