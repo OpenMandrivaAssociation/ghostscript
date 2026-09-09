@@ -499,6 +499,8 @@ if [ -z "$gs" ]; then
 	exit 1
 fi
 export LD_LIBRARY_PATH="$PWD/sobin${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
+export GS_LIB="$PWD/Resource/Init:$PWD/Resource:$PWD/lib"
+export GS_FONTPATH="$PWD/Resource/Font"
 pcl=
 xps=
 for c in sobin/gpcl6c bin/gpcl6c sobin/gpcl6; do
