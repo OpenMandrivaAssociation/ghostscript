@@ -1,9 +1,9 @@
 # libgs is used by libspectre, libspectre is used by cairo,
 # cairo is used by gtk-3.0, gtk-3.0 is used by wine
-# 32-bit libgs is for wine/gtk on generic x86_64. znver1 has no
-# 32-bit userspace, so do not enable compat32 there.
-%ifarch x86_64
+%ifarch %{x86_64}
 %bcond_without compat32
+%else
+%bcond_with compat32
 %endif
 
 %bcond_without ijs
