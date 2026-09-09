@@ -387,11 +387,12 @@ export CONFIGURE_TOP="$(pwd)"
 %if %{with compat32}
 mkdir build32
 cd build32
-# clang -m32 reads the i686 sysroot; 32-bit system libs are in /usr/lib.
-# Do not add -I/usr/include — that makes glibc headers non-system and
-# trips -Werror=declaration-after-statement in bits/stdio2.h.
+# clang -m32 reads the i686 sysroot; 32-bit system libs/headers for
+# jpeg etc. live in /usr/lib and /usr/include. -isystem keeps glibc
+# headers as system headers (plain -I trips -Werror=declaration-after-statement).
 export LIBRARY_PATH=/usr/lib${LIBRARY_PATH:+:$LIBRARY_PATH}
 export PKG_CONFIG_LIBDIR=/usr/lib/pkgconfig:/usr/share/pkgconfig
+CFLAGS="${CFLAGS:-%{optflags}} -isystem /usr/include" \
 LDFLAGS="${LDFLAGS:-%{build_ldflags}} -L/usr/lib" \
 %configure32 \
 	--without-x \
